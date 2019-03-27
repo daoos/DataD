@@ -37,10 +37,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cross-env": "^5.2.0",
+    "d3": "^5.7.0",
     "echarts": "^4.1.0",
     "echarts-liquidfill": "^2.0.4",
     "iview": "^3.3.3",
     "qs": "^6.6.0",
+    "snapsvg": "^0.5.1",
     "vue-echarts": "^4.0.1"
   }
 }
