@@ -43,6 +43,7 @@
     "iview": "^3.3.3",
     "qs": "^6.6.0",
     "snapsvg": "^0.5.1",
-    "vue-echarts": "^4.0.1"
+    "vue-echarts": "^4.0.1",
+    "vue-grid-layout": "^2.3.4"
   }
 }

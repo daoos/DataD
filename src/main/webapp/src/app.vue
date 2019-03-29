@@ -2,8 +2,8 @@
     <div class="main-container">
         <nav class="navgetion">
             <nav class="menu">
-                <div><Icon type="md-apps" />模板</div>
-                <div><Icon type="ios-color-palette" />主题</div>
+                <div @click="openGridsDrawer = true"><Icon type="md-apps"/>模板</div>
+                <div><Icon type="ios-color-palette"/>主题</div>
                 <div><Icon type="ios-stats" />常规图表</div>
                 <div><Icon type="ios-pulse" />业务图表</div>
                 <div><Icon type="md-bookmarks" />收藏</div>
@@ -11,6 +11,7 @@
             </nav>
         </nav>
         <nav class="container">
+            <grids-drawer :isDrawerLeft="openGridsDrawer"></grids-drawer>
             <div class="box">
                 <nav class="box-head">
                     <div class='title'>
@@ -32,3 +33,16 @@
     import dataD from './static/datad';
     export default dataD;
 </script>
+
+
+<style scoped lang='less'>
+    .button-group {
+        text-align: right;
+        Button {
+            width: 74px;
+            border-radius: 5px 5px 0px 0px;
+            border: 1px solid rgba(0,0,0,.2);
+            border-bottom: 0px;
+        }
+    }
+</style>
