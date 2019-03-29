@@ -27,22 +27,8 @@
     </div>
 </template>
 
-
 <script>
     import styleLess from './static/style.less';
     import dataD from './static/datad';
     export default dataD;
 </script>
-
-
-<style scoped lang='less'>
-    .button-group {
-        text-align: right;
-        Button {
-            width: 74px;
-            border-radius: 5px 5px 0px 0px;
-            border: 1px solid rgba(0,0,0,.2);
-            border-bottom: 0px;
-        }
-    }
-</style>
