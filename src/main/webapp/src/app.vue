@@ -2,7 +2,7 @@
     <div class="main-container">
         <nav class="navgetion">
             <nav class="menu">
-                <div @click="openGridsDrawer = true"><Icon type="md-apps"/>模板</div>
+                <div @click="openGridsDrawer"><Icon type="md-apps"/>模板</div>
                 <div><Icon type="ios-color-palette"/>主题</div>
                 <div><Icon type="ios-stats" />常规图表</div>
                 <div><Icon type="ios-pulse" />业务图表</div>
@@ -11,17 +11,22 @@
             </nav>
         </nav>
         <nav class="container">
-            <grids-drawer :isDrawerLeft="openGridsDrawer"></grids-drawer>
-            <div class="box">
-                <nav class="box-head">
-                    <div class='title'>
-                        <div class="text">{{ appName }}</div>
-                        <div class="subtext">{{ $formatDate(sysdate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
-                    </div>
-                    <svg id="svgroot" width="100%" height="80px"></svg>
-                </nav>
-                <nav class="box-body">
-                </nav>
+            <grids-drawer :isDrawerLeft="isOpenGridsDrawer" @setTemplet$Parent="setTemplet"></grids-drawer>
+            <div class="main-box">
+                <div class="box">
+                    <nav class="box-head">
+                        <div class='title'>
+                            <div class="text">{{ appName }}</div>
+                            <div class="subtext">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
+                        </div>
+                        <svg id="svgroot" width="100%" height="80px"></svg>
+                    </nav>
+                    <nav class="box-body">
+                        <ul id="gridMain" ref="gridMainTemplet">
+                            <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l" class="gs-w" v-for="value in templet"></li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </nav>
     </div>

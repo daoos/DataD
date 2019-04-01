@@ -5,7 +5,7 @@ import Snap from 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist
  * @param svgId
  * @returns {{path: null}}
  */
-export function drawNavgetion(svgId){
+export function DrawNavgetion(svgId){
     const SVG = Snap(svgId);
     let instance = {path:null};
     instance.navgetion = ()=>{

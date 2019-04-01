@@ -1,3 +1,4 @@
-import {drawNavgetion} from './drawNavgetion'
-import {windowResize} from './windowResize'
-export {drawNavgetion,windowResize}
+import { DrawNavgetion } from './drawNavgetion'
+import { WindowResize } from './windowResize'
+import { CreateGridsLayoutStyle } from './grids-drawer/createGridsLayoutStyle'
+export { DrawNavgetion, WindowResize, CreateGridsLayoutStyle }
