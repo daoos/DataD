@@ -4,7 +4,7 @@
             <div id="chartTemplet">
                 <template  v-for="item in chartList">
                     <ul class="chartTemplet">
-                        <li :id="item" :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
+                        <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
                         <ol class="move_handle"><Icon type="md-reorder" size="26" title="拖拽" @click="removeTemplet(item)"/></ol>
                     </ul>
                     <Divider dashed />
@@ -24,6 +24,7 @@
 
 <script>
     import Sortable from 'sortablejs';
+    import echarts from 'echarts';
 
     export default {
         props:["isDrawerLeft"],
@@ -39,6 +40,7 @@
             }
         },
         mounted() {
+
             Sortable.create(document.getElementById("chartTemplet"), {
                 sort:false,
                 group:{
@@ -53,6 +55,45 @@
                 onEnd:function(evt){
                     console.log(evt.from,"===",evt.to,"====",evt.item);
                     if(evt.to != evt.from){
+                        let echartsDom = evt.item.querySelector(".chart");
+                        echartsDom.innerHTML = "";
+
+                        let myChart = echarts.init(echartsDom,'dark');
+                        let option = {
+                            title: {
+                                text: 'ECharts 入门示例'
+                            },
+                            tooltip: {},
+                            legend: {
+                                data:['销量']
+                            },
+                            xAxis: {
+                                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                            },
+                            yAxis: {},
+                            series: [{
+                                name: '销量',
+                                type: 'bar',
+                                data: [5, 20, 36, 10, 10, 20]
+                            }]
+                        };
+                        myChart.setOption(option);
+
+
+                        // resize
+                        let echartsDoms = evt.to.querySelectorAll(".chart");
+                        echartsDoms.forEach(x=> {
+                            let gswDom = x.parentNode.parentNode;
+                            let [_height,_dataLayout] = [gswDom.clientHeight, gswDom.getAttribute("data-l")];
+                            if(_dataLayout==0){
+                                _height = _height / echartsDoms.length;
+                            }else if(_dataLayout > 1){
+                                _height = _height / Math.ceil(echartsDoms.length / _dataLayout);
+                            }
+                            x.style.height = _height+'px';
+                            echarts.getInstanceByDom(x).resize();
+                        });
+                        echartsDoms.forEach(x=> echarts.getInstanceByDom(x).resize());
 
                     }
                 }

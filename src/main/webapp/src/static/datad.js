@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import Sortable from 'sortablejs';
+import echarts from 'echarts';
 import { WindowResize, CreateGridsLayoutStyle } from './components'
 import gridsDrawer from './components/grids-drawer/grids-drawer.vue';
 import baseChartsDrawer from './components/base-charts-drawer/base-charts-drawer.vue';
@@ -43,6 +44,26 @@ export default {
                         animation: 150,
                         forceFallback:true,
                         handle:".move_handle",
+                        onEnd:function(evt){
+                            if(evt.to != evt.from){
+                                [evt.from, evt.to].forEach(el=>{
+                                    // resize
+                                    let echartsDoms = el.querySelectorAll(".chart");
+                                    echartsDoms.forEach(x=> {
+                                        let gswDom = x.parentNode.parentNode;
+                                        let [_height,_dataLayout] = [gswDom.clientHeight, gswDom.getAttribute("data-l")];
+                                        if(_dataLayout==0){
+                                            _height = _height / echartsDoms.length;
+                                        }else if(_dataLayout > 1){
+                                            _height = _height / Math.ceil(echartsDoms.length / _dataLayout);
+                                        }
+                                        x.style.height = _height+'px';
+                                        echarts.getInstanceByDom(x).resize();
+                                    });
+                                    echartsDoms.forEach(x=> echarts.getInstanceByDom(x).resize());
+                                });
+                            }
+                        }
                     });
                 });
             });
