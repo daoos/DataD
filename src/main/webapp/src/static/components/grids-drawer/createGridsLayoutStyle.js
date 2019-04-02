@@ -38,7 +38,7 @@ export function CreateGridsLayoutStyle(ElemThis){
             let [_width,_height] = [i*_gw, i*_gh], [_let,_top] = [_width-_gw, _height-_gh];
             for(let j=2; j<=count; j++){
                 str+=`
-                #${elemId} [data-w="${i}"][data-l="${j}"] li{ width: ${(_width/j)-5}px;}`;
+                #${elemId} [data-w="${i}"][data-l="${j}"] .chartTemplet{ width: ${(_width/j)-5}px;}`;
             }
             str+=`
                 #${elemId} [data-w="${i}"] { width:${_width}px; }
@@ -55,8 +55,8 @@ export function CreateGridsLayoutStyle(ElemThis){
             #${elemId} [data-l="1"] { flex-flow: row; }
             #${elemId} .gs-w{ min-width:${_gw}px;  min-height:${_gh}px; border-width:${options.margin_base/2}px; }
             #${elemId} [data-l]:not([data-l="0"]):not([data-l="1"]) { flex-wrap: wrap; }
-            #${elemId} [data-l="0"] li{ flex:1; }
-            #${elemId} [data-l="1"] li{ flex:1; }
+            #${elemId} [data-l="0"] .chartTemplet{ flex:1; }
+            #${elemId} [data-l="1"] .chartTemplet{ flex:1; }
             `;
         let styleId = `gs-${elemId}`;
         let styleElement = document.querySelector("#"+styleId);

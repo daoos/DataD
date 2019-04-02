@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
+import Sortable from 'sortablejs';
 import { WindowResize, CreateGridsLayoutStyle } from './components'
 import gridsDrawer from './components/grids-drawer/grids-drawer.vue';
+import baseChartsDrawer from './components/base-charts-drawer/base-charts-drawer.vue';
 
 /**
  * 内容区域缩放
@@ -14,43 +16,42 @@ const zoom = function(){
     }));
 };
 
-let _templet = [
-    {
-        "x": 1,
-        "y": 1,
-        "w": 2,
-        "h": 6
-    },
-    {
-        "x": 3,
-        "y": 1,
-        "w": 2,
-        "h": 6
-    }
-];
-
 export default {
     components: {
-        'grids-drawer':gridsDrawer
+        'grids-drawer':gridsDrawer,
+        'base-charts-drawer':baseChartsDrawer
     },
     data() {
         return {
             appName: "App应用2.0-查询服务",
             sysDate:new Date(),
-            isOpenGridsDrawer:true,
+            childComponentDrawer:null,
+            isOpenDrawer:false,
             templet:[]
         }
     },
     watch: {
-        templet(newVal){
+        templet(){
             this.$nextTick(function(){
                 CreateGridsLayoutStyle(this.$refs.gridMainTemplet);
+                this.$refs.gsw.forEach(x=>{
+                    Sortable.create(x, {
+                        group: {
+                            name:"omega",
+                            put:true
+                        },
+                        animation: 150,
+                        forceFallback:true,
+                        handle:".move_handle",
+                    });
+                });
             });
         }
     },
     methods: {
-        openGridsDrawer(){
-            return this.isOpenGridsDrawer = !this.isOpenGridsDrawer;
+        openDrawer(componentName){
+            this.childComponentDrawer = componentName;
+            return this.isOpenDrawer = !this.isOpenDrawer;
         },
         setTemplet(gridsConf){
             this.templet = gridsConf;
@@ -62,6 +63,19 @@ export default {
         //图表宽高自适应
         WindowResize(this);
 
-        this.templet = _templet;
+        this.templet = [
+            {
+                "x": 1,
+                "y": 1,
+                "w": 2,
+                "h": 6
+            },
+            {
+                "x": 3,
+                "y": 1,
+                "w": 2,
+                "h": 6
+            }
+        ];
     }
 }

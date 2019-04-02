@@ -2,7 +2,7 @@
     <div class="grids-drawer">
         <Drawer title="模板" :transfer="false" :inner="true" :mask="false" :width="200" :styles="styles" placement="left" v-model="isDrawerLeft">
             <ul id="gridTemplet" ref="gridTemplet">
-                <div class="grids-div" v-for="key in Object.keys(templets)">
+                <div class="grids-list" v-for="key in Object.keys(templets)">
                     <li :id="'grid' + key"  :data-id="key" class="grids" @click="$emit('setTemplet$Parent',templets[key])">
                         <ul>
                             <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l" class="gs-w" v-for="value in templets[key]"></li>
@@ -17,7 +17,7 @@
             </div>
         </Drawer>
         <Drawer title="添加模板" :transfer="false" :inner="true" :width="590" :styles="styles" v-model="isDrawerRight">
-            <nav>
+            <nav class="grids-conf">
                 <Divider dashed orientation="left"><Icon type="md-open" /> 最大尺寸：6 * 4</Divider>
                 <div style="text-align: right">
                     <ButtonGroup size="small" class="button-group">
@@ -139,9 +139,9 @@
     }
 </script>
 
-<style scoped lang='less'>
+<style lang="less" type="text/less">
     #gridTemplet {
-        .grids-div{
+        .grids-list{
             border-bottom: 1px dashed #e8eaec;
             padding-bottom: 15px;
             margin-bottom: 15px;
@@ -182,25 +182,6 @@
         }
     }
 
-    .grid-layout-box{
-        width: 100%;
-        height:397px;
-        background:url("../../img/bg_w.png");
-        border:1px solid rgba(0,0,0,.2);
-        overflow: hidden;
-    }
-
-    .button-group {
-        text-align: right;
-        Button {
-            width: 74px;
-            background:url("../../img/bg_w.png");
-            border-radius: 5px 5px 0px 0px;
-            border: 1px solid rgba(0,0,0,.2);
-            border-bottom: 0px;
-        }
-    }
-
     .drawer-footer{
         width: 100%;
         padding: 10px 16px;
@@ -210,5 +191,26 @@
         border-top: 1px solid #e8e8e8;
         background: #fff;
         text-align: center;
+    }
+
+    .grids-conf{
+        @bg-img:url("../../img/bg_w.png");
+        .grid-layout-box{
+            width: 100%;
+            height:397px;
+            background: @bg-img;
+            border:1px solid rgba(0,0,0,.2);
+            overflow: hidden;
+        }
+        .button-group {
+            text-align: right;
+            Button {
+                width: 74px;
+                background: @bg-img;
+                border-radius: 5px 5px 0px 0px;
+                border: 1px solid rgba(0,0,0,.2);
+                border-bottom: 0px;
+            }
+        }
     }
 </style>
