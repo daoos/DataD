@@ -5,7 +5,11 @@
                 <template  v-for="item in chartList">
                     <ul class="chartTemplet">
                         <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
-                        <ol class="move_handle"><Icon type="md-reorder" size="26" title="拖拽" @click="removeTemplet(item)"/></ol>
+                        <ol class="move_handle">
+                            <Icon type="ios-settings" size="26" title="设置" class="btu settings" :chart-type="item" onclick="((e)=>{ e.stopPropagation(); window.myVue.settingsCharts( e.target.getAttribute('chart-type') ) })(event)"/>
+                            <Icon type="md-reorder" size="26" title="拖拽" class="btu"/>
+                            <Icon type="ios-trash"  size="26" title="删除" class="btu trash" onclick="((e)=>{ e.stopPropagation(); window.myVue.trashCharts(e.target) })(event)"/>
+                        </ol>
                     </ul>
                     <Divider dashed />
                 </template>
@@ -13,7 +17,7 @@
             <div class="drawer-footer"></div>
         </Drawer>
         <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="styles" v-model="isDrawerRight">
-            <nav></nav>
+            <component :is="childComponentChart"></component>
             <div class="drawer-footer">
                 <Button  @click="isDrawerLeft = false">取消</Button>
                 <Button type="primary">确定</Button>
@@ -22,25 +26,39 @@
     </div>
 </template>
 
+
 <script>
+    window.myVue = null;
     import Sortable from 'sortablejs';
-    import echarts from 'echarts';
+    import { ChartsFactory } from './chartsFactory';
+    import * as chartsConf from './charts/conf'
 
     export default {
         props:["isDrawerLeft"],
         data() {
             return {
-                isDrawerRight:false,
                 styles: {
                     height: 'calc(100% - 75px)',
                     overflow: 'auto',
                     position: 'static'
                 },
-                chartList:["linebar","line","bar","pie","radar","waterlevel","number","topo"]
+                chartList:["linebar","line","bar","pie","radar","waterlevel","number","topo"],
+                isDrawerRight:false,
+                childComponentChart: null
+            }
+        },
+        methods: {
+            settingsCharts(chartName){
+                this.isDrawerRight = true;
+                this.childComponentChart = chartsConf[chartName];
+            },
+            trashCharts(trashBtuElement){
+                ChartsFactory.call({"chartElement":trashBtuElement.parentNode.previousElementSibling}).destroy();
             }
         },
         mounted() {
-
+            let _this = this;
+            window.myVue = _this;
             Sortable.create(document.getElementById("chartTemplet"), {
                 sort:false,
                 group:{
@@ -53,48 +71,9 @@
                 chosenClass: "sortable-chosen",
                 handle:".move_handle",
                 onEnd:function(evt){
-                    console.log(evt.from,"===",evt.to,"====",evt.item);
+                    //console.log(evt.from,"===",evt.to,"====",evt.item);
                     if(evt.to != evt.from){
-                        let echartsDom = evt.item.querySelector(".chart");
-                        echartsDom.innerHTML = "";
-
-                        let myChart = echarts.init(echartsDom,'dark');
-                        let option = {
-                            title: {
-                                text: 'ECharts 入门示例'
-                            },
-                            tooltip: {},
-                            legend: {
-                                data:['销量']
-                            },
-                            xAxis: {
-                                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-                            },
-                            yAxis: {},
-                            series: [{
-                                name: '销量',
-                                type: 'bar',
-                                data: [5, 20, 36, 10, 10, 20]
-                            }]
-                        };
-                        myChart.setOption(option);
-
-
-                        // resize
-                        let echartsDoms = evt.to.querySelectorAll(".chart");
-                        echartsDoms.forEach(x=> {
-                            let gswDom = x.parentNode.parentNode;
-                            let [_height,_dataLayout] = [gswDom.clientHeight, gswDom.getAttribute("data-l")];
-                            if(_dataLayout==0){
-                                _height = _height / echartsDoms.length;
-                            }else if(_dataLayout > 1){
-                                _height = _height / Math.ceil(echartsDoms.length / _dataLayout);
-                            }
-                            x.style.height = _height+'px';
-                            echarts.getInstanceByDom(x).resize();
-                        });
-                        echartsDoms.forEach(x=> echarts.getInstanceByDom(x).resize());
-
+                        ChartsFactory.call({"chartElement":evt.item.querySelector(".chart")}).init();
                     }
                 }
             });
@@ -112,6 +91,9 @@
                 display:flex;
                 align-items:center;
                 cursor: Move;
+                .settings, .trash{
+                    display: none;
+                }
             }
             .chart{
                 width: 150px;

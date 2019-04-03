@@ -23,7 +23,7 @@
                     </nav>
                     <nav class="box-body">
                         <ul id="gridMain" ref="gridMainTemplet">
-                            <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l||2" class="gs-w" ref="gsw" v-for="value in templet"></li>
+                            <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l||0" class="gs-w" ref="gsw" v-for="value in templet"></li>
                         </ul>
                     </nav>
                 </div>
