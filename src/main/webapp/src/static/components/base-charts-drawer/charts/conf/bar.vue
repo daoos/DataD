@@ -1,11 +1,27 @@
 <template>
-    <div class="charts-bar">charts-charts-bar</div>
+    <div>
+        <charts-linebar :seriesTypes="seriesTypes" class="charts-bar"></charts-linebar>
+    </div>
 </template>
 
 <script>
+    import linebar from './linebar.vue';
     export default {
-        data() {
-            return {}
+        components: {
+            'charts-linebar': linebar,
+        },
+        data () {
+            return {
+                seriesTypes:{"bar_0":"无","bar_1":"分组一","bar_2":"分组二"}
+            }
         }
     }
 </script>
+
+<style lang="less" type="text/less">
+    .charts-bar{
+        &:before{
+            content: "-- 柱状图 --";
+        }
+    }
+</style>

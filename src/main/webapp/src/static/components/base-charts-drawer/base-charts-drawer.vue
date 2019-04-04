@@ -16,7 +16,7 @@
             </div>
             <div class="drawer-footer"></div>
         </Drawer>
-        <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="styles" v-model="isDrawerRight">
+        <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
             <component :is="childComponentChart"></component>
             <div class="drawer-footer">
                 <Button  @click="isDrawerLeft = false">取消</Button>
@@ -25,7 +25,6 @@
         </Drawer>
     </div>
 </template>
-
 
 <script>
     window.myVue = null;
@@ -45,6 +44,8 @@
                 chartList:["linebar","line","bar","pie","radar","waterlevel","number","topo"],
                 isDrawerRight:false,
                 childComponentChart: null
+                // isDrawerRight:true,
+                // childComponentChart: chartsConf["bar"]
             }
         },
         methods: {
