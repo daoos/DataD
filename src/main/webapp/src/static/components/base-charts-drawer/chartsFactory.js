@@ -14,11 +14,19 @@ export function ChartsFactory(){
     instance.init= ()=>{
         this.chartElement.innerHTML = "";
         let chartDataId = this.chartElement.getAttribute("data-id");
-        let eCharts = echarts.init(this.chartElement, 'dark');
         let chart = require("./charts/"+chartDataId);
+        let eCharts = echarts.init(this.chartElement, 'dark');
         chart.default.init(eCharts);
         return instance.resize();
     };
+
+    instance.configs=(config)=>{
+        let chartDataId = this.chartElement.getAttribute("data-id");
+        let chart = require("./charts/"+chartDataId);
+        let eCharts = echarts.getInstanceByDom(this.chartElement);
+        chart.default.options(eCharts, config);
+    };
+
 
     /**
      * 设置图表宽高自适应

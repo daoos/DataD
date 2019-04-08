@@ -14,11 +14,11 @@ if (process.env.NODE_ENV === 'production') {
     require('../service/mockApi');
 }
 
-
 /**
- * App Dashboard
+ * Data Dashboard
  */
-let appDashboardUrl = "/appDashboard";
-//const vendorAdd = (params) => axios.post(vendorUrl, qs.stringify(params));
-const waterLevel = ()=> axios.get(`${appDashboardUrl}/waterLevel`);
-export {waterLevel}
+let chartsData = "/charts/data";
+const chartData = (param)=> axios.post(chartsData, param);
+export {chartData}
+
+

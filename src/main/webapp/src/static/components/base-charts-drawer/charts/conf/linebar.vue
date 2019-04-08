@@ -1,6 +1,6 @@
 <template>
     <div class="charts-linebar">
-        <charts-common></charts-common>
+        <charts-common ref="commonConf"></charts-common>
 
         <Row @click.native="handleSave(editIndex);editIndex = -1">
             <Col span="3" class="tab">图例配置：</Col>
@@ -63,7 +63,7 @@
 <script>
     import common from './common.vue';
     export default {
-        props:["seriesTypes"],
+        props:["seriesTypes","chartType"],
         components: {
             'charts-common': common,
         },
@@ -98,36 +98,37 @@
                     }
                 ],
                 data: [
-                    {
-                        legendTitle: '王小明',
-                        seriesType: 'line_0',
-                        unit: 1,
-                        color: ''
-                    },
-                    {
-                        legendTitle: '张小刚',
-                        seriesType: 'bar_0',
-                        unit: 2,
-                        color: ''
-                    },
-                    {
-                        legendTitle: '李小红',
-                        seriesType: 'line_0',
-                        unit: 3,
-                        color: ''
-                    },
-                    {
-                        legendTitle: '周小伟',
-                        seriesType: 'line_0',
-                        unit: 0,
-                        color: ''
-                    }
+                    // {
+                    //     legendTitle: '王小明',
+                    //     seriesType: 'line_0',
+                    //     unit: 1,
+                    //     color: ''
+                    // },
+                    // {
+                    //     legendTitle: '张小刚',
+                    //     seriesType: 'bar_0',
+                    //     unit: 2,
+                    //     color: ''
+                    // },
+                    // {
+                    //     legendTitle: '李小红',
+                    //     seriesType: 'line_0',
+                    //     unit: 3,
+                    //     color: ''
+                    // },
+                    // {
+                    //     legendTitle: '周小伟',
+                    //     seriesType: 'line_0',
+                    //     unit: 0,
+                    //     color: ''
+                    // }
                 ],
                 editIndex: -1,
                 editLegendTitle: '',
                 editSeriesType: '',
                 editUnit: '',
                 editColor: '',
+                rowNumber:1
             }
         },
         methods: {
@@ -152,9 +153,10 @@
                 this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
             },
             addRow(){
+                let _this = this;
                 this.data.push({
-                    legendTitle: '标题',
-                    seriesType: 'line_0',
+                    legendTitle: '图例'+(_this.rowNumber++),
+                    seriesType: _this.chartType?_this.chartType+"_0":'line_0',
                     unit: 0,
                     color: ''
                 });
@@ -163,6 +165,20 @@
                 this.$refs.dataTable.getSelection().forEach(el=>{
                     this.data.splice(this.data.findIndex(x=>x.legendTitle==el.legendTitle),1);
                 });
+            },
+            submitConf(){
+                let commonConf = this.$refs.commonConf.submitConf();
+                if(commonConf){
+                    if(this.data.length > 0){
+                        commonConf.api = this.data;
+                        return commonConf;
+                    }else{
+                        this.$Notice.error({title: '请配置图例列表!!!'});
+                        return;
+                    }
+                }else{
+                    return;
+                }
             }
         }
     }

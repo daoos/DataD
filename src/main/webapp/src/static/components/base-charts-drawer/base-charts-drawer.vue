@@ -6,7 +6,7 @@
                     <ul class="chartTemplet">
                         <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
                         <ol class="move_handle">
-                            <Icon type="ios-settings" size="26" title="设置" class="btu settings" :chart-type="item" onclick="((e)=>{ e.stopPropagation(); window.myVue.settingsCharts( e.target.getAttribute('chart-type') ) })(event)"/>
+                            <Icon type="ios-settings" size="26" title="设置" class="btu settings" :chart-type="item" onclick="((e)=>{ e.stopPropagation(); window.myVue.settingsCharts(e.target) })(event)"/>
                             <Icon type="md-reorder" size="26" title="拖拽" class="btu"/>
                             <Icon type="ios-trash"  size="26" title="删除" class="btu trash" onclick="((e)=>{ e.stopPropagation(); window.myVue.trashCharts(e.target) })(event)"/>
                         </ol>
@@ -17,10 +17,10 @@
             <div class="drawer-footer"></div>
         </Drawer>
         <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
-            <component :is="childComponentChart"></component>
+            <component ref="chartConfComponent" :is="childComponentChart"></component>
             <div class="drawer-footer">
-                <Button  @click="isDrawerLeft = false">取消</Button>
-                <Button type="primary">确定</Button>
+                <Button  @click="isDrawerRight = false">取消</Button>
+                <Button type="primary" @click="submitConf">确定</Button>
             </div>
         </Drawer>
     </div>
@@ -43,18 +43,28 @@
                 },
                 chartList:["linebar","line","bar","pie","radar","waterlevel","number","topo"],
                 isDrawerRight:false,
-                childComponentChart: null
-                // isDrawerRight:true,
-                // childComponentChart: chartsConf["bar"]
+                childComponentChart: null,
+                curChartType:"",
+                curChartElement:null
             }
         },
         methods: {
-            settingsCharts(chartName){
+            settingsCharts(element){
+                let chartType = element.getAttribute('chart-type');
+                this.curChartElement = element.parentNode.previousElementSibling;
+                this.curChartType = chartType;
                 this.isDrawerRight = true;
-                this.childComponentChart = chartsConf[chartName];
+                this.childComponentChart = chartsConf[chartType];
             },
-            trashCharts(trashBtuElement){
-                ChartsFactory.call({"chartElement":trashBtuElement.parentNode.previousElementSibling}).destroy();
+            trashCharts(element){
+                ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).destroy();
+            },
+            submitConf(){
+                let config = this.$refs.chartConfComponent.submitConf();
+                if(config){
+                    config.chartType = this.curChartType;
+                    ChartsFactory.call({"chartElement":this.curChartElement}).configs(config);
+                }
             }
         },
         mounted() {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <charts-linebar :seriesTypes="seriesTypes" class="charts-line"></charts-linebar>
+        <charts-linebar ref="linebarChart" :seriesTypes="seriesTypes" :chartType="chartType" class="charts-line"></charts-linebar>
     </div>
 </template>
 
@@ -12,7 +12,13 @@
         },
         data () {
             return {
+                chartType:"line",
                 seriesTypes:{"line_0":"无","line_1":"分组一","line_2":"分组二"}
+            }
+        },
+        methods: {
+            submitConf(){
+                return this.$refs.linebarChart.submitConf();
             }
         }
     }

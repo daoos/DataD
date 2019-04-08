@@ -19,7 +19,7 @@
                             <div class="text">{{ appName }}</div>
                             <div class="subtext">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
                         </div>
-                        <svg id="svgroot" width="100%" height="80px"></svg>
+                        <svg id="svgroot" width="100%" height="75px"></svg>
                     </nav>
                     <nav class="box-body">
                         <ul id="gridMain" ref="gridMainTemplet">

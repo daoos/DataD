@@ -54,6 +54,23 @@
                 refurbishMode:"add",
                 layout:0,
             }
+        },
+        methods: {
+            submitConf(){
+                let _this = this;
+                if(!_this.title){
+                    this.$Notice.error({title: '请输入图表名称!!!'});
+                    return;
+                };
+                return {
+                    chartType:_this.chartType,
+                    title:_this.title,
+                    url:_this.url,
+                    interval:_this.interval,
+                    refurbishMode:_this.refurbishMode,
+                    layout:_this.layout
+                };
+            }
         }
     }
 </script>
