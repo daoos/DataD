@@ -63,10 +63,6 @@ export default {
         },
         setTemplet(gridsConf){
             this.templet = gridsConf;
-        },
-
-        trashCharts(event){
-            ChartsFactory.call({"chartElement":event.path[1].previousElementSibling}).destroy();
         }
     },
     mounted() {

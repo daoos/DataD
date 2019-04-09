@@ -13,20 +13,32 @@ export function ChartsFactory(){
      */
     instance.init= ()=>{
         this.chartElement.innerHTML = "";
-        let chartDataId = this.chartElement.getAttribute("data-id");
-        let chart = require("./charts/"+chartDataId);
         let eCharts = echarts.init(this.chartElement, 'dark');
+        let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
         chart.default.init(eCharts);
         return instance.resize();
     };
 
+    /**
+     * 设置或获取图表原始配置
+     * @param config
+     * @returns {*}
+     */
     instance.configs=(config)=>{
-        let chartDataId = this.chartElement.getAttribute("data-id");
-        let chart = require("./charts/"+chartDataId);
         let eCharts = echarts.getInstanceByDom(this.chartElement);
-        chart.default.options(eCharts, config);
+        if (!config) {
+            let gswElement = this.chartElement.parentNode.parentNode;
+            let dataLayout = +gswElement.getAttribute("data-l");
+            if(eCharts.myConfig){
+                return Object.assign(eCharts.myConfig,{layout:dataLayout});
+            }
+            return dataLayout;
+        }
+        let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
+        eCharts.myConfig = config;
+        chart.default.options(eCharts);
+        return instance;
     };
-
 
     /**
      * 设置图表宽高自适应
@@ -36,6 +48,11 @@ export function ChartsFactory(){
         if(!gswElement){
             gswElement = this.chartElement.parentNode.parentNode;
         }
+        try{
+           if(typeof(this.gswElementLayout)!="undefined"){
+               gswElement.setAttribute("data-l",this.gswElementLayout);
+           }
+        }catch (e){}
         let charElements = gswElement.querySelectorAll(".chart");
         charElements.forEach(x=> {
             let [_height,_dataLayout] = [gswElement.clientHeight, gswElement.getAttribute("data-l")];
@@ -57,6 +74,7 @@ export function ChartsFactory(){
      */
     instance.destroy= ()=>{
         let eCharts = echarts.getInstanceByDom(this.chartElement);
+        window.clearTimeout(eCharts.timeout);
         eCharts.dispose();
         eCharts=null;
         let chartTemplet = this.chartElement.parentNode;

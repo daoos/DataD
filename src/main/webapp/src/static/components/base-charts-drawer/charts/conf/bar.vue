@@ -17,6 +17,9 @@
             }
         },
         methods: {
+            initConfig(config){
+                this.$refs.linebarChart.initConfig(config);
+            },
             submitConf(){
                 return this.$refs.linebarChart.submitConf();
             }

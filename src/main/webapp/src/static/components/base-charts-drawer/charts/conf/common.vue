@@ -56,6 +56,23 @@
             }
         },
         methods: {
+            initConfig(config){
+                if(typeof(config)=="object"){
+                    this.chartType = config.chartType;
+                    this.title = config.title;
+                    this.url = config.url;
+                    this.interval = config.interval;
+                    this.refurbishMode = config.refurbishMode;
+                    this.layout = config.layout;
+                }else{
+                    this.chartType = "line";
+                    this.title = "";
+                    this.url = "";
+                    this.interval = 30;
+                    this.refurbishMode = "add";
+                    this.layout = config;
+                }
+            },
             submitConf(){
                 let _this = this;
                 if(!_this.title){

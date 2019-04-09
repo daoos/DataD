@@ -2,7 +2,7 @@
     <div class="charts-linebar">
         <charts-common ref="commonConf"></charts-common>
 
-        <Row @click.native="handleSave(editIndex);editIndex = -1">
+        <Row @click.native="handleSave(editIndex);editIndex = -1;">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -14,47 +14,47 @@
 
         <Row>
             <Col span="24">
-            <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
-                <template slot-scope="{ row, index }" slot="legendTitle">
-                    <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
-                    <span v-else>
-                            <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                            <span v-else style="color:#ed4014">必填</span>
-                        </span>
-                </template>
+                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
+                    <template slot-scope="{ row, index }" slot="legendTitle">
+                        <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
+                        <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                    </template>
 
-                <template slot-scope="{ row, index }" slot="seriesType">
-                    <Select v-model="editSeriesType" v-if="editIndex === index" >
-                        <template v-if="seriesTypes">
-                            <Option :value="key" v-for="key in Object.keys(seriesTypes)">{{ seriesTypes[key] }}</Option>
-                        </template>
-                        <template v-else>
-                            <OptionGroup label="线状图">
-                                <Option :value="key" v-for="key in Object.keys(seriesTypes_Line)">{{ seriesTypes_Line[key] }}</Option>
-                            </OptionGroup>
-                            <OptionGroup label="柱状图">
-                                <Option :value="key" v-for="key in Object.keys(seriesTypes_Bar)">{{ seriesTypes_Bar[key] }}</Option>
-                            </OptionGroup>
-                        </template>
-                    </Select>
-                    <span v-else>{{ (seriesTypes || Object.assign({},seriesTypes_Line,seriesTypes_Bar))[row.seriesType] || '无' }}</span>
-                </template>
+                    <template slot-scope="{ row, index }" slot="seriesType">
+                        <Select v-model="editSeriesType" v-if="editIndex === index" >
+                            <template v-if="seriesTypes">
+                                <Option :value="key" v-for="key in Object.keys(seriesTypes)">{{ seriesTypes[key] }}</Option>
+                            </template>
+                            <template v-else>
+                                <OptionGroup label="线状图">
+                                    <Option :value="key" v-for="key in Object.keys(seriesTypes_Line)">{{ seriesTypes_Line[key] }}</Option>
+                                </OptionGroup>
+                                <OptionGroup label="柱状图">
+                                    <Option :value="key" v-for="key in Object.keys(seriesTypes_Bar)">{{ seriesTypes_Bar[key] }}</Option>
+                                </OptionGroup>
+                            </template>
+                        </Select>
+                        <span v-else>{{ (seriesTypes || Object.assign({},seriesTypes_Line,seriesTypes_Bar))[row.seriesType] || '无' }}</span>
+                    </template>
 
-                <template slot-scope="{ row, index }" slot="unit">
-                    <Select v-model="editUnit" v-if="editIndex === index" >
-                        <Option :value="index" v-for="(item,index) in units">{{ item }}</Option>
-                    </Select>
-                    <span v-else ><Tooltip content="单位不能超过两类" placement="top">{{ units[row.unit] || units[0] }}</Tooltip></span>
-                </template>
+                    <template slot-scope="{ row, index }" slot="unit">
+                        <Select v-model="editUnit" v-if="editIndex === index" >
+                            <Option :value="index" v-for="(item,index) in units">{{ item }}</Option>
+                        </Select>
+                        <span v-else ><Tooltip content="单位不能超过两类" placement="top">{{ units[row.unit] || units[0] }}</Tooltip></span>
+                    </template>
 
-                <template slot-scope="{ row, index }" slot="color">
-                    <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
-                    <span v-else>
-                            <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
-                            <span v-else>自动</span>
-                        </span>
-                </template>
-            </Table>
+                    <template slot-scope="{ row, index }" slot="color">
+                        <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
+                        <span v-else>
+                                <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
+                                <span v-else>自动</span>
+                            </span>
+                    </template>
+                </Table>
             </Col>
         </Row>
     </div>
@@ -97,32 +97,7 @@
                         slot: 'color',
                     }
                 ],
-                data: [
-                    // {
-                    //     legendTitle: '王小明',
-                    //     seriesType: 'line_0',
-                    //     unit: 1,
-                    //     color: ''
-                    // },
-                    // {
-                    //     legendTitle: '张小刚',
-                    //     seriesType: 'bar_0',
-                    //     unit: 2,
-                    //     color: ''
-                    // },
-                    // {
-                    //     legendTitle: '李小红',
-                    //     seriesType: 'line_0',
-                    //     unit: 3,
-                    //     color: ''
-                    // },
-                    // {
-                    //     legendTitle: '周小伟',
-                    //     seriesType: 'line_0',
-                    //     unit: 0,
-                    //     color: ''
-                    // }
-                ],
+                data: [],
                 editIndex: -1,
                 editLegendTitle: '',
                 editSeriesType: '',
@@ -166,7 +141,14 @@
                     this.data.splice(this.data.findIndex(x=>x.legendTitle==el.legendTitle),1);
                 });
             },
+            initConfig(config){
+                this.data = config["api"] || [];
+                this.$refs.commonConf.initConfig(config);
+            },
             submitConf(){
+                this.handleSave(this.editIndex);
+                this.editIndex = -1;
+
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     if(this.data.length > 0){

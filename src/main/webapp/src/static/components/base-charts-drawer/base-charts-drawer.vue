@@ -6,9 +6,9 @@
                     <ul class="chartTemplet">
                         <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
                         <ol class="move_handle">
-                            <Icon type="ios-settings" size="26" title="设置" class="btu settings" :chart-type="item" onclick="((e)=>{ e.stopPropagation(); window.myVue.settingsCharts(e.target) })(event)"/>
+                            <Icon type="ios-settings" size="26" title="设置" class="btu settings" :chart-type="item" onmousedown="((e)=>{ e.stopPropagation(); window.myVue.settingsCharts(e.target) })(event)" />
                             <Icon type="md-reorder" size="26" title="拖拽" class="btu"/>
-                            <Icon type="ios-trash"  size="26" title="删除" class="btu trash" onclick="((e)=>{ e.stopPropagation(); window.myVue.trashCharts(e.target) })(event)"/>
+                            <Icon type="ios-trash"  size="26" title="删除" class="btu trash" onmousedown="((e)=>{ e.stopPropagation(); window.myVue.trashCharts(e.target) })(event)"/>
                         </ol>
                     </ul>
                     <Divider dashed />
@@ -44,17 +44,20 @@
                 chartList:["linebar","line","bar","pie","radar","waterlevel","number","topo"],
                 isDrawerRight:false,
                 childComponentChart: null,
-                curChartType:"",
-                curChartElement:null
+                chartType:"",
+                chartElement:null
             }
         },
         methods: {
             settingsCharts(element){
                 let chartType = element.getAttribute('chart-type');
-                this.curChartElement = element.parentNode.previousElementSibling;
-                this.curChartType = chartType;
                 this.isDrawerRight = true;
+                this.chartElement = element.parentNode.previousElementSibling;
+                this.chartType = chartType;
                 this.childComponentChart = chartsConf[chartType];
+                this.$nextTick(function(){
+                    this.$refs.chartConfComponent.initConfig(ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).configs());
+                });
             },
             trashCharts(element){
                 ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).destroy();
@@ -62,8 +65,8 @@
             submitConf(){
                 let config = this.$refs.chartConfComponent.submitConf();
                 if(config){
-                    config.chartType = this.curChartType;
-                    ChartsFactory.call({"chartElement":this.curChartElement}).configs(config);
+                    config.chartType = this.chartType;
+                    ChartsFactory.call({"chartElement":this.chartElement, "gswElementLayout":config.layout}).configs(config).resize();
                 }
             }
         },
