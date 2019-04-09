@@ -78,7 +78,7 @@ export default{
         option.title[0].text = config.title;
         option.legend[0].data = _legendData;
         option.series = _series;
-        eCharts.setOption(option);
+        eCharts.setOption(option,true); //第二个参数true == notMerge
         eCharts.showLoading(null,showLoadingStyle);
 
         this.stop(eCharts);
