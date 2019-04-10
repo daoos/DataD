@@ -26,11 +26,3 @@
         }
     }
 </script>
-
-<style lang="less" type="text/less">
-    .charts-line{
-        &:before{
-            content: "-- 线状图 --";
-        }
-    }
-</style>

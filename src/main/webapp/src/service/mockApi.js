@@ -29,3 +29,27 @@ Mock.mock(/(charts\/data)/,function(options){
     console.log("*********",result);
     return result
 });
+
+
+//饼图测试数据
+Mock.mock(/(charts\/pie)/,function(options){
+    console.log("---mock---",options);
+    let series = {};
+    let {legends,startTime,endTime} = JSON.parse(options.body);
+    legends.forEach((legend)=>{
+        series[legend] = Mock.Random.natural(0,1000);
+    });
+    return series;
+});
+
+
+//雷达图测试数据
+Mock.mock(/(charts\/radar)/,function(options){
+    console.log("---mock---",options);
+    let series = {};
+    let {legends,startTime,endTime} = JSON.parse(options.body);
+    legends.forEach((legend)=>{
+        series[legend] = [Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100)];
+    });
+    return series;
+});

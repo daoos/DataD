@@ -26,11 +26,3 @@
         }
     }
 </script>
-
-<style lang="less" type="text/less">
-    .charts-bar{
-        &:before{
-            content: "-- 柱状图 --";
-        }
-    }
-</style>

@@ -1,6 +1,16 @@
 <template>
     <div class="charts-linebar">
-        <charts-common ref="commonConf"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <Row>
+            <Col span="3" class="tab">刷新方式：</Col>
+            <Col span="21">
+                <RadioGroup v-model="refurbishMode" size="large">
+                    <Radio label="add">追加</Radio>
+                    <Radio label="cover">覆盖</Radio>
+                </RadioGroup>
+            </Col>
+        </Row>
+        <Divider dashed/>
 
         <Row @click.native="handleSave(editIndex);editIndex = -1;">
             <Col span="3" class="tab">图例配置：</Col>
@@ -11,16 +21,15 @@
             </ButtonGroup>
             </Col>
         </Row>
-
         <Row>
             <Col span="24">
                 <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
                     <template slot-scope="{ row, index }" slot="legendTitle">
                         <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
                         <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
+                            <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                            <span v-else style="color:#ed4014">必填</span>
+                        </span>
                     </template>
 
                     <template slot-scope="{ row, index }" slot="seriesType">
@@ -50,9 +59,9 @@
                     <template slot-scope="{ row, index }" slot="color">
                         <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
                         <span v-else>
-                                <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
-                                <span v-else>自动</span>
-                            </span>
+                            <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
+                            <span v-else>自动</span>
+                        </span>
                     </template>
                 </Table>
             </Col>
@@ -103,7 +112,17 @@
                 editSeriesType: '',
                 editUnit: '',
                 editColor: '',
-                rowNumber:1
+                rowNumber:1,
+                refurbishMode:"add"
+            }
+        },
+        computed: {
+            chartName:function () {
+                let name = "线柱";
+                if(this.chartType){
+                    name = this.chartType=="line"?"线":"柱";
+                }
+                return name + "状图";
             }
         },
         methods: {
@@ -143,6 +162,7 @@
             },
             initConfig(config){
                 this.data = config["api"] || [];
+                this.refurbishMode = config["refurbishMode"] || "add";
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
@@ -151,6 +171,7 @@
 
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
+                    commonConf.refurbishMode = this.refurbishMode;
                     if(this.data.length > 0){
                         commonConf.api = this.data;
                         return commonConf;
@@ -165,21 +186,3 @@
         }
     }
 </script>
-
-<style lang="less" type="text/less">
-    .charts-linebar{
-        &:before{
-            content: "-- 线柱状图 --";
-            font-size: 20px;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .tab{
-            font-weight: bold;
-            text-align: right;
-            padding-top: 5px;
-        }
-    }
-</style>

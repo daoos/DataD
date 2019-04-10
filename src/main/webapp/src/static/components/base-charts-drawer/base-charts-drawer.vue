@@ -17,7 +17,7 @@
             <div class="drawer-footer"></div>
         </Drawer>
         <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
-            <component ref="chartConfComponent" :is="childComponentChart"></component>
+            <component class="chartConfig" ref="chartConfComponent" :is="childComponentChart"></component>
             <div class="drawer-footer">
                 <Button  @click="isDrawerRight = false">取消</Button>
                 <Button type="primary" @click="submitConf">确定</Button>
@@ -119,6 +119,13 @@
                 img{
                     box-shadow: 0px 0px 5px rgba(0,0,0,.6);
                 }
+            }
+        }
+        .chartConfig{
+            .tab{
+                font-weight: bold;
+                text-align: right;
+                padding-top: 5px;
             }
         }
     }

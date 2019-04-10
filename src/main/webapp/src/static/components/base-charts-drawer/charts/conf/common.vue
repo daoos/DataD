@@ -1,6 +1,9 @@
 <template>
     <div class="charts-common">
         <Row>
+            <Col span="24" class="charts-name">-- {{ chartName }} --</Col>
+        </Row>
+        <Row>
             <Col span="3" class="tab">图表名称：</Col>
             <Col span="9"><Input v-model="title" placeholder="非必填..." clearable size="large" style="width: 200px"/></Col>
             <Col span="3" class="tab">数据URL：</Col>
@@ -24,34 +27,35 @@
             </Col>
         </Row>
         <Divider dashed/>
-        <Row>
-            <Col span="3" class="tab">刷新方式：</Col>
-            <Col span="9">
-            <RadioGroup v-model="refurbishMode" size="large">
-                <Radio label="add">追加</Radio>
-                <Radio label="cover">覆盖</Radio>
-            </RadioGroup>
-            </Col>
-            <Col span="12" class="tab">
-                <Icon type="md-help-circle" size="18"/>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Icon type="ios-copy" size="18"/>
-                &nbsp;&nbsp;
-            </Col>
-        </Row>
-        <Divider dashed/>
+        <!--<Row>-->
+            <!--<Col span="3" class="tab">刷新方式：</Col>-->
+            <!--<Col span="9">-->
+            <!--<RadioGroup v-model="refurbishMode" size="large">-->
+                <!--<Radio label="add">追加</Radio>-->
+                <!--<Radio label="cover">覆盖</Radio>-->
+            <!--</RadioGroup>-->
+            <!--</Col>-->
+            <!--<Col span="12" class="tab">-->
+                <!--<Icon type="md-help-circle" size="18"/>-->
+                <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+                <!--<Icon type="ios-copy" size="18"/>-->
+                <!--&nbsp;&nbsp;-->
+            <!--</Col>-->
+        <!--</Row>-->
+        <!--<Divider dashed/>-->
     </div>
 </template>
 
 <script>
     export default {
+        props:["chartName"],
         data() {
             return {
                 chartType:"line",
-                title:"",
-                url:"",
-                interval:30,
-                refurbishMode:"add",
+                title:"测试图表",
+                url:"/charts/pie",
+                interval:4,
+                //refurbishMode:"add",
                 layout:0,
             }
         },
@@ -62,14 +66,14 @@
                     this.title = config.title;
                     this.url = config.url;
                     this.interval = config.interval;
-                    this.refurbishMode = config.refurbishMode;
+                    //this.refurbishMode = config.refurbishMode;
                     this.layout = config.layout;
                 }else{
                     this.chartType = "line";
-                    this.title = "";
-                    this.url = "";
-                    this.interval = 30;
-                    this.refurbishMode = "add";
+                    this.title = "测试图表";
+                    this.url = "/charts/pie";
+                    this.interval = 4;
+                    //this.refurbishMode = "add";
                     this.layout = config;
                 }
             },
@@ -84,7 +88,7 @@
                     title:_this.title,
                     url:_this.url,
                     interval:_this.interval,
-                    refurbishMode:_this.refurbishMode,
+                    //refurbishMode:_this.refurbishMode,
                     layout:_this.layout
                 };
             }
@@ -94,10 +98,11 @@
 
 <style lang="less" type="text/less">
     .charts-common{
-        .tab{
+        .charts-name{
+            font-size: 20px;
             font-weight: bold;
-            text-align: right;
-            padding-top: 5px;
+            margin-bottom: 25px;
+            text-align: center;
         }
     }
 </style>

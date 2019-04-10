@@ -1,24 +1,35 @@
-import echarts from 'echarts';
+import common from "./common";
 
 /**
- * pie 饼状图
+ * pie 饼状图图
  */
 export default{
     init(eCharts){
         eCharts.setOption({
             backgroundColor:"transparent",
+            title: {
+                text: '饼状图表',
+                left: 'center'
+            },
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+                formatter: "{b}: {c} ({d}%)"
+            },
+            grid:{
+                top: 60,
+                bottom:40,
+                left: 40,
+                right: 40,
+                containLabel: true
             },
             legend: {
-                orient: 'vertical',
-                x: 'left',
+                top:30,
+                itemWidth:14,
+                itemHeight:6,
                 data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
             },
             series: [
                 {
-                    name:'访问来源',
                     type:'pie',
                     radius: ['50%', '70%'],
                     avoidLabelOverlap: false,
@@ -50,6 +61,30 @@ export default{
                 }
             ]
         });
+    },
+    options(eCharts){
+        let [option, config] = [eCharts.getOption(), eCharts.myConfig];
+        console.log("===pie===",option,config);
+        let [_legendData, _seriesData] = [[],[]];
+        _seriesData = config.api.map(x=> {
+            _legendData.push(x.legendTitle);
+            return {
+                value: 0,
+                name: x.legendTitle,
+                itemStyle: {normal: {color: x.color}}
+            }
+        });
+        option.title[0].text = config.title;
+        option.legend[0].data = _legendData;
+        option.series[0].data = _seriesData;
+        eCharts.setOption(option);
 
+        common.start(eCharts, config.url, {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
+            console.log("===成功=pie==",data);
+            _seriesData.forEach(x=> x.value = data[x.name]);
+            option.series[0].data = _seriesData;
+            eCharts.setOption(option);
+            eCharts.hideLoading();
+        });
     }
 }
