@@ -1,8 +1,23 @@
 import Mock from 'mockjs'
+import DB from './indexedDB'
 
+//数据库
+DB.open("DataD").then(db=> {
+
+});
+
+/****==============================格子模板API===========================****/
+Mock.mock(/(grids)/,function(options){
+    console.debug("---mock---",options);
+    let result = { series: {}, xAxis:[] };
+    return result
+});
+
+
+/****==========================常规图表测试数据API===============================****/
 //线、柱图测试数据
-Mock.mock(/(charts\/data)/,function(options){
-    console.log("---mock---",options);
+Mock.mock(/(charts\/linebar)/,function(options){
+    console.debug("---mock---",options);
     let result = { series: {}, xAxis:[] };
     let {legends,duration,startTime,endTime} = JSON.parse(options.body);
     legends.forEach((legend)=>{
@@ -26,14 +41,12 @@ Mock.mock(/(charts\/data)/,function(options){
             result.xAxis.push(i);
         }
     }
-    console.log("*********",result);
     return result
 });
 
-
 //饼图测试数据
 Mock.mock(/(charts\/pie)/,function(options){
-    console.log("---mock---",options);
+    console.debug("---mock---",options);
     let series = {};
     let {legends,startTime,endTime} = JSON.parse(options.body);
     legends.forEach((legend)=>{
@@ -42,14 +55,21 @@ Mock.mock(/(charts\/pie)/,function(options){
     return series;
 });
 
-
 //雷达图测试数据
 Mock.mock(/(charts\/radar)/,function(options){
-    console.log("---mock---",options);
+    console.debug("---mock---",options);
     let series = {};
     let {legends,startTime,endTime} = JSON.parse(options.body);
     legends.forEach((legend)=>{
         series[legend] = [Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100)];
     });
+    return series;
+});
+
+//水位图测试数据
+Mock.mock(/(charts\/liquidfill)/,function(options){
+    console.debug("---mock---",options);
+    let {startTime,endTime} = JSON.parse(options.body);
+    let series = Mock.Random.natural(30,100)/100;
     return series;
 });

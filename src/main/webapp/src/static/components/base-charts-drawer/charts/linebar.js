@@ -1,14 +1,7 @@
-import {chartData} from "../../../../service/serverApi";
+import common from "./common";
 import {formatDate} from "../../../../utils/formatDate";
 
 const [SecondReg, MillisecondReg] = [new RegExp("^1(\\d){9}$"), new RegExp("^1(\\d){12}$")];
-const showLoadingStyle={
-    text: 'loading',
-    color: '#c23531',
-    textColor: 'rgba(255, 255, 255, 1)',
-    maskColor: 'rgba(0, 0, 0, .1)',
-    zlevel: 0
-};
 
 /**
  * linebar 线柱组合图
@@ -57,6 +50,7 @@ export default{
     },
     options(eCharts){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
+        console.debug("===linebar===",option,config);
         let [_legendData, _series, _yAxisIndexSet] = [[],[],new Set()];
         config.api.forEach(x=> {
             let _seriesType = x.seriesType.split("_");
@@ -79,49 +73,27 @@ export default{
         option.legend[0].data = _legendData;
         option.series = _series;
         eCharts.setOption(option,true); //第二个参数true == notMerge
-        eCharts.showLoading(null,showLoadingStyle);
 
-        this.stop(eCharts);
-        this.start(
-            Object.assign(eCharts,{refurbishMode:config.refurbishMode, requestCount:1, timeout:null}),
-            {legends:_legendData, duration:config.interval, startTime:"", endTime:""},
-            config.interval
-        );
-    },
-
-    start(chart, data, asynInterval=30) {
-        let _this = this;
-        let isSeries = _this.isOverallSeries;
-        if(data["startTime"]!="" && data["endTime"]!=""){
-            isSeries = false;
-        }
-        chartData(data).then((response)=>{
-            let result = response.data;
+        let params = {legends:_legendData, duration:config.interval, startTime:"", endTime:""};
+        common.start(eCharts, config.url||"/charts/linebar", params, config.interval)(result =>{
+            console.debug("===成功=linebar==",result);
             if(result){
-                let _common = _this.common(chart, result)
+                let isSeries = true;
+                let _comm = this._common(eCharts, result)
                     .setSeries(isSeries)
                     .setAxis()
                     .setXAxisSeriesLen(isSeries)
                     .setYAxisFormatter()
                     .setSeriesTooltip()
-                    .setRequestParameter(data);
-                chart.setOption(_common.options);
-                chart.hideLoading();
-                chart.requestCount++;
-            }
-        }).finally(()=>{
-            if(isSeries){
-                chart.timeout = setTimeout(function () {
-                    _this.start(chart, data, asynInterval);
-                },Math.ceil(asynInterval)*1000);
+                    .setRequestParameter(params);
+                eCharts.setOption(_comm.options);
+                eCharts.hideLoading();
             }
         });
     },
-    stop(chart) {
-        window.clearTimeout(chart.timeout);
-    },
-    common(chart, result, windowDuration = 150) { //windowDuration:图表窗口显示数据点数
-        let [_isCover, option] = [chart.refurbishMode, chart.getOption()];
+
+    _common(chart, result, windowDuration = 150) { //windowDuration:图表窗口显示数据点数
+        let [_isCover, option] = [chart.myConfig.refurbishMode, chart.getOption()];
         let [seriesData, xAxisData, legends, xAxis, yAxis, series] = [result.series, result.xAxis, option.legend[0], option.xAxis[0],option.yAxis, option.series];
         return {
             options:option,
@@ -324,5 +296,5 @@ export default{
                 return this;
             }
         }
-    },
+    }
 }

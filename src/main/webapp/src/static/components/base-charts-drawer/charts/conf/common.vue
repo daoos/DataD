@@ -71,7 +71,7 @@
                 }else{
                     this.chartType = "line";
                     this.title = "测试图表";
-                    this.url = "/charts/pie";
+                    this.url = "";
                     this.interval = 4;
                     //this.refurbishMode = "add";
                     this.layout = config;

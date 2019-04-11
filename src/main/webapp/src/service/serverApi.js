@@ -17,8 +17,6 @@ if (process.env.NODE_ENV === 'production') {
 /**
  * Data Dashboard
  */
-let chartsData = "/charts/data";
-const chartData = (param)=> axios.post(chartsData, param);
-export {chartData}
+
 
 

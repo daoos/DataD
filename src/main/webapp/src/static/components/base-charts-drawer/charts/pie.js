@@ -31,7 +31,7 @@ export default{
             series: [
                 {
                     type:'pie',
-                    radius: ['50%', '70%'],
+                    radius: ['40%', '60%'],
                     avoidLabelOverlap: false,
                     label: {
                         normal: {
@@ -64,7 +64,7 @@ export default{
     },
     options(eCharts){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
-        console.log("===pie===",option,config);
+        console.debug("===pie===",option,config);
         let [_legendData, _seriesData] = [[],[]];
         _seriesData = config.api.map(x=> {
             _legendData.push(x.legendTitle);
@@ -79,8 +79,8 @@ export default{
         option.series[0].data = _seriesData;
         eCharts.setOption(option);
 
-        common.start(eCharts, config.url, {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
-            console.log("===成功=pie==",data);
+        common.start(eCharts, config.url||"/charts/pie", {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
+            console.debug("===成功=pie==",data);
             _seriesData.forEach(x=> x.value = data[x.name]);
             option.series[0].data = _seriesData;
             eCharts.setOption(option);

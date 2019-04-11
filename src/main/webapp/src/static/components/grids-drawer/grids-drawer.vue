@@ -119,10 +119,11 @@
                 this.layout.pop();
             },
             submitGrid(){
-                this.$set(this.templets, Date.now(), JSON.parse(JSON.stringify(this.layout)).map(x=>{
+                let newGrid = JSON.parse(JSON.stringify(this.layout)).map(x=>{
                     x.x++; x.y++;
-                    return x;
-                }));
+                    return {x:x.x, y:x.y, w:x.w, h:x.h};
+                });
+                this.$set(this.templets, Date.now(), newGrid);
             },
             removeTemplet(templetId){
                 this.$Modal.confirm({

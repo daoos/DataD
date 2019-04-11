@@ -10,10 +10,6 @@ export function WindowResize($vue){
     let nav = DrawNavgetion("#svgroot").navgetion();
 
     window.addEventListener("resize", () => {
-        [nav,
-            // $vue.$refs.waterLevel_C, $vue.$refs.timeCons_C, $vue.$refs.tps_C,
-            // $vue.$refs.tpsPie_C, $vue.$refs.avgPie_C, $vue.$refs.tpPie_C, $vue.$refs.failPie_C,
-            // $vue.$refs.health_C,$vue.$refs.alarm_C,$vue.$refs.succrate_C
-        ].forEach(el=> el.resize());
+        [nav].forEach(el=> el.resize());
     });
 }

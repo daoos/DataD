@@ -41,7 +41,7 @@
                     overflow: 'auto',
                     position: 'static'
                 },
-                chartList:["linebar","line","bar","pie","radar","waterlevel","number","topo"],
+                chartList:["linebar","line","bar","pie","radar","liquidfill","number","topo"],
                 isDrawerRight:false,
                 childComponentChart: null,
                 chartType:"",

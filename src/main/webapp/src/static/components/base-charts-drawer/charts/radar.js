@@ -26,6 +26,7 @@ export default{
                 data:['预算分配（Allocated Budget）','实际开销（Actual Spending）']
             },
             radar: {
+                radius: "60%",
                 indicator: [
                     { name: '销售（sales）', max: 6500},
                     { name: '管理（Administration）', max: 16000},
@@ -52,7 +53,7 @@ export default{
     },
     options(eCharts){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
-        console.log("===radar===",option,config);
+        console.debug("===radar===",option,config);
         let [_legendData, _seriesData] = [[],[]];
         _seriesData = config.api.legend.map(x=>{
             _legendData.push(x.legendTitle);
@@ -71,8 +72,8 @@ export default{
         option.radar[0].indicator =  config.api.indicator;
         eCharts.setOption(option,true);
 
-        common.start(eCharts, config.url, {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
-            console.log("===成功=radar==",data);
+        common.start(eCharts, config.url||"/charts/radar", {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
+            console.debug("===成功=radar==",data);
             _seriesData.forEach(x=> x.value = data[x.name]);
             option.series[0].data = _seriesData;
             eCharts.setOption(option);
