@@ -26,8 +26,8 @@ export function CreateGridsLayoutStyle(ElemThis){
 
     fn.init = function() {
         this.elem.querySelectorAll("ul").forEach(x=>{
-            x.style.width = this.elem.clientWidth;
-            x.style.height = this.elem.clientHeight;
+            //x.style.width = this.elem.clientWidth;
+            //x.style.height = this.elem.clientHeight;
         })
     };
 

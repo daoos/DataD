@@ -48,7 +48,7 @@ export default{
     options(eCharts){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===liquidFill===",option,config);
-        let [_color, _seriesType, _seriesData] = [config.api.color||option.series[0].color, config.api.seriesType, [0]]
+        let [_color, _seriesType, _seriesData] = [config.api.color||"#dd6b66", config.api.seriesType, [0]]
         option.title[0].text = config.title;
         Object.assign(option.series[0],{data:_seriesData, shape:_seriesType, color:[_color]});
         option.series[0].label.color = _color;

@@ -3,14 +3,9 @@
  *
  =====测试 API =====
 DB.open("testDB",2).then(db=> {
-    //测试一:
-    db.createTable("person","id")
-        .add({ id: 3, name: '张三', age: 24, email: 'zhangsan@example.com' })
-        .add({ id: 4, name: '张三', age: 24, email: 'zhangsan@example.com' })
-        .delete(2)
-        .update({ id: 4, name: '李四', age: 24, email: 'zhangsan@example.com' });
-
-    //测试二:
+    db.createTable("person","id");
+    db.from("person").add({ id: 3, name: '张三', age: 24, email: 'zhangsan@example.com' });
+    db.from("person").delete(2);
     db.from("person").update({ id: 3, name: '李四', age: 24, email: 'zhangsan@example.com' });
     db.from("person").select(5).then(data=>{
         console.log("====",data);
@@ -72,11 +67,11 @@ function _DbEnhance(db){
      */
     db.createTable = (tableName, primaryKey)=>{
         if (!db.objectStoreNames.contains(tableName)) {
-            let objectStore = db.createObjectStore(tableName, { keyPath: primaryKey });
+            let obj = primaryKey ? {keyPath: primaryKey}: {autoIncrement:true};
+            let objectStore = db.createObjectStore(tableName, obj);
             //新建索引(只有主键和索引字段才能参与条件查询)
             //objectStore.createIndex('name', 'name', { unique: false });
         }
-        return db.from(tableName);
     }
     /**
      * 操作表（增删改查）
@@ -87,28 +82,44 @@ function _DbEnhance(db){
         let table = db.transaction([tableName], 'readwrite').objectStore(tableName);
         return {
             add(data){
-                table.add(data);
-                return this;
+                return new Promise((resolve,reject)=>{
+                    let row = table.add(data);
+                    row.onsuccess =(event)=>{
+                        resolve({data: event.target.result});
+                    }
+                    row.onerror= (event)=>{
+                        console.error('==新增失败!!!==',event);
+                        reject({data:null});
+                    }
+                });
             },
             delete(primaryKey){
-                table.delete(primaryKey);
-                return this;
+                return new Promise((resolve,reject)=>{
+                    let row = table.delete(primaryKey);
+                    row.onsuccess =(event)=>{
+                        resolve({data: "done"});
+                    }
+                    row.onerror= (event)=>{
+                        console.error('==删除失败!!!==',event);
+                        reject({data:null});
+                    }
+                });
             },
             update(data){
-                let row = table.get(data[table.keyPath]); //通过主题先取出来，然后再修改
-                row.onsuccess = (event)=>{
-                    Object.keys(data).filter(x=>x!=table.keyPath).forEach(x=>{
-                        row.result[x] = data[x];
-                    });
-                    table.put(row.result);
-                };
-                return this;
+                // let row = table.get(data[table.keyPath]); //通过主题先取出来，然后再修改
+                // row.onsuccess = (event)=>{
+                //     Object.keys(data).forEach(x=>{
+                //         row.result[x] = data[x];
+                //     });
+                //     table.put(row.result);
+                // };
+                // return row.result;
             },
             select(primaryKey){
                 return new Promise((resolve,reject)=>{
                     let row = table.get(primaryKey);
                     row.onsuccess =(event)=>{
-                        resolve(event.target.result);
+                        resolve({data:event.target.result});
                     }
                     row.onerror= (event)=>{
                         console.error('==查询失败!!!==');
@@ -123,10 +134,10 @@ function _DbEnhance(db){
                     rows.onsuccess = (event)=>{
                         let cursor = event.target.result;
                         if(cursor){
-                            results.push(cursor.value);
+                            results.push({key:cursor.key, value:cursor.value});
                             cursor.continue();
                         }else{
-                            resolve(results);
+                            resolve({data:results});
                         }
                     }
                     rows.onerror= (event)=>{

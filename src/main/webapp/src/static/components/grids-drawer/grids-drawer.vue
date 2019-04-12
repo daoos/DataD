@@ -1,6 +1,6 @@
 <template>
     <div class="grids-drawer">
-        <Drawer title="模板" :transfer="false" :inner="true" :mask="false" :width="200" :styles="styles" placement="left" v-model="isDrawerLeft">
+        <Drawer title="模板" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isOpenDrawer">
             <ul id="gridTemplet" ref="gridTemplet">
                 <div class="grids-list" v-for="key in Object.keys(templets)">
                     <li :id="'grid' + key"  :data-id="key" class="grids" @click="$emit('setTemplet$Parent',templets[key])">
@@ -12,7 +12,7 @@
                 </div>
             </ul>
             <div class="drawer-footer">
-                <Button  @click="isDrawerLeft = false">取消</Button>
+                <Button  @click="isOpenDrawer = false">取消</Button>
                 <Button type="primary" @click="isDrawerRight = true">添加</Button>
             </div>
         </Drawer>
@@ -21,7 +21,7 @@
                 <Divider dashed orientation="left"><Icon type="md-open" /> 最大尺寸：6 * 4</Divider>
                 <div style="text-align: right">
                     <ButtonGroup size="small" class="button-group">
-                        <Button icon="md-add-circle" @click="addGrid">添加</Button>
+                        <Button icon="md-add-circle" @click="addDdGrid">添加</Button>
                         <Button icon="md-remove-circle" @click="removeGrid">删除</Button>
                     </ButtonGroup>
                 </div>
@@ -44,13 +44,14 @@
                                    :y="item.y"
                                    :w="item.w"
                                    :h="item.h"
-                                   :i="item.i">
+                                   :i="item.i"
+                                   :l="item.l">
                         </grid-item>
                     </grid-layout>
                 </div>
             </nav>
             <div class="drawer-footer">
-                <Button  @click="isDrawerLeft = false">取消</Button>
+                <Button  @click="isDrawerRight = false">取消</Button>
                 <Button type="primary" @click="submitGrid">确定</Button>
             </div>
         </Drawer>
@@ -59,6 +60,7 @@
 <script>
     import VueGridLayout from 'vue-grid-layout';
     import { CreateGridsLayoutStyle } from '../';
+    import {addDdGrid, deleteDdGrid, selectAllDdGrid} from "../../../service/serverApi"
 
     let templets = {
         "test":[
@@ -78,7 +80,7 @@
     };
 
     export default {
-        props:["isDrawerLeft"],
+        props:["isOpenDrawer"],
         components: {
             GridLayout: VueGridLayout.GridLayout,
             GridItem: VueGridLayout.GridItem
@@ -87,7 +89,7 @@
             return {
                 isDrawerRight:false,
                 styles: {
-                    height: 'calc(100% - 100px)',
+                    height: 'calc(100% - 90px)',
                     overflow: 'auto',
                     position: 'static'
                 },
@@ -96,7 +98,7 @@
             }
         },
         watch: {
-            isDrawerLeft(newVal){
+            isOpenDrawer(newVal){
                 if(newVal) this.createGridsLayoutStyle();
             },
             templets:{
@@ -112,7 +114,7 @@
                     this.$refs.gridTemplet.querySelectorAll(".grids").forEach(x=>CreateGridsLayoutStyle(x));
                 });
             },
-            addGrid(){
+            addDdGrid(){
                 this.layout.push({"x":0,"y":0,"w":1,"h":1,"i":Date.now()});
             },
             removeGrid(){
@@ -121,21 +123,37 @@
             submitGrid(){
                 let newGrid = JSON.parse(JSON.stringify(this.layout)).map(x=>{
                     x.x++; x.y++;
-                    return {x:x.x, y:x.y, w:x.w, h:x.h};
+                    return {x:x.x, y:x.y, w:x.w, h:x.h, l:0};
                 });
-                this.$set(this.templets, Date.now(), newGrid);
+                addDdGrid(newGrid).then(response=>{
+                    let id = response.data;
+                    if(id){
+                        this.$set(this.templets, id, newGrid);
+                    }
+                });
             },
             removeTemplet(templetId){
                 this.$Modal.confirm({
                     title: '确定该删除模板 ?',
                     onOk: () => {
-                        this.$delete(this.templets,templetId);
+                        deleteDdGrid(+templetId).then(response=>{
+                            let re = response.data;
+                            if(re){
+                                this.$delete(this.templets,templetId);
+                            }
+                        });
                     }
                 });
             }
         },
         mounted() {
-            this.templets = templets;
+            selectAllDdGrid().then(response=>{
+                let datas = response.data;
+                if(datas){
+                    datas.forEach(x=> templets[x.key] = x.value);
+                    this.templets = templets;
+                }
+            });
         }
     }
 </script>

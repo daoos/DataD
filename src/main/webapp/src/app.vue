@@ -6,12 +6,12 @@
                 <div><Icon type="ios-color-palette"/>主题</div>
                 <div @click="openDrawer('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
                 <div><Icon type="ios-pulse" />业务图表</div>
-                <div><Icon type="md-bookmarks" />收藏</div>
+                <div @click="saveTotalConfig"><Icon type="md-bookmarks" />收藏</div>
                 <div><Icon type="md-qr-scanner" />预览</div>
             </nav>
         </nav>
         <nav class="container">
-            <component :is="childComponentDrawer" :isDrawerLeft="isOpenDrawer" @setTemplet$Parent="setTemplet"></component>
+            <component :is="childComponentDrawer" :isOpenDrawer="isOpenDrawer" @setTemplet$Parent="setTemplet" @saveTotalConfig$Parent="saveTotalConfig"></component>
             <div class="main-box">
                 <div class="box">
                     <nav class="box-head">
@@ -22,7 +22,7 @@
                         <svg id="svgroot" width="100%" height="75px"></svg>
                     </nav>
                     <nav class="box-body">
-                        <ul id="gridMain" ref="gridMainTemplet">
+                        <ul id="gridMain" ref="gridMain">
                             <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l||0" class="gs-w" ref="gsw" v-for="value in templet"></li>
                         </ul>
                     </nav>

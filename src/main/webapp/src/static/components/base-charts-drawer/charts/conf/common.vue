@@ -79,10 +79,10 @@
             },
             submitConf(){
                 let _this = this;
-                if(!_this.title){
-                    this.$Notice.error({title: '请输入图表名称!!!'});
-                    return;
-                };
+                // if(!_this.title){
+                //     this.$Notice.error({title: '请输入图表名称!!!'});
+                //     return;
+                // };
                 return {
                     chartType:_this.chartType,
                     title:_this.title,

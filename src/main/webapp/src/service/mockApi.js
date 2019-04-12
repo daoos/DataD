@@ -1,16 +1,14 @@
 import Mock from 'mockjs'
-import DB from './indexedDB'
-
-//数据库
-DB.open("DataD").then(db=> {
-
-});
 
 /****==============================格子模板API===========================****/
 Mock.mock(/(grids)/,function(options){
-    console.debug("---mock---",options);
-    let result = { series: {}, xAxis:[] };
-    return result
+    let [body,type] = [options.body, options.type];
+    console.debug("---mock---",options,localStorage);
+    let result = "";
+    if(type=="POST"){ //增加
+    }else if(type=="GET"){ //查询
+    }
+    return result;
 });
 
 

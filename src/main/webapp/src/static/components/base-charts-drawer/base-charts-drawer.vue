@@ -1,6 +1,6 @@
 <template>
     <div class="charts-drawer">
-        <Drawer title="常规图表" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isDrawerLeft">
+        <Drawer title="常规图表" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isOpenDrawer">
             <div id="chartTemplet">
                 <template  v-for="item in chartList">
                     <ul class="chartTemplet">
@@ -33,7 +33,7 @@
     import * as chartsConf from './charts/conf'
 
     export default {
-        props:["isDrawerLeft"],
+        props:["isOpenDrawer"],
         data() {
             return {
                 styles: {
@@ -85,7 +85,7 @@
                 chosenClass: "sortable-chosen",
                 handle:".move_handle",
                 onEnd:function(evt){
-                    //console.log(evt.from,"===",evt.to,"====",evt.item);
+                    console.log(evt.from,"===",evt.to,"====",evt.item);
                     if(evt.to != evt.from){
                         ChartsFactory.call({"chartElement":evt.item.querySelector(".chart")}).init();
                     }
