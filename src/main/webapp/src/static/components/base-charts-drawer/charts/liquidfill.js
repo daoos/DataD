@@ -9,11 +9,11 @@ export default{
             backgroundColor:"transparent",
             title: {
                 text: '水位图表',
-                left: 'center'
+                top: 10,
             },
             tooltip: {},
             grid:{
-                top: 60,
+                top: 70,
                 bottom:40,
                 left: 40,
                 right: 40,

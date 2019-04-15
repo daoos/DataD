@@ -1,17 +1,17 @@
 <template>
     <div class="main-container">
-        <nav class="navgetion">
+        <nav class="navgetion" v-if="isEdit">
             <nav class="menu">
-                <div @click="openDrawer('grids-drawer')"><Icon type="md-apps"/>模板</div>
-                <div><Icon type="ios-color-palette"/>主题</div>
-                <div @click="openDrawer('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
-                <div><Icon type="ios-pulse" />业务图表</div>
-                <div @click="saveTotalConfig"><Icon type="md-bookmarks" />收藏</div>
-                <div><Icon type="md-qr-scanner" />预览</div>
+                <div @click="openDrawerFun('grids-drawer')"><Icon type="md-apps"/>模板</div>
+                <div onclick="alert('未上线')"><Icon type="ios-color-palette"/>主题</div>
+                <div @click="openDrawerFun('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
+                <div onclick="alert('未上线')"><Icon type="ios-pulse" />业务图表</div>
+                <div @click="openDrawerFun('collection-drawer',1)"><Icon type="md-bookmarks" />收藏</div>
+                <div @click="previewFun"><Icon type="md-qr-scanner" />预览</div>
             </nav>
         </nav>
         <nav class="container">
-            <component :is="childComponentDrawer" :isOpenDrawer="isOpenDrawer" @setTemplet$Parent="setTemplet" @saveTotalConfig$Parent="saveTotalConfig"></component>
+            <component :is="childComponentDrawer" :isDrawerLeft="isDrawerLeft" :isDrawerRight="isDrawerRight" :app="app" @setTemplet$Parent="setTemplet" @saveTotalConfig$Parent="saveTotalConfig"></component>
             <div class="main-box">
                 <div class="box">
                     <nav class="box-head">

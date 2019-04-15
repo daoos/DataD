@@ -1,6 +1,6 @@
 <template>
     <div class="grids-drawer">
-        <Drawer title="模板" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isOpenDrawer">
+        <Drawer title="模板" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isDrawerLeft">
             <ul id="gridTemplet" ref="gridTemplet">
                 <div class="grids-list" v-for="key in Object.keys(templets)">
                     <li :id="'grid' + key"  :data-id="key" class="grids" @click="$emit('setTemplet$Parent',templets[key])">
@@ -12,7 +12,7 @@
                 </div>
             </ul>
             <div class="drawer-footer">
-                <Button  @click="isOpenDrawer = false">取消</Button>
+                <Button  @click="isDrawerLeft = false">取消</Button>
                 <Button type="primary" @click="isDrawerRight = true">添加</Button>
             </div>
         </Drawer>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="grid-layout-box">
                     <grid-layout
-                            :layout.sync="layout"
+                            :layout.sync="gridLayout"
                             :col-num="4"
                             :row-height="60"
                             :is-draggable="true"
@@ -39,7 +39,7 @@
                             :autoSize="false"
                             :max-rows="6"
                     >
-                        <grid-item v-for="item in layout"
+                        <grid-item v-for="item in gridLayout"
                                    :x="item.x"
                                    :y="item.y"
                                    :w="item.w"
@@ -80,26 +80,27 @@
     };
 
     export default {
-        props:["isOpenDrawer"],
+        props:["isDrawerLeft","isDrawerRight"],
         components: {
             GridLayout: VueGridLayout.GridLayout,
             GridItem: VueGridLayout.GridItem
         },
         data() {
             return {
-                isDrawerRight:false,
                 styles: {
                     height: 'calc(100% - 90px)',
                     overflow: 'auto',
                     position: 'static'
                 },
                 templets: {},
-                layout: []
+                gridLayout: []
             }
         },
         watch: {
-            isOpenDrawer(newVal){
-                if(newVal) this.createGridsLayoutStyle();
+            isDrawerLeft(newVal){
+                if(newVal) {
+                    this.createGridsLayoutStyle();
+                }
             },
             templets:{
                 handler() {
@@ -115,13 +116,13 @@
                 });
             },
             addDdGrid(){
-                this.layout.push({"x":0,"y":0,"w":1,"h":1,"i":Date.now()});
+                this.gridLayout.push({"x":0,"y":0,"w":1,"h":1,"i":Date.now()});
             },
             removeGrid(){
-                this.layout.pop();
+                this.gridLayout.pop();
             },
             submitGrid(){
-                let newGrid = JSON.parse(JSON.stringify(this.layout)).map(x=>{
+                let newGrid = JSON.parse(JSON.stringify(this.gridLayout)).map(x=>{
                     x.x++; x.y++;
                     return {x:x.x, y:x.y, w:x.w, h:x.h, l:0};
                 });

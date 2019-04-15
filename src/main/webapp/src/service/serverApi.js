@@ -20,22 +20,26 @@ if (process.env.NODE_ENV === 'production') {
         db.createTable("pages");
         return db;
     });
-    var addDdGrid = (param)=>{
+
+    let _add = (tableName,param)=>{
         return new Promise(resolve=>{
             DataD_DB.then(db=> {
-                let id = db.from("grids").add(param);
+                let id = db.from(tableName).add(param);
                 resolve(id);
             });
         });
     };
-    var deleteDdGrid = (id)=>{
+    let _delete = (tableName,id)=>{
         return new Promise(resolve=>{
             DataD_DB.then(db=> {
-                let result = db.from("grids").delete(id);
+                let result = db.from(tableName).delete(id);
                 resolve(result);
             });
         });
     };
+
+    var addDdGrid = (param)=>{ return _add("grids",param)};
+    var deleteDdGrid = (id)=>{ return _delete("grids",id)};
     var selectAllDdGrid = ()=>{
         return new Promise(resolve=>{
             DataD_DB.then(db=> db.from("grids").selectAll() ).then(datas=>{
@@ -43,11 +47,13 @@ if (process.env.NODE_ENV === 'production') {
             });
         });
     };
-    var addDdPage = (param)=>{
+    var addDdPage = (param)=>{ return _add("pages",param)};
+    var deleteDdPage = (id)=>{ return _delete("pages",id)};
+    var updateDdPage = (param, id)=>{
         return new Promise(resolve=>{
             DataD_DB.then(db=> {
-                let id = db.from("pages").add(param);
-                resolve(id);
+                let result = db.from("pages").update(param, id);
+                resolve(result);
             });
         });
     };
@@ -57,8 +63,9 @@ if (process.env.NODE_ENV === 'production') {
                 resolve(data);
             });
         });
-    }
+    };
 }
+
 
 /**
  * Data Dashboard AIP
@@ -71,7 +78,8 @@ if (process.env.NODE_ENV === 'production') {
 // let pagesUrl = "/pages";
 // const addDdPage = (param)=> axios.post(pagesUrl, param);
 // const selectDdPage = (id)=> axios.get(pagesUrl, {params:id});
+// const deleteDdPage = (id)=> axios.delete(pagesUrl, {params:id});
 // const updateDdPage = (param)=> axios.put(pagesUrl, param);
-export {addDdGrid, deleteDdGrid, selectAllDdGrid, addDdPage, selectDdPage}
+export {addDdGrid, deleteDdGrid, selectAllDdGrid, addDdPage, selectDdPage, deleteDdPage, updateDdPage}
 
 

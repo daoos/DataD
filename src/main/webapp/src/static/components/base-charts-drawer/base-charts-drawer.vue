@@ -1,14 +1,14 @@
 <template>
     <div class="charts-drawer">
-        <Drawer title="常规图表" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isOpenDrawer">
+        <Drawer title="常规图表" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isDrawerLeft">
             <div id="chartTemplet">
                 <template  v-for="item in chartList">
                     <ul class="chartTemplet">
                         <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
                         <ol class="move_handle">
-                            <Icon type="ios-settings" size="26" title="设置" class="btu settings" :chart-type="item" onmousedown="((e)=>{ e.stopPropagation(); window.myVue.settingsCharts(e.target) })(event)" />
-                            <Icon type="md-reorder" size="26" title="拖拽" class="btu"/>
-                            <Icon type="ios-trash"  size="26" title="删除" class="btu trash" onmousedown="((e)=>{ e.stopPropagation(); window.myVue.trashCharts(e.target) })(event)"/>
+                            <Icon type="ios-settings"size="26" title="设置" class="btu settings" :chart-type="item" onmousedown="((e)=>{ e.stopPropagation(); window.BaseChartsDrawer.settingsCharts(e.target) })(event)" />
+                            <Icon type="md-reorder"  size="26" title="拖拽" class="btu"/>
+                            <Icon type="ios-trash"   size="26" title="删除" class="btu trash" onmousedown="((e)=>{ e.stopPropagation(); window.BaseChartsDrawer.trashCharts(e.target) })(event)"/>
                         </ol>
                     </ul>
                     <Divider dashed />
@@ -27,13 +27,13 @@
 </template>
 
 <script>
-    window.myVue = null;
+    window.BaseChartsDrawer = null;
     import Sortable from 'sortablejs';
     import { ChartsFactory } from './chartsFactory';
     import * as chartsConf from './charts/conf'
 
     export default {
-        props:["isOpenDrawer"],
+        props:["isDrawerLeft","isDrawerRight"],
         data() {
             return {
                 styles: {
@@ -42,21 +42,21 @@
                     position: 'static'
                 },
                 chartList:["linebar","line","bar","pie","radar","liquidfill","number","topo"],
-                isDrawerRight:false,
                 childComponentChart: null,
-                chartType:"",
-                chartElement:null
+                chartElement:null,
+                chartType:""
             }
         },
         methods: {
             settingsCharts(element){
-                let chartType = element.getAttribute('chart-type');
+                let _chartType = element.getAttribute('chart-type');
+                let _chartElement = element.parentNode.previousElementSibling;
                 this.isDrawerRight = true;
-                this.chartElement = element.parentNode.previousElementSibling;
-                this.chartType = chartType;
-                this.childComponentChart = chartsConf[chartType];
+                this.chartElement = _chartElement;
+                this.chartType = _chartType;
+                this.childComponentChart = chartsConf[_chartType];
                 this.$nextTick(function(){
-                    this.$refs.chartConfComponent.initConfig(ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).configs());
+                    this.$refs.chartConfComponent.initConfig(ChartsFactory.call({"chartElement":_chartElement}).configs());
                 });
             },
             trashCharts(element){
@@ -72,7 +72,7 @@
         },
         mounted() {
             let _this = this;
-            window.myVue = _this;
+            window.BaseChartsDrawer = _this;
             Sortable.create(document.getElementById("chartTemplet"), {
                 sort:false,
                 group:{
@@ -85,7 +85,7 @@
                 chosenClass: "sortable-chosen",
                 handle:".move_handle",
                 onEnd:function(evt){
-                    console.log(evt.from,"===",evt.to,"====",evt.item);
+                    //console.log(evt.from,"===",evt.to,"====",evt.item);
                     if(evt.to != evt.from){
                         ChartsFactory.call({"chartElement":evt.item.querySelector(".chart")}).init();
                     }

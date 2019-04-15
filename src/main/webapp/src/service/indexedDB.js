@@ -105,15 +105,18 @@ function _DbEnhance(db){
                     }
                 });
             },
-            update(data){
-                // let row = table.get(data[table.keyPath]); //通过主题先取出来，然后再修改
-                // row.onsuccess = (event)=>{
-                //     Object.keys(data).forEach(x=>{
-                //         row.result[x] = data[x];
-                //     });
-                //     table.put(row.result);
-                // };
-                // return row.result;
+            update(data,primaryKey){
+                return new Promise((resolve,reject)=>{
+                    // 把更新过的对象放回数据库
+                    let row = table.put(data, primaryKey);
+                    row.onsuccess = (event)=> {
+                        resolve({data: "done"});  // 完成，数据已更新！
+                    };
+                    row.onerror = (event)=>{
+                        console.error('==修改失败!!!==',e);
+                        reject({data:null});
+                    };
+                });
             },
             select(primaryKey){
                 return new Promise((resolve,reject)=>{

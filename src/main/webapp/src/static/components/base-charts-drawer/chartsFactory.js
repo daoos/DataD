@@ -53,18 +53,20 @@ export function ChartsFactory(){
                gswElement.setAttribute("data-l",this.gswElementLayout);
            }
         }catch (e){}
-        let charElements = gswElement.querySelectorAll(".chart");
-        charElements.forEach(x=> {
-            let [_height,_dataLayout] = [gswElement.clientHeight, gswElement.getAttribute("data-l")];
-            if(_dataLayout==0){
-                _height = _height / charElements.length;
-            }else if(_dataLayout > 1){
-                _height = _height / Math.ceil(charElements.length / _dataLayout);
-            }
-            x.style.height = _height+'px';
-            echarts.getInstanceByDom(x).resize();
+        setTimeout(function(){ //延时执行等待echarts图表对象生成
+            let charElements = gswElement.querySelectorAll(".chart");
+            charElements.forEach(x=> {
+                let [_height,_dataLayout] = [gswElement.clientHeight, gswElement.getAttribute("data-l")];
+                if(_dataLayout==0){
+                    _height = _height / charElements.length;
+                }else if(_dataLayout > 1){
+                    _height = _height / Math.ceil(charElements.length / _dataLayout);
+                }
+                x.style.height = _height+'px';
+                echarts.getInstanceByDom(x).resize();
+            });
+            charElements.forEach(x=> echarts.getInstanceByDom(x).resize());
         });
-        charElements.forEach(x=> echarts.getInstanceByDom(x).resize());
         return instance;
     };
 

@@ -9,18 +9,19 @@ export default{
             backgroundColor:"transparent",
             title: {
                 text: '柱状图表',
-                left: 'center'
+                left: 'center',
+                top: 10,
             },
             tooltip: {},
             grid:{
-                top: 60,
+                top: 70,
                 bottom:40,
                 left: 40,
                 right: 40,
                 containLabel: true
             },
             legend: {
-                top:30,
+                top:40,
                 itemWidth:14,
                 itemHeight:6,
                 data:['销量']

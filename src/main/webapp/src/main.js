@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import App from './app.vue'
+import Main from './Main.vue'
+import router from './routes.js'
 
 import {formatDate} from './utils/formatDate'
 import {formatNumber} from './utils/formatNumber'
@@ -23,5 +24,6 @@ Vue.use(iView);
 
 new Vue({
     el: "#app",
-    render:h=>h(App)
+    router,
+    render:h=>h(Main)
 });

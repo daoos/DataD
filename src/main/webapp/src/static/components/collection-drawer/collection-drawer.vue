@@ -1,39 +1,61 @@
 <template>
     <div class="collection-drawer">
-        <Drawer title="页面收藏" :transfer="false" :inner="true" :width="590" :styles="styles" v-model="isOpenDrawer">
-            <nav>
-                1111
-            </nav>
-            <div class="drawer-footer">
-                <Button  @click="isOpenDrawer = false">取消</Button>
-                <Button type="primary" @click="submit">确定</Button>
-            </div>
+        <Drawer title="页面收藏" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight">
+            <Form ref="custom" :model="app" :rules="ruleInline" inline>
+                <FormItem prop="name" label="图表名称：" style="width: 100%;">
+                    <Input v-model="app.name" placeholder="Please enter chart name..." />
+                </FormItem>
+                <FormItem prop="flag" label="适用范围：" style="width: 100%;">
+                    <Select v-model="app.flag">
+                        <Option value=1>所有人可见</Option>
+                        <Option value=2>仅自己可见</Option>
+                    </Select>
+                </FormItem>
+                <Divider />
+                <Row style="text-align: center;">
+                    <ButtonGroup>
+                        <Button icon="md-add" type="primary" @click="add">新增</Button>
+                        <Button icon="md-settings"  @click="update" v-show="app.id!=null">修改</Button>
+                        <Button icon="md-close" @click="isDrawerRight = false">取消</Button>
+                        <Button icon="md-trash" type="primary" @click="remove" v-show="app.id!=null">删除</Button>
+                    </ButtonGroup>
+                </Row>
+            </Form>
         </Drawer>
     </div>
 </template>
 
 <script>
     export default {
-        props:["isOpenDrawer"],
+        props:["isDrawerLeft","isDrawerRight","app"],
         data() {
             return {
-                menuName:"我的图表",
                 isDrawerRight:false,
-                styles: {
-                    height: 'calc(100% - 90px)',
-                    overflow: 'auto',
-                    position: 'static'
+                ruleInline: {
+                    'name': [{required: true, message: 'Please fill in the name', trigger: 'blur'}],
                 }
             }
         },
         methods:{
-            submit(){
-                this.$emit('saveTotalConfig$Parent','22')
+            add(){
+                this.$emit('saveTotalConfig$Parent',1);
+            },
+            update(){
+                this.$Modal.confirm({
+                    title: '确定该修改 ?',
+                    onOk: () => {
+                        this.$emit('saveTotalConfig$Parent',2);
+                    }
+                });
+            },
+            remove(){
+                this.$Modal.confirm({
+                    title: '确定该删除 ?',
+                    onOk: () => {
+                        this.$emit('saveTotalConfig$Parent',0);
+                    }
+                });
             }
         }
     }
 </script>
-
-<style lang="less" type="text/less">
-
-</style>

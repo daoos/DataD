@@ -27,22 +27,6 @@
             </Col>
         </Row>
         <Divider dashed/>
-        <!--<Row>-->
-            <!--<Col span="3" class="tab">刷新方式：</Col>-->
-            <!--<Col span="9">-->
-            <!--<RadioGroup v-model="refurbishMode" size="large">-->
-                <!--<Radio label="add">追加</Radio>-->
-                <!--<Radio label="cover">覆盖</Radio>-->
-            <!--</RadioGroup>-->
-            <!--</Col>-->
-            <!--<Col span="12" class="tab">-->
-                <!--<Icon type="md-help-circle" size="18"/>-->
-                <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
-                <!--<Icon type="ios-copy" size="18"/>-->
-                <!--&nbsp;&nbsp;-->
-            <!--</Col>-->
-        <!--</Row>-->
-        <!--<Divider dashed/>-->
     </div>
 </template>
 
@@ -55,7 +39,6 @@
                 title:"测试图表",
                 url:"/charts/pie",
                 interval:4,
-                //refurbishMode:"add",
                 layout:0,
             }
         },
@@ -66,14 +49,12 @@
                     this.title = config.title;
                     this.url = config.url;
                     this.interval = config.interval;
-                    //this.refurbishMode = config.refurbishMode;
                     this.layout = config.layout;
                 }else{
                     this.chartType = "line";
                     this.title = "测试图表";
                     this.url = "";
                     this.interval = 4;
-                    //this.refurbishMode = "add";
                     this.layout = config;
                 }
             },
@@ -88,7 +69,6 @@
                     title:_this.title,
                     url:_this.url,
                     interval:_this.interval,
-                    //refurbishMode:_this.refurbishMode,
                     layout:_this.layout
                 };
             }

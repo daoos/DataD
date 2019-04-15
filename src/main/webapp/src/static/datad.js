@@ -5,20 +5,7 @@ import gridsDrawer from './components/grids-drawer/grids-drawer.vue';
 import baseChartsDrawer from './components/base-charts-drawer/base-charts-drawer.vue';
 import collectionDrawer from './components/collection-drawer/collection-drawer.vue';
 import { ChartsFactory } from './components/base-charts-drawer/chartsFactory';
-import { addDdPage, selectDdPage } from "../service/serverApi"
-
-/**
- * 内容区域缩放
- */
-const zoom = function(){
-    let box =  d3.select(".box");
-    d3.select(".main-box").call(d3.zoom().scaleExtent([0.25, 1]).on("zoom", function(){
-        let {k,x,y} = d3.event.transform;
-        box.style("transform", `scale(${k})`);
-        //box.style("transform", `translate(${x}px,${y}px) scale(${k})`);
-    }));
-};
-
+import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
 
 export default {
     components: {
@@ -28,11 +15,23 @@ export default {
     },
     data() {
         return {
-            appName: "App应用2.0-查询服务",
+            isEdit:false,
+            app:{
+                id:null,
+                name: "",
+                flag:1,
+            },
             sysDate:new Date(),
             childComponentDrawer:null,
-            isOpenDrawer:false,
-            templet:[] //当前选中格子模板
+            isOpenDrawer:0,
+            isDrawerLeft:false,
+            isDrawerRight:false,
+            templet:[] //主板当前选中格子模型
+        }
+    },
+    computed:{
+        appName(){
+            return this.app.name||"定制页面";
         }
     },
     watch: {
@@ -56,42 +55,83 @@ export default {
                     });
                 });
             });
+        },
+        isOpenDrawer(newVal){
+            if(newVal==-1){
+                this.isDrawerLeft= !(this.isDrawerRight = false);
+            }else if(newVal==1){
+                this.isDrawerLeft= !(this.isDrawerRight = true);
+            }else{
+                this.isDrawerLeft= this.isDrawerRight = false;
+            }
         }
     },
     methods: {
-        openDrawer(componentName){
-            this.childComponentDrawer = componentName;
-            return this.isOpenDrawer = !this.isOpenDrawer;
-        },
-        setTemplet(gridsConf){
-            console.log("==templet==",gridsConf);
-            this.templet = gridsConf;
-        },
-        //序列号
-        saveTotalConfig(c){
-            let gridMainEl = this.$refs.gridMain;
-            let totalConfig = {
-                menuName:"我的图表",
-                flag:"1",
-                moduleList: this.templet.map(el=> {
-                    el.chartList=[];
-                    let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
-                    gswEl.querySelectorAll(".chart").forEach(x=>{
-                        el.chartList.push( ChartsFactory.call({"chartElement":x}).configs() );
-                    });
-                    return el;
-                })
-            };
-            console.log("==moduleList=",JSON.stringify(totalConfig,null,4));
-            addDdPage(totalConfig).then(response=>{
-                let id = response.data;
-                if(id){
-                    this.$Message.success('页面收藏成功.');
-                    console.log("==moduleList OK =",id);
+        previewFun(){
+            this.$router.push({
+                path:'/',
+                query:{
+                    id:this.app.id ,
                 }
             });
+            window.location.reload();
         },
-        //反序列号
+        zoom(){
+            //内容区域缩放
+            let box =  d3.select(".box");
+            if(this.isEdit){
+                d3.select(".main-box").call(d3.zoom().scaleExtent([0.25, 1]).on("zoom", function(){
+                    let {k,x,y} = d3.event.transform;
+                    box.style("transform", `scale(${k})`);
+                    //box.style("transform", `translate(${x}px,${y}px) scale(${k})`);
+                }));
+            }else{
+                d3.select(".main-box .box").style("transform", "scale(1)");
+            }
+        },
+        openDrawerFun(componentName, dir=-1){
+            this.childComponentDrawer = componentName;
+            this.isOpenDrawer = (this.isOpenDrawer==dir ? 0 :dir);
+        },
+        setTemplet(gridsConf){
+            this.templet = gridsConf;
+        },
+        //序列化
+        saveTotalConfig(submitType){
+            if(!submitType){
+                deleteDdPage(this.app.id).then(response=>{
+                    let re = response.data;
+                    if(re) window.location.href="/";
+                });
+            }else{
+                let gridMainEl = this.$refs.gridMain;
+                let totalConfig = {
+                    name:this.app.name,
+                    flag:this.app.flag,
+                    moduleList: this.templet.map(el=> {
+                        let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
+                        el.l = +gswEl.getAttribute("data-l");
+                        el.chartList = [];
+                        gswEl.querySelectorAll(".chart").forEach(x=>{
+                            el.chartList.push( ChartsFactory.call({"chartElement":x}).configs() );
+                        });
+                        return el;
+                    })
+                };
+                if(submitType==1){
+                    addDdPage(totalConfig).then(response=>{
+                        let id = response.data;
+                        if(id) this.$Message.success('收藏成功.');
+                    });
+                }else if(submitType==2){
+                    updateDdPage(totalConfig, this.app.id).then(response=>{
+                        let re = response.data;
+                        if(re) this.$Message.success('修改成功.');
+                    });
+                }
+            }
+        },
+        //反序列化
         initPage(pageId){
             if(pageId){
                 let _this = this;
@@ -99,43 +139,68 @@ export default {
                 selectDdPage(+pageId).then(response=>{
                     let totalConfig = response.data;
                     if(totalConfig){
+                        Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag})
                         this.templet = totalConfig.moduleList.map(el=>{
                             return {x:el.x, y:el.y, w:el.w, h:el.h, l:el.l};
                         });
-
                         totalConfig.moduleList.forEach(el=>{
-                            _this.$nextTick(function(){
+                            _this.$nextTick(()=>{
                                 let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
-                                el.chartList.forEach(x=>{
-                                    console.log("===chartConf==",x);
-                                    //1：创建 <ul class="chartTemplet"> 元素。
-                                    //2：ChartsFactory.call({"chartElement":chartTempletEl.querySelector(".chart")}).init();
-
-                                    let chartTemplet =
-                                    `<ul class="chartTemplet">
-                                        <li data-id="${x.chartType}" class="chart"></li>
-                                    </ul>`;
-                                    console.log(gswEl,"===chartDom==",chartTemplet);
-
-                                    gswEl.innerHTML = chartTemplet;
-
+                                el.chartList.forEach(config=>{
+                                    let ul = document.createElement('ul');
+                                    let chartEl = document.createElement('li');
+                                    chartEl.setAttribute("data-id",config.chartType);
+                                    chartEl.setAttribute("class","chart");
+                                    ul.appendChild(chartEl);
+                                    ul.setAttribute("class","chartTemplet");
+                                    if(this.isEdit){
+                                        let ol = document.createElement('ol');
+                                        let moveBtuEl = document.createElement('i');
+                                        moveBtuEl.setAttribute("class","btu ivu-icon ivu-icon-md-reorder");
+                                        moveBtuEl.setAttribute("title","拖拽");
+                                        let settingsBtuEl = document.createElement('i');
+                                        settingsBtuEl.setAttribute("class","btu settings ivu-icon ivu-icon-ios-settings");
+                                        settingsBtuEl.setAttribute("title","设置");
+                                        settingsBtuEl.setAttribute("chart-type",config.chartType);
+                                        settingsBtuEl.onmousedown = (event)=>{
+                                            event.stopPropagation();
+                                            _this.openDrawerFun('base-charts-drawer',1);
+                                            _this.$nextTick(()=>{
+                                                window.BaseChartsDrawer.settingsCharts(event.target);
+                                            });
+                                        }
+                                        let trashBtuEl = document.createElement('i');
+                                        trashBtuEl.setAttribute("class","btu trash ivu-icon ivu-icon-ios-trash");
+                                        trashBtuEl.setAttribute("title","删除");
+                                        trashBtuEl.onmousedown = (event)=>{
+                                            event.stopPropagation();
+                                            let element = event.target;
+                                            ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).destroy();
+                                        }
+                                        ol.appendChild(settingsBtuEl);
+                                        ol.appendChild(moveBtuEl);
+                                        ol.appendChild(trashBtuEl);
+                                        ol.setAttribute("class","move_handle");
+                                        ul.appendChild(ol);
+                                    }
+                                    gswEl.appendChild(ul);
+                                    ChartsFactory.call({"chartElement":chartEl}).init().configs(config);
                                 });
                             });
                         });
-
-
                     }
                 });
             }
         },
     },
     mounted() {
+        //初始化页面 http://127.0.0.1:8070/#/?id=14  |   http://127.0.0.1:8070/#/edit?id=14
+        this.initPage(this.$route.query.id);
+        this.isEdit = this.$route.path.includes("/edit");
+
         //缩放
-        zoom();
+        this.zoom();
         //图表宽高自适应
         WindowResize(this);
-        //初始化页面
-        let pageId = window.location.search.substr(1);
-        this.initPage(pageId);
     }
 }
