@@ -4,6 +4,7 @@ import { WindowResize, CreateGridsLayoutStyle } from './components'
 import gridsDrawer from './components/grids-drawer/grids-drawer.vue';
 import baseChartsDrawer from './components/base-charts-drawer/base-charts-drawer.vue';
 import collectionDrawer from './components/collection-drawer/collection-drawer.vue';
+import themeDrawer from './components/theme-drawer/theme-drawer.vue';
 import { ChartsFactory } from './components/base-charts-drawer/chartsFactory';
 import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
 
@@ -11,7 +12,8 @@ export default {
     components: {
         'grids-drawer':gridsDrawer,
         'base-charts-drawer':baseChartsDrawer,
-        'collection-drawer':collectionDrawer
+        'collection-drawer':collectionDrawer,
+        'theme-drawer':themeDrawer
     },
     data() {
         return {
@@ -20,6 +22,8 @@ export default {
                 id:null,
                 name: "",
                 flag:1,
+                theme:"",
+                background:""
             },
             sysDate:new Date(),
             childComponentDrawer:null,
@@ -78,7 +82,7 @@ export default {
         },
         zoom(){
             //内容区域缩放
-            let box =  d3.select(".box");
+            let box =  d3.select(".main-box #box");
             if(this.isEdit){
                 d3.select(".main-box").call(d3.zoom().scaleExtent([0.25, 1]).on("zoom", function(){
                     let {k,x,y} = d3.event.transform;
@@ -86,7 +90,7 @@ export default {
                     //box.style("transform", `translate(${x}px,${y}px) scale(${k})`);
                 }));
             }else{
-                d3.select(".main-box .box").style("transform", "scale(1)");
+                box.style("transform", "scale(1)");
             }
         },
         openDrawerFun(componentName, dir=-1){
@@ -108,6 +112,8 @@ export default {
                 let totalConfig = {
                     name:this.app.name,
                     flag:this.app.flag,
+                    theme:this.app.theme,
+                    background:this.app.background,
                     moduleList: this.templet.map(el=> {
                         let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
                         el.l = +gswEl.getAttribute("data-l");
@@ -121,12 +127,18 @@ export default {
                 if(submitType==1){
                     addDdPage(totalConfig).then(response=>{
                         let id = response.data;
-                        if(id) this.$Message.success('收藏成功.');
+                        if(id) {
+                            sessionStorage.removeItem("curTheme");
+                            this.$Message.success('收藏成功.');
+                        }
                     });
                 }else if(submitType==2){
                     updateDdPage(totalConfig, this.app.id).then(response=>{
                         let re = response.data;
-                        if(re) this.$Message.success('修改成功.');
+                        if(re) {
+                            sessionStorage.removeItem("curTheme");
+                            this.$Message.success('修改成功.');
+                        }
                     });
                 }
             }
@@ -139,10 +151,20 @@ export default {
                 selectDdPage(+pageId).then(response=>{
                     let totalConfig = response.data;
                     if(totalConfig){
-                        Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag})
+                        //主题风格反序列化
+                        let curTheme = sessionStorage.getItem("curTheme");
+                        if(curTheme){
+                            let _themeConf= JSON.parse(curTheme);
+                            Object.assign(_this.app,{theme:_themeConf.theme, background:_themeConf.background})
+                        }else{
+                            Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
+                        }
+                        //主板格子模型反序列化
+                        Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag});
                         this.templet = totalConfig.moduleList.map(el=>{
                             return {x:el.x, y:el.y, w:el.w, h:el.h, l:el.l};
                         });
+                        //各图表配置反序列化
                         totalConfig.moduleList.forEach(el=>{
                             _this.$nextTick(()=>{
                                 let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
@@ -184,7 +206,7 @@ export default {
                                         ul.appendChild(ol);
                                     }
                                     gswEl.appendChild(ul);
-                                    ChartsFactory.call({"chartElement":chartEl}).init().configs(config);
+                                    ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
                                 });
                             });
                         });
@@ -193,7 +215,7 @@ export default {
             }
         },
     },
-    mounted() {
+    mounted(){
         //初始化页面 http://127.0.0.1:8070/#/?id=14  |   http://127.0.0.1:8070/#/edit?id=14
         this.initPage(this.$route.query.id);
         this.isEdit = this.$route.path.includes("/edit");

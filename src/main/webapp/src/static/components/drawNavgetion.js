@@ -11,7 +11,8 @@ export function DrawNavgetion(svgId){
     instance.navgetion = ()=>{
         let [documentWidth,documentHeight,bottomBorder]=[document.body.clientWidth, 40, 200];
         let shapeShadow = SVG.filter(Snap.filter.shadow(0, 2, 5,"#000000",.6));
-        let lgrad= SVG.gradient("l(0, 0, 1, 0)rgba(77,135,250,0)-rgba(77,135,250,.3)-rgba(77,135,250,0)");
+        //let lgrad= SVG.gradient("l(0, 0, 1, 0)rgba(77,135,250,0)-rgba(77,135,250,.3)-rgba(77,135,250,0)");
+        let lgrad= SVG.gradient("l(0, 0, 1, 0)rgba(0,0,0,0)-rgba(0,0,0,.5)-rgba(0,0,0,0)");
         instance.path = SVG.path("M 0 0 H "+documentWidth+" V "+documentHeight+" h -"+((documentWidth)/2-(bottomBorder/2+60))+" q -15 0 -30 15 t -30 15  h -"+bottomBorder+" q -15 0 -30 -15 t -30 -15 H 0 Z").attr({
             fill: lgrad,
             filter: shapeShadow,

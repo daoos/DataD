@@ -3,7 +3,7 @@
         <nav class="navgetion" v-if="isEdit">
             <nav class="menu">
                 <div @click="openDrawerFun('grids-drawer')"><Icon type="md-apps"/>模板</div>
-                <div onclick="alert('未上线')"><Icon type="ios-color-palette"/>主题</div>
+                <div @click="openDrawerFun('theme-drawer',1)"><Icon type="ios-color-palette"/>主题</div>
                 <div @click="openDrawerFun('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
                 <div onclick="alert('未上线')"><Icon type="ios-pulse" />业务图表</div>
                 <div @click="openDrawerFun('collection-drawer',1)"><Icon type="md-bookmarks" />收藏</div>
@@ -13,13 +13,13 @@
         <nav class="container">
             <component :is="childComponentDrawer" :isDrawerLeft="isDrawerLeft" :isDrawerRight="isDrawerRight" :app="app" @setTemplet$Parent="setTemplet" @saveTotalConfig$Parent="saveTotalConfig"></component>
             <div class="main-box">
-                <div class="box">
+                <div id="box" :class="app.theme+'-theme'" :style="'background:'+app.background">
                     <nav class="box-head">
                         <div class='title'>
                             <div class="text">{{ appName }}</div>
                             <div class="subtext">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
                         </div>
-                        <svg id="svgroot" width="100%" height="75px"></svg>
+                        <svg id="svgroot" width="100%" height="80px"></svg>
                     </nav>
                     <nav class="box-body">
                         <ul id="gridMain" ref="gridMain">

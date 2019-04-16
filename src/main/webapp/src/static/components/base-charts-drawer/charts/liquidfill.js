@@ -4,6 +4,7 @@ import common from "./common";
  * liquidFill 水位图
  */
 export default{
+    defaultColor:"#dd6b66",
     init(eCharts){
         eCharts.setOption({
             backgroundColor:"transparent",
@@ -27,18 +28,18 @@ export default{
                 outline: {
                     show: false
                 },
-                color: ["#dd6b66"],
+                color: [this.defaultColor],
                 backgroundStyle: {
                     borderWidth: 10,
                     color:'rgba(200, 200, 200, .2)',
                     shadowColor: 'rgba(0, 0, 0, .4)',
                     shadowBlur: 15,
-                    borderColor: "#dd6b66"
+                    borderColor: this.defaultColor
                 },
                 label: {
                     fontSize: 50,
                     fontFamily: 'Lobster Two',
-                    color: "#dd6b66"
+                    color: this.defaultColor
                 },
                 shape:"circle",
                 data: [0.5],
@@ -48,7 +49,7 @@ export default{
     options(eCharts){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===liquidFill===",option,config);
-        let [_color, _seriesType, _seriesData] = [config.api.color||"#dd6b66", config.api.seriesType, [0]]
+        let [_color, _seriesType, _seriesData] = [config.api.color||this.defaultColor, config.api.seriesType, [0]]
         option.title[0].text = config.title;
         Object.assign(option.series[0],{data:_seriesData, shape:_seriesType, color:[_color]});
         option.series[0].label.color = _color;

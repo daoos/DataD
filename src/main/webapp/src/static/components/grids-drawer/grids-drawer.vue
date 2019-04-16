@@ -12,8 +12,10 @@
                 </div>
             </ul>
             <div class="drawer-footer">
-                <Button  @click="isDrawerLeft = false">取消</Button>
-                <Button type="primary" @click="isDrawerRight = true">添加</Button>
+                <ButtonGroup>
+                    <Button @click="isDrawerRight = true" type="primary">添加</Button>
+                    <Button @click="isDrawerLeft = false">取消</Button>
+                </ButtonGroup>
             </div>
         </Drawer>
         <Drawer title="添加模板" :transfer="false" :inner="true" :width="590" :styles="styles" v-model="isDrawerRight">
@@ -51,8 +53,10 @@
                 </div>
             </nav>
             <div class="drawer-footer">
-                <Button  @click="isDrawerRight = false">取消</Button>
-                <Button type="primary" @click="submitGrid">确定</Button>
+                <ButtonGroup>
+                    <Button @click="submitGrid" type="primary">确定</Button>
+                    <Button @click="isDrawerRight = false">取消</Button>
+                </ButtonGroup>
             </div>
         </Drawer>
     </div>

@@ -19,8 +19,10 @@
         <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
             <component class="chartConfig" ref="chartConfComponent" :is="childComponentChart"></component>
             <div class="drawer-footer">
-                <Button  @click="isDrawerRight = false">取消</Button>
-                <Button type="primary" @click="submitConf">确定</Button>
+                <ButtonGroup>
+                    <Button @click="submitConf" type="primary">确定</Button>
+                    <Button @click="isDrawerRight = false">取消</Button>
+                </ButtonGroup>
             </div>
         </Drawer>
     </div>

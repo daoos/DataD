@@ -56,6 +56,14 @@
                     }
                 });
             }
+        },
+        mounted() {
+            let curTheme = sessionStorage.getItem("curTheme");
+            if(curTheme){
+                let _themeConf= JSON.parse(curTheme);
+                this.app.theme=_themeConf.theme;
+                this.app.background=_themeConf.background;
+            }
         }
     }
 </script>

@@ -1,4 +1,9 @@
 import echarts from 'echarts';
+import shine from 'echarts/theme/shine';
+import infographic from 'echarts/theme/infographic';
+import macarons from 'echarts/theme/macarons';
+import roma from 'echarts/theme/roma';
+import vintage from 'echarts/theme/vintage';
 
 /**
  * 调用生成图表入口函数（图表工厂类）
@@ -11,9 +16,14 @@ export function ChartsFactory(){
     /**
      * 初始化指定图表
      */
-    instance.init= ()=>{
+    instance.init= (theme)=>{
+        if(!theme){
+            let curTheme = sessionStorage.getItem("curTheme");
+            theme = curTheme && JSON.parse(curTheme).theme;
+        }
+
         this.chartElement.innerHTML = "";
-        let eCharts = echarts.init(this.chartElement, 'dark');
+        let eCharts = echarts.init(this.chartElement, theme);
         let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
         chart.default.init(eCharts);
         return instance.resize();
@@ -37,6 +47,20 @@ export function ChartsFactory(){
         let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
         eCharts.myConfig = config;
         chart.default.options(eCharts);
+        return instance;
+    };
+
+    /**
+     * 设置图表主题风格
+     * @param themeConfig
+     */
+    instance.theme=(themeConfig)=>{
+        console.log("===themeConfig===",themeConfig);
+        let charElements = document.querySelectorAll(".chart");
+        charElements.forEach(x=>{
+            let eCharts = echarts.getInstanceByDom(x);
+            console.log("===eCharts===",eCharts);
+        })
         return instance;
     };
 
