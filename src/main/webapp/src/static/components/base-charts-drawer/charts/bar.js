@@ -14,14 +14,14 @@ export default{
             },
             tooltip: {},
             grid:{
-                top: 70,
+                top: 40,
                 bottom:40,
-                left: 40,
+                left: 30,
                 right: 40,
                 containLabel: true
             },
             legend: {
-                top:40,
+                bottom:10,
                 itemWidth:14,
                 itemHeight:6,
                 data:['销量']

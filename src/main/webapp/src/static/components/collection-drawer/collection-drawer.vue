@@ -1,5 +1,15 @@
 <template>
     <div class="collection-drawer">
+        <Drawer title="收藏列表" :transfer="false" :inner="true" :mask="true" :width="316.5" :styles="styles" placement="left" v-model="isDrawerLeft">
+            <div id="pageTemplet">
+                <template  v-for="item in pageList">
+                    <Divider>{{item.key+":"+item.value.name}}</Divider>
+                    <img class="page-photo" :data-id="item.key" :src="item.value.photo" width="280" height="134" @click="openPage(item.key)"/>
+                </template>
+            </div>
+            <div class="drawer-footer"></div>
+        </Drawer>
+
         <Drawer title="页面收藏" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight">
             <Form ref="custom" :model="app" :rules="ruleInline" inline>
                 <FormItem prop="name" label="图表名称：" style="width: 100%;">
@@ -26,11 +36,18 @@
 </template>
 
 <script>
+    import { selectAllDdPage } from "../../../service/serverApi";
     export default {
         props:["isDrawerLeft","isDrawerRight","app"],
         data() {
             return {
                 isDrawerRight:false,
+                styles: {
+                    height: 'calc(100% - 75px)',
+                    overflow: 'auto',
+                    position: 'static'
+                },
+                pageList:[],
                 ruleInline: {
                     'name': [{required: true, message: 'Please fill in the name', trigger: 'blur'}],
                 }
@@ -55,6 +72,20 @@
                         this.$emit('saveTotalConfig$Parent',0);
                     }
                 });
+            },
+            list(){
+                selectAllDdPage().then(response=>{
+                    let datas = response.data;
+                    if(datas){
+                        this.pageList = datas;
+                    }
+                });
+            },
+            openPage(pageId){
+                this.$router.push({
+                    query:{id:pageId}
+                });
+                window.location.reload();
             }
         },
         mounted() {
@@ -64,6 +95,16 @@
                 this.app.theme=_themeConf.theme;
                 this.app.background=_themeConf.background;
             }
+            this.list();
         }
     }
 </script>
+<style lang="less" type="text/less">
+    .collection-drawer{
+        .page-photo{
+            cursor: pointer;
+            box-shadow: 0px 0px 2px rgba(0,0,0,.6);
+            background: url(../../img/bg.png);
+        }
+    }
+</style>

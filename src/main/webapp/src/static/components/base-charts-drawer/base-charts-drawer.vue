@@ -2,7 +2,7 @@
     <div class="charts-drawer">
         <Drawer title="常规图表" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isDrawerLeft">
             <div id="chartTemplet">
-                <template  v-for="item in chartList">
+                <template v-for="item in chartList">
                     <ul class="chartTemplet">
                         <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
                         <ol class="move_handle">
@@ -135,15 +135,5 @@
         opacity: 0.4;
         background: rgba(0,0,0,.6);
         box-shadow: 0px 0px 10px  rgba(0,0,0,1);
-    }
-    .drawer-footer{
-        width: 100%;
-        padding: 10px 16px;
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        border-top: 1px solid #e8e8e8;
-        background: #fff;
-        text-align: center;
     }
 </style>

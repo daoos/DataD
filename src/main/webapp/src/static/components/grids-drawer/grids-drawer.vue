@@ -205,18 +205,6 @@
             }
         }
     }
-
-    .drawer-footer{
-        width: 100%;
-        padding: 10px 16px;
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        border-top: 1px solid #e8e8e8;
-        background: #fff;
-        text-align: center;
-    }
-
     .grids-conf{
         @bg-img:url("../../img/bg_w.png");
         .grid-layout-box{

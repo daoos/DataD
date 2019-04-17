@@ -37,16 +37,17 @@ if (process.env.NODE_ENV === 'production') {
             });
         });
     };
-
-    var addDdGrid = (param)=>{ return _add("grids",param)};
-    var deleteDdGrid = (id)=>{ return _delete("grids",id)};
-    var selectAllDdGrid = ()=>{
+    let _selectAll = (tableName)=>{
         return new Promise(resolve=>{
-            DataD_DB.then(db=> db.from("grids").selectAll() ).then(datas=>{
+            DataD_DB.then(db=> db.from(tableName).selectAll() ).then(datas=>{
                 resolve(datas);
             });
         });
     };
+
+    var addDdGrid = (param)=>{ return _add("grids",param)};
+    var deleteDdGrid = (id)=>{ return _delete("grids",id)};
+    var selectAllDdGrid = ()=>{ return _selectAll("grids")};
     var addDdPage = (param)=>{ return _add("pages",param)};
     var deleteDdPage = (id)=>{ return _delete("pages",id)};
     var updateDdPage = (param, id)=>{
@@ -64,6 +65,7 @@ if (process.env.NODE_ENV === 'production') {
             });
         });
     };
+    var selectAllDdPage = ()=>{ return _selectAll("pages")};
 }
 
 
@@ -80,6 +82,7 @@ if (process.env.NODE_ENV === 'production') {
 // const selectDdPage = (id)=> axios.get(pagesUrl, {params:id});
 // const deleteDdPage = (id)=> axios.delete(pagesUrl, {params:id});
 // const updateDdPage = (param)=> axios.put(pagesUrl, param);
-export {addDdGrid, deleteDdGrid, selectAllDdGrid, addDdPage, selectDdPage, deleteDdPage, updateDdPage}
+// const selectAllDdPage = ()=> axios.get(pagesUrl);
+export {addDdGrid, deleteDdGrid, selectAllDdGrid, addDdPage, selectDdPage, deleteDdPage, updateDdPage, selectAllDdPage}
 
 

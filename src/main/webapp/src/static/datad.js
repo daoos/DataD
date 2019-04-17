@@ -8,6 +8,8 @@ import themeDrawer from './components/theme-drawer/theme-drawer.vue';
 import { ChartsFactory } from './components/base-charts-drawer/chartsFactory';
 import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
 
+import html2canvas from 'html2canvas';
+
 export default {
     components: {
         'grids-drawer':gridsDrawer,
@@ -23,7 +25,8 @@ export default {
                 name: "",
                 flag:1,
                 theme:"",
-                background:""
+                background:"",
+                photo:""
             },
             sysDate:new Date(),
             childComponentDrawer:null,
@@ -80,8 +83,8 @@ export default {
             });
             window.location.reload();
         },
+        //主板内容区域缩放
         zoom(){
-            //内容区域缩放
             let box =  d3.select(".main-box #box");
             if(this.isEdit){
                 d3.select(".main-box").call(d3.zoom().scaleExtent([0.25, 1]).on("zoom", function(){
@@ -92,6 +95,24 @@ export default {
             }else{
                 box.style("transform", "scale(1)");
             }
+        },
+        //主板内容拍照
+        photograph(){
+            return new Promise(resolve=>{
+                let targetDom =document.querySelector(".main-box #box");
+                targetDom.style.transform="scale(1)";
+                html2canvas(targetDom).then((canvas)=>{
+                    return canvas.toDataURL("image/png");
+                }).then((beforeCompressImgBase64)=>{
+                    let imgEl = this.$refs.photograph;
+                    this.app.photo = beforeCompressImgBase64;
+                    html2canvas(imgEl).then((canvas) =>{
+                        let afterCompressImgBase64 = canvas.toDataURL("image/jpeg",0.5);
+                        this.app.photo = afterCompressImgBase64;
+                        resolve();
+                    });
+                });
+            });
         },
         openDrawerFun(componentName, dir=-1){
             this.childComponentDrawer = componentName;
@@ -108,39 +129,43 @@ export default {
                     if(re) window.location.href="/";
                 });
             }else{
-                let gridMainEl = this.$refs.gridMain;
-                let totalConfig = {
-                    name:this.app.name,
-                    flag:this.app.flag,
-                    theme:this.app.theme,
-                    background:this.app.background,
-                    moduleList: this.templet.map(el=> {
-                        let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
-                        el.l = +gswEl.getAttribute("data-l");
-                        el.chartList = [];
-                        gswEl.querySelectorAll(".chart").forEach(x=>{
-                            el.chartList.push( ChartsFactory.call({"chartElement":x}).configs() );
+                //拍照成功后入库
+                this.photograph().then(()=>{
+                    let gridMainEl = this.$refs.gridMain;
+                    let totalConfig = {
+                        name:this.app.name,
+                        flag:this.app.flag,
+                        theme:this.app.theme,
+                        background:this.app.background,
+                        photo:this.app.photo,
+                        moduleList: this.templet.map(el=> {
+                            let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
+                            el.l = +gswEl.getAttribute("data-l");
+                            el.chartList = [];
+                            gswEl.querySelectorAll(".chart").forEach(x=>{
+                                el.chartList.push( ChartsFactory.call({"chartElement":x}).configs() );
+                            });
+                            return el;
+                        })
+                    };
+                    if(submitType==1){
+                        addDdPage(totalConfig).then(response=>{
+                            let id = response.data;
+                            if(id) {
+                                sessionStorage.removeItem("curTheme");
+                                this.$Message.success('收藏成功.');
+                            }
                         });
-                        return el;
-                    })
-                };
-                if(submitType==1){
-                    addDdPage(totalConfig).then(response=>{
-                        let id = response.data;
-                        if(id) {
-                            sessionStorage.removeItem("curTheme");
-                            this.$Message.success('收藏成功.');
-                        }
-                    });
-                }else if(submitType==2){
-                    updateDdPage(totalConfig, this.app.id).then(response=>{
-                        let re = response.data;
-                        if(re) {
-                            sessionStorage.removeItem("curTheme");
-                            this.$Message.success('修改成功.');
-                        }
-                    });
-                }
+                    }else if(submitType==2){
+                        updateDdPage(totalConfig, this.app.id).then(response=>{
+                            let re = response.data;
+                            if(re) {
+                                sessionStorage.removeItem("curTheme");
+                                this.$Message.success('修改成功.');
+                            }
+                        });
+                    }
+                });
             }
         },
         //反序列化
@@ -213,7 +238,7 @@ export default {
                     }
                 });
             }
-        },
+        }
     },
     mounted(){
         //初始化页面 http://127.0.0.1:8070/#/?id=14  |   http://127.0.0.1:8070/#/edit?id=14

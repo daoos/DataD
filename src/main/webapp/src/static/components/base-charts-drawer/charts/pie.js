@@ -17,14 +17,14 @@ export default{
                 formatter: "{b}: {c} ({d}%)"
             },
             grid:{
-                top: 70,
+                top: 40,
                 bottom:40,
-                left: 40,
+                left: 30,
                 right: 40,
                 containLabel: true
             },
             legend: {
-                top:40,
+                bottom:10,
                 itemWidth:14,
                 itemHeight:6,
                 data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']

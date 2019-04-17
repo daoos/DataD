@@ -114,5 +114,8 @@
             padding:5px;
             background:white url(./../../img/bg.png);
         }
+        .ivu-drawer-body{
+            overflow: initial;
+        }
     }
 </style>

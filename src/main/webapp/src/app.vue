@@ -5,9 +5,10 @@
                 <div @click="openDrawerFun('grids-drawer')"><Icon type="md-apps"/>模板</div>
                 <div @click="openDrawerFun('theme-drawer',1)"><Icon type="ios-color-palette"/>主题</div>
                 <div @click="openDrawerFun('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
-                <div onclick="alert('未上线')"><Icon type="ios-pulse" />业务图表</div>
+                <div @click="photograph"><Icon type="ios-pulse" />业务图表</div>
                 <div @click="openDrawerFun('collection-drawer',1)"><Icon type="md-bookmarks" />收藏</div>
                 <div @click="previewFun"><Icon type="md-qr-scanner" />预览</div>
+                <div @click="openDrawerFun('collection-drawer')" style="position: absolute;right: 10px;"><Icon type="ios-list-box-outline" />收藏列表</div>
             </nav>
         </nav>
         <nav class="container">
@@ -29,6 +30,7 @@
                 </div>
             </div>
         </nav>
+        <img ref="photograph" :src="app.photo" width="480" height="220" style="position: absolute;z-index: -1;"/>
     </div>
 </template>
 

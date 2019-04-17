@@ -10,6 +10,7 @@ export default{
             backgroundColor:"transparent",
             title: {
                 text: '水位图表',
+                left: 'center',
                 top: 10,
             },
             tooltip: {},
