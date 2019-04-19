@@ -7,7 +7,7 @@ import {DrawNavgetion} from "./drawNavgetion";
  */
 export function WindowResize($vue){
     //导航
-    let nav = DrawNavgetion("#svgroot").navgetion();
+    let nav = DrawNavgetion("#svgroot",$vue.app.theme).navgetion();
 
     window.addEventListener("resize", () => {
         [nav].forEach(el=> el.resize());

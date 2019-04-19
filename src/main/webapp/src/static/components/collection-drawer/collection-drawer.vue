@@ -3,7 +3,7 @@
         <Drawer title="收藏列表" :transfer="false" :inner="true" :mask="true" :width="316.5" :styles="styles" placement="left" v-model="isDrawerLeft">
             <div id="pageTemplet">
                 <template  v-for="item in pageList">
-                    <Divider>{{item.key+":"+item.value.name}}</Divider>
+                    <Divider><span style="font-size: 14px;">{{item.key+"："+item.value.name}}</span></Divider>
                     <img class="page-photo" :data-id="item.key" :src="item.value.photo" width="280" height="134" @click="openPage(item.key)"/>
                 </template>
             </div>
@@ -53,6 +53,11 @@
                 }
             }
         },
+        watch:{
+            isDrawerLeft(newVal){
+                if(newVal) this.list();
+            }
+        },
         methods:{
             add(){
                 this.$emit('saveTotalConfig$Parent',1);
@@ -82,6 +87,7 @@
                 });
             },
             openPage(pageId){
+                sessionStorage.removeItem("curTheme");
                 this.$router.push({
                     query:{id:pageId}
                 });
@@ -103,8 +109,12 @@
     .collection-drawer{
         .page-photo{
             cursor: pointer;
-            box-shadow: 0px 0px 2px rgba(0,0,0,.6);
+            border:0px;
+            box-shadow: 0px 0px 2px rgba(0,0,0,.2);
             background: url(../../img/bg.png);
+            &:hover{
+                box-shadow: 0px 0px 4px rgba(0,0,0,.4);
+            }
         }
     }
 </style>

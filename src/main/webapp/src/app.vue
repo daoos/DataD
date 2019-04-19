@@ -2,12 +2,12 @@
     <div class="main-container">
         <nav class="navgetion" v-if="isEdit">
             <nav class="menu">
-                <div @click="openDrawerFun('grids-drawer')"><Icon type="md-apps"/>模板</div>
                 <div @click="openDrawerFun('theme-drawer',1)"><Icon type="ios-color-palette"/>主题</div>
+                <div @click="openDrawerFun('grids-drawer')"><Icon type="md-apps"/>模板</div>
                 <div @click="openDrawerFun('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
-                <div @click="photograph"><Icon type="ios-pulse" />业务图表</div>
-                <div @click="openDrawerFun('collection-drawer',1)"><Icon type="md-bookmarks" />收藏</div>
-                <div @click="previewFun"><Icon type="md-qr-scanner" />预览</div>
+                <div onclick="alert('未上线')"><Icon type="ios-pulse" />业务图表</div>
+                <div @click="openDrawerFun('collection-drawer',1)"><Icon type="md-bookmarks" />收藏 / 保存</div>
+                <div @click="previewFun()"><Icon type="md-qr-scanner" />预览</div>
                 <div @click="openDrawerFun('collection-drawer')" style="position: absolute;right: 10px;"><Icon type="ios-list-box-outline" />收藏列表</div>
             </nav>
         </nav>
@@ -19,6 +19,10 @@
                         <div class='title'>
                             <div class="text">{{ appName }}</div>
                             <div class="subtext">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
+                        </div>
+                        <div class="tool">
+                            <Icon type="ios-search" title="查询" @click="openDrawerFun('search-drawer',1)"/>
+                            <Icon type="md-contract" @click="previewFun('edit')"/>
                         </div>
                         <svg id="svgroot" width="100%" height="80px"></svg>
                     </nav>

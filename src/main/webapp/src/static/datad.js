@@ -1,21 +1,16 @@
 import * as d3 from 'd3';
 import Sortable from 'sortablejs';
-import { WindowResize, CreateGridsLayoutStyle } from './components'
-import gridsDrawer from './components/grids-drawer/grids-drawer.vue';
-import baseChartsDrawer from './components/base-charts-drawer/base-charts-drawer.vue';
-import collectionDrawer from './components/collection-drawer/collection-drawer.vue';
-import themeDrawer from './components/theme-drawer/theme-drawer.vue';
-import { ChartsFactory } from './components/base-charts-drawer/chartsFactory';
-import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
-
 import html2canvas from 'html2canvas';
+import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory} from './components'
+import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
 
 export default {
     components: {
         'grids-drawer':gridsDrawer,
         'base-charts-drawer':baseChartsDrawer,
         'collection-drawer':collectionDrawer,
-        'theme-drawer':themeDrawer
+        'theme-drawer':themeDrawer,
+        'search-drawer':searchDrawer
     },
     data() {
         return {
@@ -38,7 +33,7 @@ export default {
     },
     computed:{
         appName(){
-            return this.app.name||"定制页面";
+            return this.app.name||"请定制您页面";
         }
     },
     watch: {
@@ -74,9 +69,17 @@ export default {
         }
     },
     methods: {
-        previewFun(){
+        openDrawerFun(componentName, dir=-1){
+            this.childComponentDrawer = componentName;
+            this.isOpenDrawer = (this.isOpenDrawer==dir ? 0 :dir);
+        },
+        setTemplet(gridsConf){
+            this.templet = gridsConf;
+        },
+        //预览
+        previewFun(edit=""){
             this.$router.push({
-                path:'/',
+                path:'/'+edit,
                 query:{
                     id:this.app.id ,
                 }
@@ -114,19 +117,12 @@ export default {
                 });
             });
         },
-        openDrawerFun(componentName, dir=-1){
-            this.childComponentDrawer = componentName;
-            this.isOpenDrawer = (this.isOpenDrawer==dir ? 0 :dir);
-        },
-        setTemplet(gridsConf){
-            this.templet = gridsConf;
-        },
         //序列化
         saveTotalConfig(submitType){
             if(!submitType){
                 deleteDdPage(this.app.id).then(response=>{
                     let re = response.data;
-                    if(re) window.location.href="/";
+                    if(re) window.location.href="/edit";
                 });
             }else{
                 //拍照成功后入库
@@ -242,9 +238,8 @@ export default {
     },
     mounted(){
         //初始化页面 http://127.0.0.1:8070/#/?id=14  |   http://127.0.0.1:8070/#/edit?id=14
-        this.initPage(this.$route.query.id);
+        this.initPage(this.$route.query["id"]);
         this.isEdit = this.$route.path.includes("/edit");
-
         //缩放
         this.zoom();
         //图表宽高自适应

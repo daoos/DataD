@@ -15,13 +15,13 @@ export function ChartsFactory(){
 
     /**
      * 初始化指定图表
+     * @param theme
      */
     instance.init= (theme)=>{
         if(!theme){
             let curTheme = sessionStorage.getItem("curTheme");
             theme = curTheme && JSON.parse(curTheme).theme;
         }
-
         this.chartElement.innerHTML = "";
         let eCharts = echarts.init(this.chartElement, theme);
         let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
@@ -47,20 +47,6 @@ export function ChartsFactory(){
         let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
         eCharts.myConfig = config;
         chart.default.options(eCharts);
-        return instance;
-    };
-
-    /**
-     * 设置图表主题风格
-     * @param themeConfig
-     */
-    instance.theme=(themeConfig)=>{
-        console.log("===themeConfig===",themeConfig);
-        let charElements = document.querySelectorAll(".chart");
-        charElements.forEach(x=>{
-            let eCharts = echarts.getInstanceByDom(x);
-            console.log("===eCharts===",eCharts);
-        })
         return instance;
     };
 
@@ -108,6 +94,14 @@ export function ChartsFactory(){
         chartTemplet.remove();
         chartTemplet = null;
         return instance.resize(gswElement);
+    };
+
+    instance.settings= ()=>{
+        let charElements = document.querySelectorAll(".chart");
+        charElements.forEach(x=> {
+            let eCharts = echarts.getInstanceByDom(x);
+            console.log(eCharts);
+        });
     };
 
     return instance;

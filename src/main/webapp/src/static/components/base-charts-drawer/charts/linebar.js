@@ -75,6 +75,7 @@ export default{
         option.series = _series;
         eCharts.setOption(option,true); //第二个参数true == notMerge
 
+
         let params = {legends:_legendData, duration:config.interval, startTime:"", endTime:""};
         common.start(eCharts, config.url||"/charts/linebar", params, config.interval)(result =>{
             console.debug("===成功=linebar==",result);

@@ -67,20 +67,14 @@
     import {addDdGrid, deleteDdGrid, selectAllDdGrid} from "../../../service/serverApi"
 
     let templets = {
-        "test":[
-            {
-                "x": 1,
-                "y": 1,
-                "w": 2,
-                "h": 6
-            },
-            {
-                "x": 3,
-                "y": 1,
-                "w": 2,
-                "h": 6
-            }
-        ]
+        // "test":[
+        //     {
+        //         "x": 1,
+        //         "y": 1,
+        //         "w": 4,
+        //         "h": 6
+        //     }
+        // ]
     };
 
     export default {

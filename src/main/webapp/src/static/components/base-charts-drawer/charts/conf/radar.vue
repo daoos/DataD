@@ -59,6 +59,7 @@
             </Table>
             </Col>
         </Row>
+        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleSave(table2.editIndex,2);table2.editIndex = -1;" style="height:200px;"></Row>
     </div>
 </template>
 

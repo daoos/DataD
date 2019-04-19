@@ -7,7 +7,7 @@
                         <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
                         <ol class="move_handle">
                             <Icon type="ios-settings"size="26" title="设置" class="btu settings" :chart-type="item" onmousedown="((e)=>{ e.stopPropagation(); window.BaseChartsDrawer.settingsCharts(e.target) })(event)" />
-                            <Icon type="md-reorder"  size="26" title="拖拽" class="btu"/>
+                            <Icon type="md-reorder"  size="26" title="拖拽" />
                             <Icon type="ios-trash"   size="26" title="删除" class="btu trash" onmousedown="((e)=>{ e.stopPropagation(); window.BaseChartsDrawer.trashCharts(e.target) })(event)"/>
                         </ol>
                     </ul>

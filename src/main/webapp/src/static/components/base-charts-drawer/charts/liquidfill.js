@@ -6,6 +6,7 @@ import common from "./common";
 export default{
     defaultColor:"#dd6b66",
     init(eCharts){
+        this.defaultColor = eCharts._theme.color[0];
         eCharts.setOption({
             backgroundColor:"transparent",
             title: {

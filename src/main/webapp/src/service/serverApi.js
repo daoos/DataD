@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
     require('../service/mockApi');
 
     /**数据库**MOCK后端读写数据库操作API接口****/
-    const DataD_DB = DB.open("DataD",1).then(db=>{
+    const DataD_DB = DB.open("DataD",2).then(db=>{
         db.createTable("grids");
         db.createTable("pages");
         return db;
@@ -34,6 +34,13 @@ if (process.env.NODE_ENV === 'production') {
             DataD_DB.then(db=> {
                 let result = db.from(tableName).delete(id);
                 resolve(result);
+            });
+        });
+    };
+    let _select = (tableName,id)=>{
+        return new Promise(resolve=>{
+            DataD_DB.then(db=> db.from(tableName).select(id) ).then(data=>{
+                resolve(data);
             });
         });
     };
@@ -58,13 +65,7 @@ if (process.env.NODE_ENV === 'production') {
             });
         });
     };
-    var selectDdPage = (id)=>{
-        return new Promise(resolve=>{
-            DataD_DB.then(db=> db.from("pages").select(id) ).then(data=>{
-                resolve(data);
-            });
-        });
-    };
+    var selectDdPage = (id)=>{ return _select("pages",id)};
     var selectAllDdPage = ()=>{ return _selectAll("pages")};
 }
 
@@ -76,7 +77,6 @@ if (process.env.NODE_ENV === 'production') {
 // const addDdGrid = (param)=> axios.post(gridsUrl, param);
 // const deleteDdGrid = (id)=> axios.delete(gridsUrl, {params:id});
 // const selectAllDdGrid = ()=> axios.get(gridsUrl);
-
 // let pagesUrl = "/pages";
 // const addDdPage = (param)=> axios.post(pagesUrl, param);
 // const selectDdPage = (id)=> axios.get(pagesUrl, {params:id});

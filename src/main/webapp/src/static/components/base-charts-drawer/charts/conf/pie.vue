@@ -31,6 +31,7 @@
             </Table>
             </Col>
         </Row>
+        <Row @click.native="handleSave(editIndex);editIndex = -1;" style="height:200px;"></Row>
     </div>
 </template>
 
