@@ -35,7 +35,7 @@
     import * as chartsConf from './charts/conf'
 
     export default {
-        props:["isDrawerLeft","isDrawerRight"],
+        props:["isDrawerLeft","isDrawerRight","app"],
         data() {
             return {
                 styles: {
@@ -89,7 +89,7 @@
                 onEnd:function(evt){
                     //console.log(evt.from,"===",evt.to,"====",evt.item);
                     if(evt.to != evt.from){
-                        ChartsFactory.call({"chartElement":evt.item.querySelector(".chart")}).init();
+                        ChartsFactory.call({"chartElement":evt.item.querySelector(".chart")}).init(_this.app.theme);
                     }
                 }
             });

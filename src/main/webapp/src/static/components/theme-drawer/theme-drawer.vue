@@ -54,20 +54,22 @@
         methods:{
             submitConf(){
                 //图表配置变动时也要提示
-                let pageId = this.$route.query.id;
-                if(!pageId){
-                    this.$Modal.confirm({
-                        title: '确定更换主题风格 ?',
-                        content:"当前页面尚未保存收藏，更换主题时页面会刷新。",
-                        onOk: () => {
-                            sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
-                            window.location.reload();
-                        }
-                    });
-                }else{
-                    sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
-                    window.location.reload();
-                }
+                // let pageId = this.$route.query.id;
+                // if(!pageId){
+                //     this.$Modal.confirm({
+                //         title: '确定更换主题风格 ?',
+                //         content:"当前页面尚未保存收藏，更换主题时页面会刷新。",
+                //         onOk: () => {
+                //             sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
+                //             window.location.reload();
+                //         }
+                //     });
+                // }else{
+                //     sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
+                //     window.location.reload();
+                // }
+                sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
+                window.location.reload();
             }
         }
     }

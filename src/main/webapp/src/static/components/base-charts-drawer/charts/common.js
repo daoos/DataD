@@ -20,9 +20,12 @@ export default{
         this.requestCount++;
         this.stop(chart);
         let isSeries = true;
+        if(params["startTime"] && params["endTime"]){
+            isSeries = false;
+        }
         return (callback)=>{
             axios.post(url, params).then(response =>{
-                callback(response.data);
+                callback(response.data, isSeries);
             }).finally(()=>{
                 if(isSeries){
                     chart.timeout = setTimeout(()=>{

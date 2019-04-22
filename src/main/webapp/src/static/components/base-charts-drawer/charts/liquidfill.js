@@ -6,7 +6,9 @@ import common from "./common";
 export default{
     defaultColor:"#dd6b66",
     init(eCharts){
-        this.defaultColor = eCharts._theme.color[0];
+        if(eCharts._theme){
+            this.defaultColor = eCharts._theme.color[0];
+        }
         eCharts.setOption({
             backgroundColor:"transparent",
             title: {
@@ -48,7 +50,7 @@ export default{
             }]
         });
     },
-    options(eCharts){
+    options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===liquidFill===",option,config);
         let [_color, _seriesType, _seriesData] = [config.api.color||this.defaultColor, config.api.seriesType, [0]]
@@ -57,10 +59,14 @@ export default{
         option.series[0].label.color = _color;
         option.series[0].backgroundStyle.borderColor = _color;
         eCharts.setOption(option);
+        eCharts.extend = this;
 
-        common.start(eCharts, config.url||"/charts/liquidfill", {startTime:"", endTime:""}, config.interval)(data =>{
+        let params = Object.assign({startTime:"", endTime:""}, paramsDevelop);
+        let Common = Object.assign({},common);
+        Common.start(eCharts, config.url||"/charts/liquidfill", params, config.interval)((data, isSeries=true) =>{
             console.debug("===成功=liquidFill==",data);
             option.series[0].data = [data];
+
             eCharts.setOption(option);
             eCharts.hideLoading();
         });

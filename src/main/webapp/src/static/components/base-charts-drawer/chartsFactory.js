@@ -96,11 +96,15 @@ export function ChartsFactory(){
         return instance.resize(gswElement);
     };
 
-    instance.settings= ()=>{
+    /**
+     * 统一设置全局图表参数（请求参数）
+     * @param param
+     */
+    instance.settings= (param)=>{
         let charElements = document.querySelectorAll(".chart");
         charElements.forEach(x=> {
             let eCharts = echarts.getInstanceByDom(x);
-            console.log(eCharts);
+            eCharts.extend.options(eCharts, param);
         });
     };
 

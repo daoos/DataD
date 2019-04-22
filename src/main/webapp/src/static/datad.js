@@ -122,7 +122,12 @@ export default {
             if(!submitType){
                 deleteDdPage(this.app.id).then(response=>{
                     let re = response.data;
-                    if(re) window.location.href="/edit";
+                    if(re){
+                        this.$router.push({
+                            path:'/edit'
+                        });
+                        window.location.reload();
+                    };
                 });
             }else{
                 //拍照成功后入库
@@ -166,18 +171,19 @@ export default {
         },
         //反序列化
         initPage(pageId){
+            let _this = this;
+            //主题风格反序列化
+            let curTheme = sessionStorage.getItem("curTheme");
+            if(curTheme){
+                let _themeConf= JSON.parse(curTheme);
+                Object.assign(_this.app,{theme:_themeConf.theme, background:_themeConf.background})
+            }
             if(pageId){
-                let _this = this;
                 let gridMainEl = this.$refs.gridMain;
                 selectDdPage(+pageId).then(response=>{
                     let totalConfig = response.data;
                     if(totalConfig){
-                        //主题风格反序列化
-                        let curTheme = sessionStorage.getItem("curTheme");
-                        if(curTheme){
-                            let _themeConf= JSON.parse(curTheme);
-                            Object.assign(_this.app,{theme:_themeConf.theme, background:_themeConf.background})
-                        }else{
+                        if(!curTheme){
                             Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
                         }
                         //主板格子模型反序列化

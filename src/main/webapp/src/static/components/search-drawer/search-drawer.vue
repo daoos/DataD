@@ -50,12 +50,12 @@
                     <Col span="6">
                         <input v-model="duration" class="duration" list="cars" placeholder="粒度（自动）" type="number"/>
                         <datalist class="duration-datalist" id="cars" style="width: 200px">
-                            <option :value=4>4 s</option>
-                            <option :value=10>10 s</option>
-                            <option :value=60>1 min</option>
-                            <option :value=300>5 min</option>
-                            <option :value=3600>1 h</option>
-                            <option :value=86400>1 d</option>
+                            <option :value=4>4秒</option>
+                            <option :value=10>10秒</option>
+                            <option :value=60>1分</option>
+                            <option :value=300>5分</option>
+                            <option :value=3600>1时</option>
+                            <option :value=86400>1天</option>
                         </datalist>
                     </Col>
                 </Row>
@@ -136,11 +136,21 @@
                 rowNumber:1
             }
         },
+        computed: {
+            dataValue(){
+                return this.datePicker.value;
+            }
+        },
         watch:{
             isSeries(v) {
                 this.duration = v?60:"";
                 Object.assign(this.datePicker,{value:"",disabled:v});
             },
+            dataValue() {
+                if (this.datePicker.value !== ""){
+                    this.autoDuration(this.datePicker.value[0], this.datePicker.value[1]);
+                }
+            }
         },
         methods:{
             handleEdit (row, index) {
@@ -181,20 +191,32 @@
                 let _datePicker = this.datePicker.value;
                 let param = {
                     duration: this.duration,
-                    startTime:this.$formatDate(_datePicker[0]),
-                    endTime:this.$formatDate(_datePicker[1]),
+                    startTime:_datePicker[0] && parseInt(_datePicker[0].getTime()/1000),
+                    endTime:_datePicker[1] && parseInt(_datePicker[1].getTime()/1000)
                 };
                 this.data.forEach(x=>{
                     if(x.paramKey){
                         param[x.paramKey] = x.paramValue;
                     }
                 })
-
-                //全局查询
-                console.log(JSON.stringify(param,null,4));
-
-                ChartsFactory().settings()
-            }
+                ChartsFactory().settings(param);
+            },
+            autoDuration(startTime, endTime){
+                let dValue = (endTime - startTime)/1000;
+                if(dValue/4 <= 150){
+                    this.duration = 4;
+                }else if(dValue/10 <= 150){
+                    this.duration = 10;
+                }else if(dValue/60 <= 150){
+                    this.duration = 60;
+                }else if(dValue/300 <= 150){
+                    this.duration = 300;
+                }else if(dValue/3600 <= 150){
+                    this.duration = 3600;
+                }else{
+                    this.duration = 86400;
+                }
+            },
         },
         mounted(){
             let searchParams = localStorage["searchParam_"+ this.$route.query["id"]];

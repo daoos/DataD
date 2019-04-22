@@ -52,7 +52,7 @@ export default{
             }]
         });
     },
-    options(eCharts){
+    options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===radar===",option,config);
         let [_legendData, _seriesData] = [[],[]];
@@ -72,8 +72,11 @@ export default{
         };
         option.radar[0].indicator =  config.api.indicator;
         eCharts.setOption(option,true);
+        eCharts.extend = this;
 
-        common.start(eCharts, config.url||"/charts/radar", {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
+        let params = Object.assign({legends:_legendData, startTime:"", endTime:""}, paramsDevelop);
+        let Common = Object.assign({},common);
+        Common.start(eCharts, config.url||"/charts/radar", params, config.interval)(data =>{
             console.debug("===成功=radar==",data);
             _seriesData.forEach(x=> x.value = data[x.name]);
             option.series[0].data = _seriesData;

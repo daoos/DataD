@@ -63,7 +63,7 @@ export default{
             ]
         });
     },
-    options(eCharts){
+    options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===pie===",option,config);
         let [_legendData, _seriesData] = [[],[]];
@@ -79,8 +79,11 @@ export default{
         option.legend[0].data = _legendData;
         option.series[0].data = _seriesData;
         eCharts.setOption(option);
+        eCharts.extend = this;
 
-        common.start(eCharts, config.url||"/charts/pie", {legends:_legendData, startTime:"", endTime:""}, config.interval)(data =>{
+        let params = Object.assign({legends:_legendData, startTime:"", endTime:""}, paramsDevelop);
+        let Common = Object.assign({},common);
+        Common.start(eCharts, config.url||"/charts/pie", params, config.interval)(data =>{
             console.debug("===成功=pie==",data);
             _seriesData.forEach(x=> x.value = data[x.name]);
             option.series[0].data = _seriesData;

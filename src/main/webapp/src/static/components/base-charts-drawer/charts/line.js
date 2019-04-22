@@ -11,6 +11,7 @@ export default{
                 text: '线状图表',
                 left: 'center',
                 top: 10,
+                subtext:''
             },
             tooltip: {},
             grid:{
@@ -41,7 +42,7 @@ export default{
             }]
         });
     },
-    options(eCharts){
-        linebar.options(eCharts);
+    options(eCharts, paramsDevelop){
+        linebar.options(eCharts, paramsDevelop);
     }
 }

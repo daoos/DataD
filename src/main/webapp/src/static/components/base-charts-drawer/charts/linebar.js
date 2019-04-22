@@ -7,7 +7,6 @@ const [SecondReg, MillisecondReg] = [new RegExp("^1(\\d){9}$"), new RegExp("^1(\
  * linebar 线柱组合图
  */
 export default{
-    isOverallSeries:true,
     init(eCharts){
         eCharts.setOption({
             backgroundColor:"transparent",
@@ -15,6 +14,7 @@ export default{
                 text: '线柱状图表',
                 left: 'center',
                 top: 10,
+                subtext:''
             },
             tooltip: {},
             grid:{
@@ -49,7 +49,7 @@ export default{
             }]
         });
     },
-    options(eCharts){
+    options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===linebar===",option,config);
         let [_legendData, _series, _yAxisIndexSet] = [[],[],new Set()];
@@ -74,29 +74,33 @@ export default{
         option.legend[0].data = _legendData;
         option.series = _series;
         eCharts.setOption(option,true); //第二个参数true == notMerge
+        eCharts.extend = this;
 
 
-        let params = {legends:_legendData, duration:config.interval, startTime:"", endTime:""};
-        common.start(eCharts, config.url||"/charts/linebar", params, config.interval)(result =>{
-            console.debug("===成功=linebar==",result);
-            if(result){
-                let isSeries = true;
-                let _comm = this._common(eCharts, result)
-                    .setSeries(isSeries)
-                    .setAxis()
-                    .setXAxisSeriesLen(isSeries)
-                    .setYAxisFormatter()
-                    .setSeriesTooltip()
-                    .setRequestParameter(params);
-                eCharts.setOption(_comm.options);
-                eCharts.hideLoading();
-            }
+        let params = Object.assign({legends:_legendData, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
+        params.duration = params.duration||config.interval;
+        let Common = Object.assign({},common);
+        Common.start(eCharts, config.url||"/charts/linebar", params, config.interval)((result, isSeries=true) =>{
+           console.debug(isSeries,"===成功=linebar==",result);
+           if(result){
+               let _comm = this._common(eCharts, result, Common.requestCount)
+                   .setSeries(isSeries)
+                   .setAxis()
+                   .setXAxisSeriesLen(isSeries)
+                   .setYAxisFormatter()
+                   .setSeriesTooltip()
+                   .setTitleSubtext(params.startTime, params.endTime, params.duration,isSeries)
+                   .setRequestParameter(params);
+               eCharts.setOption(_comm.options);
+               eCharts.hideLoading();
+           }
         });
     },
 
-    _common(chart, result, windowDuration = 150) { //windowDuration:图表窗口显示数据点数
+    _common(chart, result, requestCount, windowDuration = 150) { //windowDuration:图表窗口显示数据点数
+        let _xAxisFormat = "hh:mm:ss";
         let [_isCover, option] = [chart.myConfig.refurbishMode, chart.getOption()];
-        let [seriesData, xAxisData, legends, xAxis, yAxis, series] = [result.series, result.xAxis, option.legend[0], option.xAxis[0],option.yAxis, option.series];
+        let [seriesData, xAxisData, legends, xAxis, yAxis, series] = [result.series, result.xAxis, option.legend[0], option.xAxis[0], option.yAxis, option.series];
         return {
             options:option,
             //设置图中数据
@@ -142,14 +146,41 @@ export default{
                     }else{
                         //数据追加 add
                         let _xAxis = xAxis.data;
-                        _xAxis.push.apply(_xAxis, xAxisData.map(elem=>{
-                            if(SecondReg.test(elem)){ //只对时间戳进行处理
-                                return formatDate(+`${elem}000`,"hh:mm:ss") //秒
-                            }else if(MillisecondReg.test(elem)){
-                                return formatDate(elem,"hh:mm:ss") //毫秒
+                        if(SecondReg.test(xAxisData[0]) || MillisecondReg.test(xAxisData[0])){
+                            //只对时间戳进行处理
+                            if(requestCount==1){
+                                let yyyy = new Set(),MM = new Set(),dd = new Set(), HH = new Set(), mm = new Set(), ss = new Set(), _yyyy="",_MM="",_dd="",_HH="",_mm="",_ss="";
+                                xAxisData.forEach(elem =>{
+                                    let dateTime = new Date(+`${elem}000`);
+                                    yyyy.add( dateTime.getFullYear() );
+                                    MM.add( dateTime.getMonth()+1 );
+                                    dd.add( dateTime.getDate() );
+                                    HH.add( dateTime.getHours() );
+                                    mm.add( dateTime.getMinutes() );
+                                    ss.add( dateTime.getSeconds() );
+                                });
+                                if(yyyy.size>1) _yyyy = "yyyy/";
+                                if(MM.size>1) _MM = "MM/";
+                                if(dd.size>1) _dd = "dd";
+                                if(HH.size>1) _HH = " hh";
+                                if(mm.size>1) _mm = ":mm";
+                                if(ss.size>1) _ss = ":ss";
+                                _xAxisFormat=_yyyy+_MM+_dd+_HH+_mm+_ss;
                             }
-                            return elem;
-                        }));
+                            if(_xAxisFormat==" hh:mm" || _xAxisFormat==":mm:ss" || _xAxisFormat==":mm" || _xAxisFormat==":ss"){
+                                _xAxisFormat = "hh:mm:ss";
+                            }
+                            _xAxis.push.apply(_xAxis, xAxisData.map(elem=>{
+                                if(SecondReg.test(elem)){
+                                    return formatDate(+`${elem}000`,_xAxisFormat) //秒
+                                }else if(MillisecondReg.test(elem)){
+                                    return formatDate(elem,_xAxisFormat) //毫秒
+                                }
+                                return elem;
+                            }));
+                        }else{
+                            _xAxis.push.apply(_xAxis, xAxisData);
+                        }
                     }
                 }
                 return this;
@@ -261,21 +292,23 @@ export default{
                 return this;
             },
             //设置图表附标题（日期）
-            setTitleSubtext(startTime, endTime, duration){
-                let startDate, endDate;
-                if(startTime && endTime){
-                    [startDate,endDate] = [formatDate(startTime*1000,'yyyy/MM/dd'), formatDate(endTime*1000,'yyyy/MM/dd')];
-                }else{
-                    if(!startTime){
-                        endDate = parseInt(Date.now()/1000);
+            setTitleSubtext(startTime, endTime, duration,isSeries){
+                if(!isSeries){
+                    let startDate, endDate;
+                    if(startTime && endTime){
+                        [startDate,endDate] = [formatDate(startTime*1000,'yyyy/MM/dd'), formatDate(endTime*1000,'yyyy/MM/dd')];
                     }else{
-                        endDate = parseInt(startTime) + parseInt(duration);
+                        if(!startTime){
+                            endDate = parseInt(Date.now()/1000);
+                        }else{
+                            endDate = parseInt(startTime) + parseInt(duration);
+                        }
+                        startDate = formatDate((endDate-duration * (xAxis.data.length-1))*1000,'yyyy/MM/dd');
+                        endDate = formatDate(endDate*1000,'yyyy/MM/dd');
                     }
-                    startDate = formatDate((endDate-duration * (option.xAxis.data.length-1))*1000,'yyyy/MM/dd');
-                    endDate = formatDate(endDate*1000,'yyyy/MM/dd');
-                }
-                if(duration<=86400){
-                    option.title.subtext=(startDate==endDate?endDate:`${startDate} - ${endDate}`);
+                    if(duration<=86400){
+                        option.title[0].subtext=(startDate==endDate?endDate:`${startDate} - ${endDate}`);
+                    }
                 }
                 return this;
             },
