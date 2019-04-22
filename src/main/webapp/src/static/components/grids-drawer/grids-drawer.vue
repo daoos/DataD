@@ -200,7 +200,7 @@
         }
     }
     .grids-conf{
-        @bg-img:url("../../img/bg_w.png");
+        @bg-img:url("../../images/bg_w.png");
         .grid-layout-box{
             width: 100%;
             height:397px;

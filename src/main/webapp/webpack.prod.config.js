@@ -5,6 +5,7 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(webpackBaseConfig, {
     output: {
+        publicPath: 'dist/',
         path: path.join(__dirname, '../dist/'),
         filename: '[name].[hash].bundle.js',
         chunkFilename: '[name].[hash].chunk.js'

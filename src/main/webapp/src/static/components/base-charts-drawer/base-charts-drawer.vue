@@ -4,7 +4,9 @@
             <div id="chartTemplet">
                 <template v-for="item in chartList">
                     <ul class="chartTemplet">
-                        <li :data-id="item" class="chart"><img :src="require('../../img/' + item + '.png')"/></li>
+                        <li :data-id="item" class="chart">
+                            <img :src="require('../../images/' + item + '.png')"/>
+                        </li>
                         <ol class="move_handle">
                             <Icon type="ios-settings"size="26" title="设置" class="btu settings" :chart-type="item" onmousedown="((e)=>{ e.stopPropagation(); window.BaseChartsDrawer.settingsCharts(e.target) })(event)" />
                             <Icon type="md-reorder"  size="26" title="拖拽" />

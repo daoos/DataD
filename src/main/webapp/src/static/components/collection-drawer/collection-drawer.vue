@@ -17,8 +17,8 @@
                 </FormItem>
                 <FormItem prop="flag" label="适用范围：" style="width: 100%;">
                     <Select v-model="app.flag">
-                        <Option value=1>所有人可见</Option>
-                        <Option value=2>仅自己可见</Option>
+                        <Option :value=1>所有人可见</Option>
+                        <Option :value=2>仅自己可见</Option>
                     </Select>
                 </FormItem>
                 <Divider />
@@ -111,7 +111,7 @@
             cursor: pointer;
             border:0px;
             box-shadow: 0px 0px 2px rgba(0,0,0,.2);
-            background: url(../../img/bg.png);
+            background: url(../../images/bg.png);
             &:hover{
                 box-shadow: 0px 0px 4px rgba(0,0,0,.4);
             }

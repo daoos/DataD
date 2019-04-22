@@ -81,7 +81,7 @@
             background: #0e284d;
         }
         #shine,#customed,#infographic,#macarons,#roma{
-            background:white url(./../../img/bg.png);
+            background:white url(../../images/bg.png);
         }
         #vintage{
             background: rgba(254,248,239,1);
@@ -105,7 +105,7 @@
             margin-top:10px;
             border:1px solid #dcdee2;
             padding:5px;
-            background:white url(./../../img/bg.png);
+            background:white url(../../images/bg.png);
         }
         .ivu-drawer-body{
             overflow: initial;
