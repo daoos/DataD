@@ -21,8 +21,8 @@
                             <div class="subtext">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
                         </div>
                         <div class="tool">
-                            <Icon type="ios-search" title="查询" @click="openDrawerFun('search-drawer',1)"/>
-                            <Icon type="md-contract" @click="previewFun('edit')"/>
+                            <Icon type="ios-search"  title="查询" @click="openDrawerFun('search-drawer',1)"/>
+                            <Icon type="md-contract" title="编辑" @click="previewFun('edit')" v-if="!isEdit"/>
                         </div>
                         <svg id="svgroot" width="100%" height="80px"></svg>
                     </nav>

@@ -49,6 +49,7 @@ export default{
                 data: [0.5],
             }]
         });
+        return eCharts;
     },
     options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];

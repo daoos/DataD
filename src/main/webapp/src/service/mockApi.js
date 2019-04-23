@@ -71,3 +71,29 @@ Mock.mock(/(charts\/liquidfill)/,function(options){
     let series = Mock.Random.natural(30,100)/100;
     return series;
 });
+
+//拓扑图测试数据
+Mock.mock(/(charts\/topo)/,function(options){
+    /*数据滚动图: alarmlevel: 0 - 3
+   {
+       "series":[
+            {id:'A', alarmlevel:0, items:'[{name:'TPS',value:123},{name:'AVG',value:456}]}',
+            {id:'B', alarmlevel:2, items:[{name:'TPS',value:123},{name:'AVG',value:456}]},
+        ]
+   }
+   */
+    console.debug("---mock---",options);
+    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let result = {
+        "series":[]
+    };
+    legends.forEach(id =>{
+        let _items = [];
+        for(let i=0;i<Mock.Random.natural(0, 10);i++){
+            _items.push({name:Mock.Random.string('upper',1,5),value:Mock.Random.natural(10, 10000)});
+        }
+        result.series.push({id:id, alarmlevel:Mock.Random.natural(0, 3), items:_items});
+    });
+    return result;
+});
+

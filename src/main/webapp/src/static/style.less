@@ -1,6 +1,22 @@
 /***Less函数定义**/
 //Less主题样式动态切换
-.-theme,.shine-theme,.customed-theme,.infographic-theme,.macarons-theme,.roma-theme{
+.-theme{
+    .theme();
+    //.theme(rgba(240,240,240,.8));
+    //&:before{
+    //    content: '- 无选择模板 -';
+    //    position: absolute;
+    //    z-index: -1;
+    //    top:50%;
+    //    left:50%;
+    //    transform: translate(-50%);
+    //    text-align: center;
+    //    font-size: 32px;
+    //    font-weight: bold;
+    //    color:rgba(0,0,0,.08);
+    //}
+}
+.shine-theme,.customed-theme,.infographic-theme,.macarons-theme,.roma-theme{
     .theme();
 }
 .dark-theme{
@@ -145,18 +161,6 @@ html,body{
                 .box-body{
                     flex: 1;
                     #gridMain{
-                        //&:before{
-                        //    content: '- 无选择模板 -';
-                        //    position: absolute;
-                        //    z-index: -1;
-                        //    top:50%;
-                        //    left:50%;
-                        //    transform: translate(-50%);
-                        //    text-align: center;
-                        //    font-size: 32px;
-                        //    font-weight: bold;
-                        //    color:rgba(0,0,0,.08);
-                        //}
                         width: 100%;
                         height: 100%;
                         position: relative;
@@ -192,6 +196,7 @@ html,body{
                                     height: 100%;
                                     right:0px;
                                     position: absolute;
+                                    z-index: 99;
                                     display:flex;
                                     flex-flow: column;
                                     align-items:center;
@@ -212,8 +217,11 @@ html,body{
                                         }
                                     }
                                 }
-                                .chart{
+                                .chart {
                                     width: 100%;
+                                    canvas {
+                                        outline: none;
+                                    }
                                 }
                             }
                         }

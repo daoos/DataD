@@ -41,6 +41,7 @@ export default{
                 data: [5, 20, 36, 10, 10, 20]
             }]
         });
+        return eCharts;
     },
     options(eCharts, paramsDevelop){
         linebar.options(eCharts, paramsDevelop);

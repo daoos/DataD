@@ -23,9 +23,15 @@ export function ChartsFactory(){
             theme = curTheme && JSON.parse(curTheme).theme;
         }
         this.chartElement.innerHTML = "";
-        let eCharts = echarts.init(this.chartElement, theme);
+
+        let eCharts = null;
+        if(this.chartElement.getAttribute("data-id")=="topo"){
+            eCharts = this.chartElement;  // 自定义扩展图表
+        }else{
+            eCharts = echarts.init(this.chartElement, theme); // ECharts图表
+        }
         let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
-        chart.default.init(eCharts);
+        this.chartElement["charts"] = chart.default.init(eCharts); //将图表实例赋值到dom实例上(便于后面拿到dom就可以拿到对应图表实例)
         return instance.resize();
     };
 
@@ -35,7 +41,8 @@ export function ChartsFactory(){
      * @returns {*}
      */
     instance.configs=(config)=>{
-        let eCharts = echarts.getInstanceByDom(this.chartElement);
+        //let eCharts = echarts.getInstanceByDom(this.chartElement);
+        let eCharts = this.chartElement.charts;
         if (!config) {
             let gswElement = this.chartElement.parentNode.parentNode;
             let dataLayout = +gswElement.getAttribute("data-l");
@@ -73,9 +80,13 @@ export function ChartsFactory(){
                     _height = _height / Math.ceil(charElements.length / _dataLayout);
                 }
                 x.style.height = _height+'px';
-                echarts.getInstanceByDom(x).resize();
+                //echarts.getInstanceByDom(x).resize();
+                x.charts.resize();
             });
-            charElements.forEach(x=> echarts.getInstanceByDom(x).resize());
+            charElements.forEach(x=> {
+                //echarts.getInstanceByDom(x).resize()
+                x.charts.resize();
+            });
         });
         return instance;
     };
@@ -85,7 +96,8 @@ export function ChartsFactory(){
      * @param chartTempletElement
      */
     instance.destroy= ()=>{
-        let eCharts = echarts.getInstanceByDom(this.chartElement);
+        //let eCharts = echarts.getInstanceByDom(this.chartElement);
+        let eCharts = this.chartElement.charts;
         window.clearTimeout(eCharts.timeout);
         eCharts.dispose();
         eCharts=null;

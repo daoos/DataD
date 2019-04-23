@@ -37,7 +37,7 @@
             return {
                 chartType:"line",
                 title:"测试图表",
-                url:"/charts/pie",
+                url:"",
                 interval:4,
                 layout:0,
             }

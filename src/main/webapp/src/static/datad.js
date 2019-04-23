@@ -33,7 +33,7 @@ export default {
     },
     computed:{
         appName(){
-            return this.app.name||"请定制您页面";
+            return this.app.name||"请定制您的页面";
         }
     },
     watch: {

@@ -38,13 +38,16 @@ export default{
 
     stop(chart) {
         if(this.requestCount==1){
-            chart.showLoading(null, {
-                text: 'loading',
-                color: '#c23531',
-                textColor: 'rgba(255, 255, 255, 1)',
-                maskColor: 'rgba(0, 0, 0, .1)',
-                zlevel: 0
-            });
+            try {
+                chart.showLoading(null, {
+                    text: 'loading',
+                    color: '#c23531',
+                    textColor: 'rgba(255, 255, 255, 1)',
+                    maskColor: 'rgba(0, 0, 0, .1)',
+                    zlevel: 0
+                });
+            }catch (e) {
+            }
         }
         window.clearTimeout(chart.timeout);
     }
