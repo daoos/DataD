@@ -4,6 +4,7 @@ import bar from './bar.vue'
 import pie from './pie.vue'
 import radar from './radar.vue'
 import liquidfill from './liquidfill.vue'
+import number from './number.vue'
 import topo from './topo.vue'
 
-export {linebar,line,bar,pie,radar,liquidfill,topo};
+export {linebar,line,bar,pie,radar,liquidfill,number,topo};

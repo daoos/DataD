@@ -72,6 +72,20 @@ Mock.mock(/(charts\/liquidfill)/,function(options){
     return series;
 });
 
+//数据滚动图测试数据
+Mock.mock(/(charts\/number)/,function(options){
+    /*数据滚动图
+    {
+      "series":2342
+    }
+    */
+    console.debug("---mock---",options);
+    let result = {
+        series:"+"+Mock.Random.natural(100, 1000000000)+"."+Mock.Random.natural(10, 99)
+    };
+    return result;
+});
+
 //拓扑图测试数据
 Mock.mock(/(charts\/topo)/,function(options){
     /*数据滚动图: alarmlevel: 0 - 3

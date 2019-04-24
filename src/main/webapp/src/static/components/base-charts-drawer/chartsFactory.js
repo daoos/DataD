@@ -18,20 +18,21 @@ export function ChartsFactory(){
      * @param theme
      */
     instance.init= (theme)=>{
+        this.chartElement.innerHTML = "";
         if(!theme){
             let curTheme = sessionStorage.getItem("curTheme");
             theme = curTheme && JSON.parse(curTheme).theme;
         }
-        this.chartElement.innerHTML = "";
-
         let eCharts = null;
-        if(this.chartElement.getAttribute("data-id")=="topo"){
+        let chartType = this.chartElement.getAttribute("data-id");
+        let chart = require("./charts/" + chartType);
+        let chartGroup = chart.default["group"];
+        if(chartGroup==="MyCharts"){
             eCharts = this.chartElement;  // 自定义扩展图表
         }else{
             eCharts = echarts.init(this.chartElement, theme); // ECharts图表
         }
-        let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
-        this.chartElement["charts"] = chart.default.init(eCharts); //将图表实例赋值到dom实例上(便于后面拿到dom就可以拿到对应图表实例)
+        this.chartElement["charts"] = chart.default.init(eCharts,theme); //将图表实例赋值到dom实例上(便于后面拿到dom就可以拿到对应图表实例)
         return instance.resize();
     };
 
@@ -41,7 +42,6 @@ export function ChartsFactory(){
      * @returns {*}
      */
     instance.configs=(config)=>{
-        //let eCharts = echarts.getInstanceByDom(this.chartElement);
         let eCharts = this.chartElement.charts;
         if (!config) {
             let gswElement = this.chartElement.parentNode.parentNode;
@@ -71,20 +71,18 @@ export function ChartsFactory(){
            }
         }catch (e){}
         setTimeout(function(){ //延时执行等待echarts图表对象生成
-            let charElements = gswElement.querySelectorAll(".chart");
-            charElements.forEach(x=> {
+            let chartElement = gswElement.querySelectorAll(".chart");
+            chartElement.forEach(x=> {
                 let [_height,_dataLayout] = [gswElement.clientHeight, gswElement.getAttribute("data-l")];
                 if(_dataLayout==0){
-                    _height = _height / charElements.length;
+                    _height = _height / chartElement.length;
                 }else if(_dataLayout > 1){
-                    _height = _height / Math.ceil(charElements.length / _dataLayout);
+                    _height = _height / Math.ceil(chartElement.length / _dataLayout);
                 }
                 x.style.height = _height+'px';
-                //echarts.getInstanceByDom(x).resize();
-                x.charts.resize();
+                //x.charts.resize();
             });
-            charElements.forEach(x=> {
-                //echarts.getInstanceByDom(x).resize()
+            chartElement.forEach(x=> {
                 x.charts.resize();
             });
         });
@@ -96,7 +94,6 @@ export function ChartsFactory(){
      * @param chartTempletElement
      */
     instance.destroy= ()=>{
-        //let eCharts = echarts.getInstanceByDom(this.chartElement);
         let eCharts = this.chartElement.charts;
         window.clearTimeout(eCharts.timeout);
         eCharts.dispose();
@@ -115,7 +112,7 @@ export function ChartsFactory(){
     instance.settings= (param)=>{
         let charElements = document.querySelectorAll(".chart");
         charElements.forEach(x=> {
-            let eCharts = echarts.getInstanceByDom(x);
+            let eCharts = x.charts;
             eCharts.extend.options(eCharts, param);
         });
     };

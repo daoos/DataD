@@ -3,6 +3,7 @@ import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
 import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory} from './components'
 import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
+import {DrawNavgetion} from "./components/drawNavgetion";
 
 export default {
     components: {
@@ -37,6 +38,12 @@ export default {
         }
     },
     watch: {
+        app:{
+            handler(newName) {
+                DrawNavgetion("#svgroot",newName.theme).setTheme();
+            },
+            deep: true
+        },
         templet(){
             this.$nextTick(function(){
                 CreateGridsLayoutStyle(this.$refs.gridMain);

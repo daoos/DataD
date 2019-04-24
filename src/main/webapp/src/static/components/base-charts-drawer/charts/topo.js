@@ -2,9 +2,10 @@ import common from "./common";
 import gojs from "../../gojs/go";
 
 /**
- * topo 拓扑图（非Echars）
+ * topo 拓扑图
  */
 export default{
+    group:"MyCharts", //（自定义图表，即：非Echars）
     init(chartElement){
         chartElement.setAttribute("id","topo_"+Date.now());
         let myDiagram = this._topoTemplet(chartElement.getAttribute("id"), false);
@@ -172,9 +173,7 @@ export default{
         let originalNodes = _this._originalSeries(diagram);
         let legends =[];
         for(let elem of originalNodes.values()){
-            if(elem.id) {
-                legends.push(elem.id)
-            }
+            if(elem.id) legends.push(elem.id);
         }
         let params = Object.assign({legends:legends, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
@@ -265,7 +264,6 @@ export default{
         let levelColors = ["#AC193D", "#2672EC", "#8C0095", "#5133AB","#008299", "#D24726", "#008A00", "#094AB2"];
         let color = levelColors[4];
         let $ = go.GraphObject.make;
-        console.log("========go.Diagram====",domId);
         let myDiagram = $(go.Diagram, domId,{
             "padding":50,
             "initialAutoScale": go.Diagram.Uniform,

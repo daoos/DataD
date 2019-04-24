@@ -1,29 +1,48 @@
 /***Less函数定义**/
 //Less主题样式动态切换
-.-theme{
+//.-theme{
+//    .theme();
+//    .theme(rgba(240,240,240,.8));
+//    &:before{
+//        content: '- 无选择模板 -';
+//        position: absolute;
+//        z-index: -1;
+//        top:50%;
+//        left:50%;
+//        transform: translate(-50%);
+//        text-align: center;
+//        font-size: 32px;
+//        font-weight: bold;
+//        color:rgba(0,0,0,.08);
+//    }
+//}
+.-theme,.shine-theme,.customed-theme,.infographic-theme,.macarons-theme,.roma-theme{
     .theme();
-    //.theme(rgba(240,240,240,.8));
-    //&:before{
-    //    content: '- 无选择模板 -';
-    //    position: absolute;
-    //    z-index: -1;
-    //    top:50%;
-    //    left:50%;
-    //    transform: translate(-50%);
-    //    text-align: center;
-    //    font-size: 32px;
-    //    font-weight: bold;
-    //    color:rgba(0,0,0,.08);
-    //}
-}
-.shine-theme,.customed-theme,.infographic-theme,.macarons-theme,.roma-theme{
-    .theme();
+    .gs-w{
+        border: 1px solid rgba(0,0,0,.1) !important;
+    }
 }
 .dark-theme{
     .theme(radial-gradient(#0e284d 0%, #1f2630 70%));
+    .gs-w{
+        border: 1.5px solid rgba(0,0,0,.5)!important;
+        background:
+        linear-gradient(to left, #4daff0, #4daff0) left top no-repeat,
+        linear-gradient(to bottom, #4daff0, #4daff0) left top no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) right top no-repeat,
+        linear-gradient(to bottom, #4daff0, #4daff0) right top no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) left bottom no-repeat,
+        linear-gradient(to bottom, #4daff0, #4daff0) left bottom no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat;
+        background-size: 2px 7px, 7px 2px, 2px 7px, 7px 2px;
+    }
 }
 .vintage-theme{
     .theme(rgba(254,248,239,1));
+    .gs-w{
+        border: 1px solid rgba(0,0,0,.1) !important;
+    }
 }
 .theme(@bg:url(images/bg.png)){
     background: @bg;
@@ -96,8 +115,6 @@ html,body{
         .main-box{
             height: 100%;
             #box{
-                //background: radial-gradient(#0e284d 0%, #1f2630 70%);
-                //background: url(./img/bg.png);
                 height: inherit;
                 border:1px solid #000000;
                 box-shadow: 0px 0px 15px;
@@ -170,22 +187,11 @@ html,body{
                             overflow: hidden;
                             position: absolute;
                             box-sizing: border-box;
-                            border: 1px solid rgba(0, 0, 0, .4);
-                            /*background:
-                                    linear-gradient(to left, #4daff0, #4daff0) left top no-repeat,
-                                    linear-gradient(to bottom, #4daff0, #4daff0) left top no-repeat,
-                                    linear-gradient(to left, #4daff0, #4daff0) right top no-repeat,
-                                    linear-gradient(to bottom, #4daff0, #4daff0) right top no-repeat,
-                                    linear-gradient(to left, #4daff0, #4daff0) left bottom no-repeat,
-                                    linear-gradient(to bottom, #4daff0, #4daff0) left bottom no-repeat,
-                                    linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat,
-                                    linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat;
-                            background-size: 2px 7px, 7px 2px, 2px 7px, 7px 2px;*/
                             &[data-x="1"]{
-                                border-left:none;
+                                border-left:none!important;
                             }
                             &[data-y="1"]{
-                                border-top:none;
+                                border-top:none!important;
                             }
                             .chartTemplet{
                                 list-style: none;
