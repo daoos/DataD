@@ -17,7 +17,7 @@ Mock.mock(/(grids)/,function(options){
 Mock.mock(/(charts\/linebar)/,function(options){
     console.debug("---mock---",options);
     let result = { series: {}, xAxis:[] };
-    let {legends,duration,startTime,endTime} = JSON.parse(options.body);
+    let {legends,duration,startTime,endTime} = options.body; //JSON.parse(options.body);
     legends.forEach((legend)=>{
         result.series[legend] = [];
     });
@@ -46,7 +46,7 @@ Mock.mock(/(charts\/linebar)/,function(options){
 Mock.mock(/(charts\/pie)/,function(options){
     console.debug("---mock---",options);
     let series = {};
-    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let {legends,startTime,endTime} = options.body; //JSON.parse(options.body);
     legends.forEach((legend)=>{
         series[legend] = Mock.Random.natural(0,1000);
     });
@@ -57,7 +57,7 @@ Mock.mock(/(charts\/pie)/,function(options){
 Mock.mock(/(charts\/radar)/,function(options){
     console.debug("---mock---",options);
     let series = {};
-    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let {legends,startTime,endTime} = options.body; //JSON.parse(options.body);
     legends.forEach((legend)=>{
         series[legend] = [Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100)];
     });
@@ -67,7 +67,7 @@ Mock.mock(/(charts\/radar)/,function(options){
 //水位图测试数据
 Mock.mock(/(charts\/liquidfill)/,function(options){
     console.debug("---mock---",options);
-    let {startTime,endTime} = JSON.parse(options.body);
+    let {startTime,endTime} = options.body; //JSON.parse(options.body);
     let series = Mock.Random.natural(30,100)/100;
     return series;
 });
@@ -97,7 +97,7 @@ Mock.mock(/(charts\/topo)/,function(options){
    }
    */
     console.debug("---mock---",options);
-    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let {legends,startTime,endTime} = options.body; //JSON.parse(options.body);
     let result = {
         "series":[]
     };

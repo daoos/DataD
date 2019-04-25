@@ -32,6 +32,7 @@ export function ChartsFactory(){
         }else{
             eCharts = echarts.init(this.chartElement, theme); // ECharts图表
         }
+        eCharts.themeName = theme;
         this.chartElement["charts"] = chart.default.init(eCharts,theme); //将图表实例赋值到dom实例上(便于后面拿到dom就可以拿到对应图表实例)
         return instance.resize();
     };

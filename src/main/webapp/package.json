@@ -42,6 +42,7 @@
     "echarts-liquidfill": "^2.0.4",
     "html2canvas": "^1.0.0-rc.1",
     "iview": "^3.3.3",
+    "jquery": "^3.4.0",
     "qs": "^6.6.0",
     "snapsvg": "^0.5.1",
     "sortablejs": "^1.8.4",

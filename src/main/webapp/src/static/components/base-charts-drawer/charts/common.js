@@ -1,4 +1,4 @@
-import axios from "axios";
+import jquery from "jquery";
 require('../../../../service/serverApi');
 
 /**
@@ -16,20 +16,95 @@ export default{
         {id:"vintage", colors: ["#d87c7c","#919e8b","#d7ab82","#6e7074","#61a0a8","#efa18d","#787464","#cc7e63"],titleColor:"#333333"}
     ],
 
-    start(chart, url, params, asynInterval=3){
+    aJax(url, params, dataType){
+        let ajaxOption = { url:url, data:params, dataType:dataType, type:"POST", jsonp:"jsonpcallback", processData:false};
+        return {
+            defual(){
+                // 1：默认内部域名访问
+                return new Promise((resolve,reject)=>{
+                    jquery.ajax(ajaxOption).done(response=>{
+                        resolve(response);
+                    }).fail(error=>{
+                        console.error(JSON.stringify(ajaxOption,null,4));
+                        console.error("==1=Defual Access Fail -> Jsonp Access===",error);
+                        reject(error);
+                    });
+                });
+            },
+            jsonp(){
+                // 2：Jsonp 跨域名访问
+                return new Promise((resolve,reject)=>{
+                    jquery.ajax(Object.assign(ajaxOption,{dataType:"jsonp"})).done(response=>{
+                        resolve(response);
+                    }).fail(error=>{
+                        console.error("==2=Jsonp Access Fail -> Http Proxy===",error);
+                        reject(error);
+                    });
+                });
+            },
+            proxy(proxy_url = "/chart/http_proxy_forward"){
+                // 3：服务器 Http 代理转发
+                return new Promise((resolve,reject)=>{
+                    Object.assign(params,{url:url});
+                    jquery.ajax(Object.assign(ajaxOption,{url:proxy_url})).done(response=>{
+                        resolve(response);
+                    }).fail(error=>{
+                        console.error("==3=Http Proxy Fail===",error);
+                        reject(error);
+                    });
+                });
+            }
+        }
+    },
+
+    start(chart, url, params, asynInterval=3, dataType="json", isSeries=true){
         this.requestCount++;
         this.stop(chart);
-        let isSeries = true;
         if(params["startTime"] && params["endTime"]){
             isSeries = false;
         }
         return (callback)=>{
-            axios.post(url, params).then(response =>{
-                callback(response.data, isSeries);
-            }).finally(()=>{
+            let _ajax = this.aJax(url, params, dataType);
+            let _defual = _ajax.defual();
+            if(this.requestCount==1){
+                _defual
+                .catch(error=>{
+                    return _ajax.jsonp().then(response=>{
+                        dataType="jsonp";
+                        return response;
+                    });
+                })
+                .catch(error=>{
+                    let proxy_url = "/chart/http_proxy_forward";
+                    return _ajax.proxy(proxy_url).then(response=>{
+                        Object.assign(params,{url:url});
+                        url=proxy_url;
+                        return response;
+                    }).catch(error=>{
+                        isSeries = false;
+                        let theme = this.themes.filter(x=> x.id.includes(chart.themeName));
+                        chart.showLoading(null, {
+                            text: '无效访问',
+                            color: '#c23531',
+                            textColor: theme.length==0?"#333333":theme[0].titleColor,
+                            maskColor: 'rgba(0, 0, 0, 0)'
+                        });
+                        return error;
+                    });
+                });
+            }
+            _defual
+            .then(response=>{
+                callback(response, isSeries);
+            }).catch(error=>{
+                if(this.requestCount>2) {
+                    console.error("===error=访问间接终端==", error);
+                }
+            })
+            .finally(()=>{
                 if(isSeries){
                     chart.timeout = setTimeout(()=>{
-                        this.start(chart, url, params, asynInterval)(callback);
+                        this.start(chart, url, params, asynInterval, dataType, isSeries)(callback);
                     },Math.ceil(asynInterval)*1000);
                 }
             });
