@@ -1,5 +1,4 @@
 import jquery from "jquery";
-require('../../../../service/serverApi');
 
 /**
  * 公共代码

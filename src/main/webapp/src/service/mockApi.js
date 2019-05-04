@@ -111,3 +111,61 @@ Mock.mock(/(charts\/topo)/,function(options){
     return result;
 });
 
+//地图测试数据
+Mock.mock(/(charts\/map)/,function(options){
+    /*地图:
+   {
+       "series":[
+            {name:"北京", value:100},
+            {name:"长沙", value:60},
+            {name:"上海", value:98, to:"北京"},
+            {name:"广州", value:90, to:"北京"},
+            {name:"深圳", value:75, from:"北京"},
+            {name:"武汉", value:60, from:"上海"}
+        ]
+   }
+   */
+    console.debug("---mock---",options);
+    function getValue(){
+        return Mock.Random.natural(0, 100);
+    };
+    let {startTime,endTime,max,min} = options.body;
+    let series  = Mock.mock({
+        "series|5-22": [
+            {
+                "name|+1": [
+                    "北京",
+                    "上海",
+                    "广州",
+                    "深圳",
+                    "杭州",
+                    "武汉",
+                    "长沙",
+                    "成都",
+                    "重庆",
+                    "拉萨",
+                    "黑龙江",
+                    "吉林",
+                    "沈阳",
+                    "海口",
+                    "呼和浩特",
+                    "乌鲁木齐",
+                    "西安",
+                    "贵阳",
+                    "南京",
+                    "天津",
+                    "银川",
+                    "长春",
+                ],
+                "value|1-100":1,
+                "to|1": [
+                    "北京",
+                    "上海",
+                    "广州",
+                    "深圳"
+                ],
+            }
+        ]
+    });
+    return series;
+});

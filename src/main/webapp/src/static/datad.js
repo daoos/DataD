@@ -240,7 +240,10 @@ export default {
                                         ul.appendChild(ol);
                                     }
                                     gswEl.appendChild(ul);
-                                    ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
+                                    //ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
+                                    _this.$nextTick(()=>{
+                                        ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
+                                    });
                                 });
                             });
                         });
