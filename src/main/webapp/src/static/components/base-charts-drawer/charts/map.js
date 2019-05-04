@@ -220,7 +220,13 @@ export default{
                 subtext:''
             },
             tooltip : {
-                trigger: 'item'
+                trigger: 'item',
+                formatter:function(params, ticket, callback){
+                    let hoverMessage = params.data;
+                    if(params.name && hoverMessage){
+                        return params.marker + params.name + '：'+hoverMessage.value[2];
+                    }
+                }
             },
             visualMap: { //图例值控制
                 min: 0,
@@ -304,6 +310,7 @@ export default{
                     coordinateSystem: 'geo',
                     data: this._convertData(demoData),
                     symbolSize: function (val) {
+                        console.log(val[2] );
                         return val[2] / 10;
                     },
                     label: {
@@ -344,6 +351,12 @@ export default{
         option.title[0].text = config.title;
         option.visualMap[0].max = _max;
         option.visualMap[0].min = _min;
+        option.series[1].symbolSize = function (val) {
+            return val[2] / (_max/10);
+        };//top5
+        option.series[2].symbolSize = function (val) {
+            return val[2] / (_max/10);
+        };//other
         eCharts.setOption(option);
         eCharts.extend = this;
 
