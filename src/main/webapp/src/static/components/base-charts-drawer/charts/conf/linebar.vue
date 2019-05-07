@@ -3,11 +3,27 @@
         <charts-common ref="commonConf" :chartName="chartName"></charts-common>
         <Row>
             <Col span="3" class="tab">刷新方式：</Col>
-            <Col span="21">
+            <Col span="10">
                 <RadioGroup v-model="refurbishMode" size="large">
                     <Radio label="add">追加</Radio>
                     <Radio label="cover">覆盖</Radio>
                 </RadioGroup>
+            </Col>
+            <Col span="11" style="text-align: right;font-size: 9px;">
+                <Tooltip placement="bottom" max-width=500 >
+                    数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+<pre slot="content">
+{
+    "series":{
+        "图例A":[24,765,45,66],
+        "图例B":[8,34,77,21,45]
+    },
+    "xAxis":["00:01","00:02","00:03","00:04"]
+}
+
+说明：当xAxis数组中值为时间戳(秒或毫秒）时，图表数据轴会自动格式化。
+"xAxis":[1557199616,1557199620,1557199624,1557199628]</pre>
+                </Tooltip>
             </Col>
         </Row>
         <Divider dashed/>

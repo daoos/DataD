@@ -20,7 +20,17 @@
             </Col>
         </Row>
         <Divider dashed/>
-
+        <Row>
+            <Col span="24" style="text-align: right;font-size: 9px;">
+            <Tooltip placement="bottom" max-width=300 >
+                数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+<pre slot="content">
+{
+    "series":0.5  //取值：0 至 1
+}</pre>
+            </Tooltip>
+            </Col>
+        </Row>
     </div>
 </template>
 

@@ -11,6 +11,7 @@
             </ButtonGroup>
             </Col>
         </Row>
+
         <Row>
             <Col span="24">
             <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
@@ -29,6 +30,21 @@
                     </span>
                 </template>
             </Table>
+            </Col>
+        </Row>
+
+        <Row>
+            <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
+                <Tooltip placement="bottom" max-width=300 >
+                    数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+<pre slot="content">
+{
+    "series":{
+        "图例A":[43,87,10],
+        "图例B":[23,34,66]
+     }
+}</pre>
+                </Tooltip>
             </Col>
         </Row>
         <Row @click.native="handleSave(editIndex);editIndex = -1;" style="height:200px;"></Row>

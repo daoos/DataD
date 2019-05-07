@@ -39,7 +39,7 @@ Mock.mock(/(charts\/linebar)/,function(options){
             result.xAxis.push(i);
         }
     }
-    return result
+    return result;
 });
 
 //饼图测试数据
@@ -50,7 +50,7 @@ Mock.mock(/(charts\/pie)/,function(options){
     legends.forEach((legend)=>{
         series[legend] = Mock.Random.natural(0,1000);
     });
-    return series;
+    return {series: series};
 });
 
 //雷达图测试数据
@@ -61,15 +61,17 @@ Mock.mock(/(charts\/radar)/,function(options){
     legends.forEach((legend)=>{
         series[legend] = [Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100)];
     });
-    return series;
+    return {series: series};
 });
 
 //水位图测试数据
 Mock.mock(/(charts\/liquidfill)/,function(options){
     console.debug("---mock---",options);
     let {startTime,endTime} = options.body; //JSON.parse(options.body);
-    let series = Mock.Random.natural(30,100)/100;
-    return series;
+    let result = {
+        series:Mock.Random.natural(30,100)/100
+    };
+    return result;
 });
 
 //数据滚动图测试数据
@@ -91,7 +93,7 @@ Mock.mock(/(charts\/topo)/,function(options){
     /*数据滚动图: alarmlevel: 0 - 3
    {
        "series":[
-            {id:'A', alarmlevel:0, items:'[{name:'TPS',value:123},{name:'AVG',value:456}]}',
+            {id:'A', alarmlevel:0, items:[{name:'TPS',value:123},{name:'AVG',value:456}]},
             {id:'B', alarmlevel:2, items:[{name:'TPS',value:123},{name:'AVG',value:456}]},
         ]
    }

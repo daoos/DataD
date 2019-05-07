@@ -20,7 +20,7 @@
             </Col>
         </Row>
         <Row>
-            <Col span="23" style="text-align: right;margin-top: 20px;font-size: 9px;" >
+            <Col span="23" style="text-align: right;margin-top: 20px;font-size: 9px;">
                 <Tooltip placement="bottom" max-width=300 >
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
 <pre slot="content">
@@ -33,8 +33,7 @@
         {name:"深圳", value:75, from:"北京"},
         {name:"武汉", value:60, from:"上海"}
     ]
-}
-</pre>
+}</pre>
                 </Tooltip>
             </Col>
         </Row>

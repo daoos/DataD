@@ -9,6 +9,20 @@
                 <div><div id="myInfo"></div></div>
             </div>
         </div>
+        <Row>
+            <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
+            <Tooltip placement="bottom" max-width=550 >
+                数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+<pre slot="content">
+{
+   "series":[
+        {id:'A', alarmlevel:0, items:[{name:'TPS',value:3},{name:'AVG',value:5}]},
+        {id:'B', alarmlevel:2, items:[{name:'TPS',value:2},{name:'AVG',value:4}]}
+    ]
+}</pre>
+            </Tooltip>
+            </Col>
+        </Row>
     </div>
 </template>
 

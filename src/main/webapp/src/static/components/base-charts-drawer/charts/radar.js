@@ -79,10 +79,12 @@ export default{
         let Common = Object.assign({},common);
         Common.start(eCharts, config.url||"/charts/radar", params, config.interval)(data =>{
             console.debug("===成功=radar==",data);
-            _seriesData.forEach(x=> x.value = data[x.name]);
-            option.series[0].data = _seriesData;
-            eCharts.setOption(option);
-            eCharts.hideLoading();
+            if(data["series"]){
+                _seriesData.forEach(x=> x.value = data["series"][x.name]);
+                option.series[0].data = _seriesData;
+                eCharts.setOption(option);
+                eCharts.hideLoading();
+            }
         });
     }
 }
