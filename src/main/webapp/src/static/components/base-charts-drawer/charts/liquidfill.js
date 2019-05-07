@@ -5,9 +5,10 @@ import common from "./common";
  */
 export default{
     defaultColor:"#dd6b66",
-    init(eCharts){
-        if(eCharts._theme){
-            this.defaultColor = eCharts._theme.color[0];
+    init(eCharts,themeName){
+        let theme = common.themes.filter(x=> x.id.includes(themeName));
+        if(theme && theme.length>0){
+            this.defaultColor = theme[0].colors[0];
         }
         eCharts.setOption({
             backgroundColor:"transparent",

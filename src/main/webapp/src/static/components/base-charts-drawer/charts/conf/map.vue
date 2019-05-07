@@ -4,12 +4,9 @@
         <Row>
             <Col span="3" class="tab">选择国家：</Col>
             <Col span="9">
-                <Select placeholder="请选择（默认：中图）" style="width:200px">
-                    <Option value="world" disabled>世界</Option>
+                <Select v-model="map" placeholder="请选择（默认：世界）" style="width:200px">
+                    <Option value="world">世界</Option>
                     <Option value="china">中国</Option>
-                    <Option value="thailand" disabled>泰国</Option>
-                    <Option value="usa" disabled>美国</Option>
-                    <Option value="britain" disabled>英国</Option>
                 </Select>
             </Col>
             <Col span="3" class="tab" title="返回数据的最大小值">数据范围：</Col>
@@ -49,6 +46,7 @@
         data () {
             return {
                 chartName:"地图",
+                map:"world",
                 max:100,
                 min:0
             }
@@ -57,6 +55,7 @@
             initConfig(config){
                 let _aip = config["api"];
                 if(_aip){
+                    this.map = _aip.map;
                     this.max =_aip.max;
                     this.min = _aip.min;
                 }
@@ -66,6 +65,7 @@
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     commonConf.api = {
+                        map:this.map,
                         max:this.max,
                         min:this.min
                     };

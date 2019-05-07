@@ -1,5 +1,6 @@
 import common from "./common";
 import 'echarts/map/js/china';
+import 'echarts/map/js/world';
 
 
 /**
@@ -7,6 +8,10 @@ import 'echarts/map/js/china';
  */
 export default{
     geoCoordMap:{
+        "New York": [-74.005941,40.712784],
+        "Sydney": [151.209296,-33.86882],
+        "Moscow": [37.6173,55.755826],
+
         '海门':[121.15,31.89],
         '鄂尔多斯':[109.781327,39.608266],
         '招远':[120.38,37.35],
@@ -200,6 +205,10 @@ export default{
     },
     init(eCharts){
         let demoData = [
+            {name:"New York", value:100},
+            {name:"Sydney", value:10, from:"北京"},
+            {name:"Moscow", value:80, from:"北京"},
+
             {name:"北京", value:100},
             {name:"上海", value:98, to:"北京"},
             {name:"广州", value:90, to:"北京"},
@@ -232,14 +241,14 @@ export default{
                 min: 0,
                 max: 100,
                 calculable: true,
-                show: true,
+                show: false,
                 color: ['#f44336', '#fc9700', '#ffde00', '#ffde00', '#00eaff'],
                 textStyle: {
                     color: '#fff'
                 }
             },
             geo: {
-                map: 'china',
+                map: 'world',
                 label: {
                     emphasis: {
                         show: false
@@ -310,7 +319,6 @@ export default{
                     coordinateSystem: 'geo',
                     data: this._convertData(demoData),
                     symbolSize: function (val) {
-                        console.log(val[2] );
                         return val[2] / 10;
                     },
                     label: {
@@ -331,7 +339,7 @@ export default{
                 },
                 {
                     type: 'map',
-                    map: 'china',
+                    map: 'world',
                     itemStyle: {
                         normal: {
                             areaColor: '#031525',
@@ -346,9 +354,10 @@ export default{
     },
     options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
-        let [_max,_min] = [config.api.max||100, config.api.min||0];
+        let [_map,_max,_min] = [config.api.map||"world",config.api.max||100, config.api.min||0];
         console.debug("===map===",option,config);
         option.title[0].text = config.title;
+        option.geo[0].map = _map;
         option.visualMap[0].max = _max;
         option.visualMap[0].min = _min;
         option.series[1].symbolSize = function (val) {
@@ -357,6 +366,7 @@ export default{
         option.series[2].symbolSize = function (val) {
             return val[2] / (_max/10);
         };//other
+        option.series[3].map = _map;
         eCharts.setOption(option);
         eCharts.extend = this;
 

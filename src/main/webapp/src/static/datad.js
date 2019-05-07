@@ -183,7 +183,10 @@ export default {
             let curTheme = sessionStorage.getItem("curTheme");
             if(curTheme){
                 let _themeConf= JSON.parse(curTheme);
-                Object.assign(_this.app,{theme:_themeConf.theme, background:_themeConf.background})
+                Object.assign(_this.app,{theme:_themeConf.theme, background:_themeConf.background});
+                if(Array.isArray(_themeConf["grid"])){
+                    this.templet = _themeConf.grid;
+                }
             }
             if(pageId){
                 let gridMainEl = this.$refs.gridMain;

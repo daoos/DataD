@@ -2,7 +2,7 @@
     <div class="main-container">
         <nav class="navgetion" v-if="isEdit">
             <nav class="menu">
-                <div @click="openDrawerFun('theme-drawer',1)"><Icon type="ios-color-palette"/>主题</div>
+                <div @click="openDrawerFun('theme-drawer')"><Icon type="ios-color-palette"/>主题</div>
                 <div @click="openDrawerFun('grids-drawer')"><Icon type="md-apps"/>模板</div>
                 <div @click="openDrawerFun('base-charts-drawer')"><Icon type="ios-stats" />常规图表</div>
                 <div onclick="alert('未上线')"><Icon type="ios-pulse" />内置图表</div>

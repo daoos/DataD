@@ -2,6 +2,14 @@
     <div class="grids-drawer">
         <Drawer title="模板" :transfer="false" :inner="true" :mask="false" :width="211" :styles="styles" placement="left" v-model="isDrawerLeft">
             <ul id="gridTemplet" ref="gridTemplet">
+                <div class="grids-list" v-for="key in Object.keys(templetsDefault)">
+                    <li :id="'grid' + key"  :data-id="key" class="grids" @click="$emit('setTemplet$Parent',templetsDefault[key])">
+                        <ul>
+                            <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l" class="gs-w" v-for="value in templetsDefault[key]" ></li>
+                        </ul>
+                    </li>
+                </div>
+
                 <div class="grids-list" v-for="key in Object.keys(templets)">
                     <li :id="'grid' + key"  :data-id="key" class="grids" @click="$emit('setTemplet$Parent',templets[key])">
                         <ul>
@@ -66,16 +74,7 @@
     import { CreateGridsLayoutStyle } from '../';
     import {addDdGrid, deleteDdGrid, selectAllDdGrid} from "../../../service/serverApi"
 
-    let templets = {
-        // "test":[
-        //     {
-        //         "x": 1,
-        //         "y": 1,
-        //         "w": 4,
-        //         "h": 6
-        //     }
-        // ]
-    };
+    let templets = {};
 
     export default {
         props:["isDrawerLeft","isDrawerRight"],
@@ -89,6 +88,45 @@
                     height: 'calc(100% - 90px)',
                     overflow: 'auto',
                     position: 'static'
+                },
+                templetsDefault:{
+                    "def1":[
+                        {x: 1, y: 1, w: 4, h: 6, l: 0}
+                    ],
+                    "def2":[
+                        {x: 1, y: 4, w: 4, h: 3, l: 0},
+                        {x: 1, y: 1, w: 4, h: 3, l: 0}
+                    ],
+                    "def3":[
+                        {x: 1, y: 1, w: 4, h: 2, l: 0},
+                        {x: 1, y: 3, w: 4, h: 2, l: 0},
+                        {x: 1, y: 5, w: 4, h: 2, l: 0}
+                    ],
+                    "def4":[
+                        {x: 3, y: 1, w: 2, h: 3, l: 0},
+                        {x: 1, y: 4, w: 2, h: 3, l: 0},
+                        {x: 1, y: 1, w: 2, h: 3, l: 0},
+                        {x: 3, y: 4, w: 2, h: 3, l: 0}
+                    ],
+                    "def7":[
+                        {x: 1, y: 1, w: 1, h: 2, l: 0},
+                        {x: 2, y: 1, w: 1, h: 2, l: 0},
+                        {x: 3, y: 1, w: 1, h: 2, l: 0},
+                        {x: 4, y: 1, w: 1, h: 2, l: 0},
+                        {x: 1, y: 3, w: 2, h: 2, l: 0},
+                        {x: 3, y: 3, w: 2, h: 2, l: 0},
+                        {x: 1, y: 5, w: 4, h: 2, l: 0}
+                    ],
+                    "def8":[
+                        {x: 1, y: 5, w: 1, h: 2, l: 0},
+                        {x: 1, y: 3, w: 1, h: 2, l: 0},
+                        {x: 1, y: 1, w: 1, h: 2, l: 0},
+                        {x: 2, y: 1, w: 2, h: 2, l: 0},
+                        {x: 4, y: 1, w: 1, h: 2, l: 0},
+                        {x: 4, y: 3, w: 1, h: 2, l: 0},
+                        {x: 2, y: 3, w: 2, h: 4, l: 0},
+                        {x: 4, y: 5, w: 1, h: 2, l: 0}
+                    ]
                 },
                 templets: {},
                 gridLayout: []
@@ -150,6 +188,7 @@
                 let datas = response.data;
                 if(datas){
                     datas.forEach(x=> templets[x.key] = x.value);
+                    console.log(templets);
                     this.templets = templets;
                 }
             });
