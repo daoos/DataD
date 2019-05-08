@@ -1,16 +1,15 @@
 <template>
     <div class="theme-drawer">
-        <Drawer title="主题列表" :transfer="false" :inner="true" :mask="false" :width="390" :styles="styles" placement="left" v-model="isDrawerLeft">
+        <Drawer title="主题列表" :transfer="false" :inner="true" :mask="false" :width="390"  placement="left" v-model="isDrawerLeft">
             <div class="theme-templet">
                 <template v-for="item in models">
                     <img :src="require('../../images/theme/' + item.img)" @click="themeSelect(item)" width=356 height=200 style="box-shadow:0px 0px 2px rgba(0,0,0,.6);cursor: pointer;"/>
                     <Divider dashed />
                 </template>
             </div>
-
             <div class="drawer-footer">
                 <ButtonGroup>
-                    <Button @click="isDrawerRight = true" type="primary">高级设置</Button>
+                    <Button @click="isDrawerRight=true;" type="primary">高级设置</Button>
                 </ButtonGroup>
             </div>
         </Drawer>
@@ -62,7 +61,6 @@
         props:["isDrawerLeft","isDrawerRight","app"],
         data() {
             return {
-                isDrawerRight:false,
                 models:[
                     {
                         name:"dark",
@@ -96,7 +94,6 @@
         },
         methods:{
             themeSelect(theme){
-                console.log(theme);
                 this.app.theme = theme.name;
                 this.app.background="";
                 this.submitConf(JSON.stringify(theme.grid));
