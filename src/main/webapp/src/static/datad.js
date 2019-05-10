@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
-import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory} from './components'
+import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
 import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
 import {DrawNavgetion} from "./components/drawNavgetion";
 
@@ -11,10 +11,19 @@ export default {
         'base-charts-drawer':baseChartsDrawer,
         'collection-drawer':collectionDrawer,
         'theme-drawer':themeDrawer,
-        'search-drawer':searchDrawer
+        'search-drawer':searchDrawer,
+        'business-charts-drawer':businessChartsDrawer
     },
     data() {
         return {
+            isDrawerOpen:{
+                'theme-drawer':[false, false],
+                'grids-drawer':[false, false],
+                'base-charts-drawer':[false, false],
+                'business-charts-drawer':[false, false],
+                'collection-drawer':[false, false],
+                'search-drawer':[false, false]
+            },
             isEdit:false,
             app:{
                 id:null,
@@ -24,11 +33,7 @@ export default {
                 background:"",
                 photo:""
             },
-            sysDate:new Date(),
-            childComponentDrawer:null,
-            isOpenDrawer:0,
-            isDrawerLeft:false,
-            isDrawerRight:false,
+            sysDate:Date.now(),
             templet:[] //主板当前选中格子模型
         }
     },
@@ -64,21 +69,14 @@ export default {
                     });
                 });
             });
-        },
-        isOpenDrawer(newVal){
-            if(newVal==-1){
-                this.isDrawerLeft= !(this.isDrawerRight = false);
-            }else if(newVal==1){
-                this.isDrawerLeft= !(this.isDrawerRight = true);
-            }else{
-                this.isDrawerLeft= this.isDrawerRight = false;
-            }
         }
     },
     methods: {
-        openDrawerFun(componentName, dir=-1){
-            this.childComponentDrawer = componentName;
-            this.isOpenDrawer = (this.isOpenDrawer==dir ? 0 :dir);
+        openDrawerFun(componentName,isDrawerLeft=true, isDrawerRight=false){
+            Object.keys(this.isDrawerOpen).forEach(x=>{
+                this.isDrawerOpen[x] = [false,false];
+            });
+            this.isDrawerOpen[componentName] = [isDrawerLeft,isDrawerRight];
         },
         setTemplet(gridsConf){
             this.templet = gridsConf;
@@ -150,7 +148,7 @@ export default {
                             let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
                             el.l = +gswEl.getAttribute("data-l");
                             el.chartList = [];
-                            gswEl.querySelectorAll(".chart").forEach(x=>{
+                            gswEl.querySelectorAll("#gridMain .chart").forEach(x=>{
                                 el.chartList.push( ChartsFactory.call({"chartElement":x}).configs() );
                             });
                             return el;
@@ -209,6 +207,7 @@ export default {
                                     let ul = document.createElement('ul');
                                     let chartEl = document.createElement('li');
                                     chartEl.setAttribute("data-id",config.chartType);
+                                    chartEl.setAttribute("business-data-id",config.baseChartType); //业务（内置）图表存在该属性
                                     chartEl.setAttribute("class","chart");
                                     ul.appendChild(chartEl);
                                     ul.setAttribute("class","chartTemplet");
@@ -223,9 +222,12 @@ export default {
                                         settingsBtuEl.setAttribute("chart-type",config.chartType);
                                         settingsBtuEl.onmousedown = (event)=>{
                                             event.stopPropagation();
-                                            _this.openDrawerFun('base-charts-drawer',1);
                                             _this.$nextTick(()=>{
-                                                window.BaseChartsDrawer.settingsCharts(event.target);
+                                                if(config.baseChartType){
+                                                    window.BusinessChartsDrawer.settingsCharts(event.target);
+                                                }else{
+                                                    window.BaseChartsDrawer.settingsCharts(event.target);
+                                                }
                                             });
                                         }
                                         let trashBtuEl = document.createElement('i');
@@ -243,7 +245,6 @@ export default {
                                         ul.appendChild(ol);
                                     }
                                     gswEl.appendChild(ul);
-                                    //ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
                                     _this.$nextTick(()=>{
                                         ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
                                     });
@@ -263,5 +264,9 @@ export default {
         this.zoom();
         //图表宽高自适应
         WindowResize(this);
+
+        // setInterval(()=>{
+        //     this.sysDate = Date.now();
+        // },1000)
     }
 }

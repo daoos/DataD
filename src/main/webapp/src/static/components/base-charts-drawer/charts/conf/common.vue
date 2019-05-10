@@ -7,7 +7,7 @@
             <Col span="3" class="tab">图表名称：</Col>
             <Col span="9"><Input v-model="title" placeholder="非必填..." clearable size="large" style="width: 200px"/></Col>
             <Col span="3" class="tab">数据URL：</Col>
-            <Col span="9"><Input v-model="url" type="url" placeholder="http://...(为空时为模拟数据)" clearable size="large" style="width: 200px" /></Col>
+            <Col span="9"><Input v-model="url" type="url" placeholder="http://...(为空时为模拟数据)" clearable size="large" style="width: 200px" :disabled="isDisabledUrl" :title="isDisabledUrl?'《内置图表》数据URL由内部提供':''"/></Col>
         </Row>
         <Divider dashed/>
         <Row>
@@ -35,15 +35,22 @@
         props:["chartName"],
         data() {
             return {
+                baseChartType:"", //业务（内置）图表拥有属性
                 chartType:"line",
                 title:"测试图表",
                 url:"",
                 interval:4,
-                layout:0,
+                layout:0
+            }
+        },
+        computed:{
+            isDisabledUrl(){
+                return this.baseChartType||this.baseChartType==""?true:false;
             }
         },
         methods: {
             initConfig(config){
+                this.baseChartType = config.baseChartType;
                 if(typeof(config)=="object"){
                     this.chartType = config.chartType;
                     this.title = config.title;

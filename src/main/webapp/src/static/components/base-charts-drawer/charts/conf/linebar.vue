@@ -10,7 +10,7 @@
                 </RadioGroup>
             </Col>
             <Col span="11" style="text-align: right;font-size: 9px;">
-                <Tooltip placement="bottom" max-width=500 >
+                <Tooltip placement="bottom-end" max-width=500 >
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
 <pre slot="content">
 {
@@ -41,15 +41,26 @@
             <Col span="24">
                 <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
                     <template slot-scope="{ row, index }" slot="legendTitle">
-                        <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
-                        <span v-else>
-                            <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                            <span v-else style="color:#ed4014">必填</span>
-                        </span>
+                        <template  v-if="legends && legends.length > 0">
+                            <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
+                                <Option :value="elem" v-for="elem in legends">{{elem}}</Option>
+                            </Select>
+                            <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                        <template v-else>
+                            <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
+                            <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
                     </template>
 
                     <template slot-scope="{ row, index }" slot="seriesType">
-                        <Select v-model="editSeriesType" v-if="editIndex === index" >
+                        <Select v-model="editSeriesType" v-if="editIndex === index">
                             <template v-if="seriesTypes">
                                 <Option :value="key" v-for="key in Object.keys(seriesTypes)">{{ seriesTypes[key] }}</Option>
                             </template>
@@ -89,7 +100,7 @@
 <script>
     import common from './common.vue';
     export default {
-        props:["seriesTypes","chartType"],
+        props:["seriesTypes","chartType","legends"],
         components: {
             'charts-common': common,
         },

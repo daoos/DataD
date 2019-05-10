@@ -18,7 +18,7 @@
         </Row>
         <Row>
             <Col span="23" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom" max-width=300 >
+                <Tooltip placement="bottom-end" max-width=300 >
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
 <pre slot="content">
 {

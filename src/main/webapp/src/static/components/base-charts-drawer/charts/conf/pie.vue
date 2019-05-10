@@ -14,28 +14,39 @@
 
         <Row>
             <Col span="24">
-            <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
-                <template slot-scope="{ row, index }" slot="legendTitle">
-                    <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
-                    <span v-else>
-                        <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                        <span v-else style="color:#ed4014">必填</span>
-                    </span>
-                </template>
-                <template slot-scope="{ row, index }" slot="color">
-                    <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
-                    <span v-else>
-                        <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
-                        <span v-else>自动</span>
-                    </span>
-                </template>
-            </Table>
+                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
+                    <template slot-scope="{ row, index }" slot="legendTitle">
+                        <template  v-if="legends && legends.length > 0">
+                            <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
+                                <Option :value="elem" v-for="elem in legends">{{elem}}</Option>
+                            </Select>
+                            <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                        <template v-else>
+                            <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
+                            <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="color">
+                        <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
+                        <span v-else>
+                            <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
+                            <span v-else>自动</span>
+                        </span>
+                    </template>
+                </Table>
             </Col>
         </Row>
 
         <Row>
             <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom" max-width=300 >
+                <Tooltip placement="bottom-end" max-width=500>
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
 <pre slot="content">
 {
@@ -54,6 +65,7 @@
 <script>
     import common from './common.vue';
     export default {
+        props:["legends"],
         components: {
             'charts-common': common,
         },

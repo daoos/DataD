@@ -47,7 +47,7 @@ export default{
                 type: 'line',
                 data: [5, 20, 36, 10, 10, 20]
             }]
-        });
+        },true);
         return eCharts;
     },
     options(eCharts, paramsDevelop){

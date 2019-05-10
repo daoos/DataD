@@ -171,3 +171,43 @@ Mock.mock(/(charts\/map)/,function(options){
     });
     return series;
 });
+
+
+/****==============================性能监控===========================****/
+//应用列表
+Mock.mock(/(apps)/,function(options){
+    let [body,type] = [options.body, options.type];
+    console.debug("---mock---",options);
+    let result = {
+        PTG: "PTA(支付网关)",
+        PTM: "PTB(核心mock)",
+        PTRG: "PTC(退款网关)"
+    };
+    return result;
+});
+
+//服务列表
+Mock.mock(/(service)/,function(options){
+    let [body,type] = [options.body, options.type];
+    console.debug("---mock---",options);
+    let result = [
+        "com.api.AccFrozenAndUnfrozenFacade"
+    ];
+    return result;
+});
+
+//方法列表
+Mock.mock(/(method)/,function(options){
+    let [body,type] = [options.body, options.type];
+    console.debug("---mock---",options);
+    let result = [{"id":4849105,"appName":"PTG","serviceName":"com.jdacc.api.AccFrozenAndUnfrozenFacade","className":"com.jdacc.api.AccFrozenAndUnfrozenFacade","methodName":"unfrozen(java.lang.String,java.lang.String,java.lang.String)","methodAlias":null,"codePath":null,"msgPath":null,"succCode":null,"failCode":null,"exData":null,"topics":null,"subscription":null,"timeout":2147483647,"status":8,"configType":3,"endPoint":false,"enabled":true,"argShot":null,"mdCode":"0592388acf9c83980d084f36b087955c","rpc":"C","lastModifiedUser":"system","lastModifiedTime":"2017-08-21T16:34:52.000+0000","waterLevelThreshold":0.0,"waterLevelCalc":3571.0,"waterLevelUsed":0,"capacityLastCalcTime":"2017-08-21T16:34:52.000+0000","capacityChokePoint":"thread","modifiedTime":"2017-08-21T16:34:51.000+0000","createdTime":"2017-04-20T10:12:48.000+0000","methodIcon":null,"configTypeName":"sf","rpcClient":true,"enhanced":false,"type":"sf"},{"id":5579371,"appName":"PTG","serviceName":"com.jdacc.api.AccFrozenAndUnfrozenFacade","className":"com.jdacc.api.AccFrozenAndUnfrozenFacade","methodName":"unfrozenToPay(java.lang.String,java.lang.String,java.lang.String)","methodAlias":null,"codePath":null,"msgPath":null,"succCode":null,"failCode":null,"exData":null,"topics":null,"subscription":null,"timeout":2147483647,"status":8,"configType":3,"endPoint":false,"enabled":true,"argShot":null,"mdCode":"238d4756d1dd3d711860f072e1aa3d22","rpc":"C","lastModifiedUser":null,"lastModifiedTime":"2017-08-10T02:16:07.000+0000","waterLevelThreshold":0.0,"waterLevelCalc":0.0,"waterLevelUsed":0,"capacityLastCalcTime":null,"capacityChokePoint":null,"modifiedTime":"2017-08-10T02:16:06.000+0000","createdTime":"2017-05-05T02:23:20.000+0000","methodIcon":null,"configTypeName":"sf","rpcClient":true,"enhanced":false,"type":"sf"},{"id":4834455,"appName":"PTG","serviceName":"com.jdacc.api.AccFrozenAndUnfrozenFacade","className":"com.jdacc.api.AccFrozenAndUnfrozenFacade","methodName":"frozen(java.lang.String,java.lang.String,java.lang.String)","methodAlias":null,"codePath":null,"msgPath":null,"succCode":null,"failCode":null,"exData":null,"topics":null,"subscription":null,"timeout":2147483647,"status":8,"configType":3,"endPoint":false,"enabled":true,"argShot":null,"mdCode":"4c6fdd1a54b0eb98b90f1cc73557ee31","rpc":"C","lastModifiedUser":null,"lastModifiedTime":"2017-08-10T02:16:07.000+0000","waterLevelThreshold":0.0,"waterLevelCalc":0.0,"waterLevelUsed":0,"capacityLastCalcTime":null,"capacityChokePoint":null,"modifiedTime":"2017-08-10T02:16:06.000+0000","createdTime":"2017-04-20T10:06:12.000+0000","methodIcon":null,"configTypeName":"sf","rpcClient":true,"enhanced":false,"type":"sf"}];
+    return result;
+});
+
+//获取指标
+Mock.mock(/(supplyconfig)/,function(options){
+    let [body,type] = [options.body, options.type];
+    console.debug("---mock---",options);
+    let result = ["TPS","AVG","TP","TP999"];
+    return result;
+});

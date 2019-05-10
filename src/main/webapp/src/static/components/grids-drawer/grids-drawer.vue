@@ -188,7 +188,6 @@
                 let datas = response.data;
                 if(datas){
                     datas.forEach(x=> templets[x.key] = x.value);
-                    console.log(templets);
                     this.templets = templets;
                 }
             });

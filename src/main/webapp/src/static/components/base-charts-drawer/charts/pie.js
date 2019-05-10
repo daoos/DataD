@@ -61,7 +61,7 @@ export default{
                     ]
                 }
             ]
-        });
+        },true);
         return eCharts;
     },
     options(eCharts, paramsDevelop){

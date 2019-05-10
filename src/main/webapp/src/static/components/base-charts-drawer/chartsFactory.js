@@ -23,9 +23,15 @@ export function ChartsFactory(){
             let curTheme = sessionStorage.getItem("curTheme");
             theme = curTheme && JSON.parse(curTheme).theme;
         }
-        let eCharts = null;
         let chartType = this.chartElement.getAttribute("data-id");
-        let chart = require("./charts/" + chartType);
+        let eCharts = null;
+        let chart = null;
+        try{
+            chart = require("./charts/" + chartType);
+        }catch (e) {
+            var baseChartType = this.chartElement.getAttribute("business-data-id"); //业务（内置）图表存在该属性
+            chart = require("../business-charts-drawer/charts/" + chartType); /***为了支持内置图表，这地方写死business-charts-drawer下的引用很不好，后期调整。***/
+        }
         let chartGroup = chart.default["group"];
         if(chartGroup==="MyCharts"){
             eCharts = this.chartElement;  // 自定义扩展图表
@@ -33,7 +39,7 @@ export function ChartsFactory(){
             eCharts = echarts.init(this.chartElement, theme); // ECharts图表
         }
         eCharts.themeName = theme;
-        this.chartElement["charts"] = chart.default.init(eCharts,theme); //将图表实例赋值到dom实例上(便于后面拿到dom就可以拿到对应图表实例)
+        this.chartElement["charts"] = chart.default.init(eCharts,theme,baseChartType); //将图表实例赋值到dom实例上(便于后面拿到dom就可以拿到对应图表实例)
         return instance.resize();
     };
 
@@ -52,7 +58,13 @@ export function ChartsFactory(){
             }
             return dataLayout;
         }
-        let chart = require("./charts/" + this.chartElement.getAttribute("data-id"));
+        let chartType = this.chartElement.getAttribute("data-id");
+        let chart = null;
+        try{
+            chart = require("./charts/" + chartType);
+        }catch (e) {
+            chart = require("../business-charts-drawer/charts/" + chartType);
+        }
         eCharts.myConfig = config;
         chart.default.options(eCharts);
         return instance;
@@ -72,7 +84,7 @@ export function ChartsFactory(){
            }
         }catch (e){}
         setTimeout(function(){ //延时执行等待echarts图表对象生成
-            let chartElement = gswElement.querySelectorAll(".chart");
+            let chartElement = gswElement.querySelectorAll("#gridMain .chart");
             chartElement.forEach(x=> {
                 let [_height,_dataLayout] = [gswElement.clientHeight, gswElement.getAttribute("data-l")];
                 if(_dataLayout==0){
@@ -111,7 +123,7 @@ export function ChartsFactory(){
      * @param param
      */
     instance.settings= (param)=>{
-        let charElements = document.querySelectorAll(".chart");
+        let charElements = document.querySelectorAll("#gridMain .chart");
         charElements.forEach(x=> {
             let eCharts = x.charts;
             eCharts.extend.options(eCharts, param);

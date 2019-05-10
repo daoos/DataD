@@ -73,7 +73,7 @@
     import { ChartsFactory } from '../base-charts-drawer/chartsFactory';
 
     export default {
-        props:["isDrawerLeft","isDrawerRight","app"],
+        props:["isDrawerLeft","isDrawerRight"],
         data() {
             return {
                 isDrawerRight:false,

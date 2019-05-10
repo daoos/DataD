@@ -85,3 +85,13 @@ var selectAllDdPage = ()=>{ return _selectAll("pages")};
 // const updateDdPage = (param)=> axios.put(pagesUrl, param);
 // const selectAllDdPage = ()=> axios.get(pagesUrl);
 export {addDdGrid, deleteDdGrid, selectAllDdGrid, addDdPage, selectDdPage, deleteDdPage, updateDdPage, selectAllDdPage}
+
+
+/**
+ * 性能监控
+ */
+const getAppList = () => axios.get('/apps?type=alias');
+const getServiceList = (appName) => axios.get('/service/get_list', {params: {app: appName}})
+const getMethodList = (appName, serviceName) => axios.get('/method/get_list', {params: {app: appName,clazz: serviceName}});
+const getLegendList = () => axios.get('/supplyconfig?type=monitor');
+export {getAppList, getServiceList, getMethodList, getLegendList}

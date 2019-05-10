@@ -49,7 +49,7 @@ export default{
                 shape:"circle",
                 data: [0.5],
             }]
-        });
+        },true);
         return eCharts;
     },
     options(eCharts, paramsDevelop){

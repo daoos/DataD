@@ -13,22 +13,33 @@
         </Row>
         <Row>
             <Col span="24">
-            <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-current-change="currentChange1">
-                <template slot-scope="{ row, index }" slot="col1">
-                    <Input v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填"/>
-                    <span v-else>
-                        <span v-if="row.col1">{{ row.col1 }}</span>
-                        <span v-else style="color:#ed4014">必填</span>
-                    </span>
-                </template>
-                <template slot-scope="{ row, index }" slot="col2">
-                    <ColorPicker v-model="table1.editCol2" v-if="table1.editIndex === index" recommend alpha/>
-                    <span v-else>
-                        <span v-if="row.col2" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.col2"></span>
-                        <span v-else>自动</span>
-                    </span>
-                </template>
-            </Table>
+                <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-current-change="currentChange1">
+                    <template slot-scope="{ row, index }" slot="col1">
+                        <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
+                            <Select v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填">
+                                <Option :value="elem" v-for="elem in quotasRadar.legend">{{elem}}</Option>
+                            </Select>
+                            <span v-else>
+                                <span v-if="row.col1">{{ row.col1 }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                        <template v-else>
+                            <Input v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填"/>
+                            <span v-else>
+                                <span v-if="row.col1">{{ row.col1 }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="col2">
+                        <ColorPicker v-model="table1.editCol2" v-if="table1.editIndex === index" recommend alpha/>
+                        <span v-else>
+                            <span v-if="row.col2" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.col2"></span>
+                            <span v-else>自动</span>
+                        </span>
+                    </template>
+                </Table>
             </Col>
         </Row>
         <br/>
@@ -44,24 +55,35 @@
         </Row>
         <Row>
             <Col span="24">
-            <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-current-change="currentChange2">
-                <template slot-scope="{ row, index }" slot="col1">
-                    <Input v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填"/>
-                    <span v-else>
-                        <span v-if="row.col1">{{ row.col1 }}</span>
-                        <span v-else style="color:#ed4014">必填</span>
-                    </span>
-                </template>
-                <template slot-scope="{ row, index }" slot="col2">
-                    <InputNumber v-model="table2.editCol2"  v-if="table2.editIndex === index" :min="0"></InputNumber>
-                    <span v-else>{{ row.col2 || 100 }}</span>
-                </template>
-            </Table>
+                <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-current-change="currentChange2">
+                    <template slot-scope="{ row, index }" slot="col1">
+                        <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
+                            <Select v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填">
+                                <Option :value="elem" v-for="elem in quotasRadar.indicator">{{elem}}</Option>
+                            </Select>
+                            <span v-else>
+                                <span v-if="row.col1">{{ row.col1 }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                        <template v-else>
+                            <Input v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填"/>
+                            <span v-else>
+                                <span v-if="row.col1">{{ row.col1 }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                        </template>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="col2">
+                        <InputNumber v-model="table2.editCol2"  v-if="table2.editIndex === index" :min="0"></InputNumber>
+                        <span v-else>{{ row.col2 || 100 }}</span>
+                    </template>
+                </Table>
             </Col>
         </Row>
         <Row>
-            <Col span="23" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom" max-width=300 >
+            <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
+                <Tooltip placement="bottom-end" max-width=300 >
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
 <pre slot="content">
 {
@@ -80,6 +102,7 @@
 <script>
     import common from './common.vue';
     export default {
+        props:["quotasRadar"],
         components: {
             'charts-common': common,
         },
@@ -98,7 +121,7 @@
                             slot: 'col1'
                         },
                         {
-                            width: 150,
+                            width: 170,
                             title: '颜色',
                             slot: 'col2'
                         }
@@ -121,7 +144,7 @@
                             slot: 'col1'
                         },
                         {
-                            width: 150,
+                            width: 170,
                             title: '最大值',
                             slot: 'col2'
                         }
