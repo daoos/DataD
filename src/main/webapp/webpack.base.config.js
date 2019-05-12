@@ -36,8 +36,9 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
-                loader: 'file-loader',
+                loader: 'url-loader',//loader: 'file-loader',
                 options: {
+                    limit: 1024*600, //小于600K的图片将直接以base64的形式内联在代码中,反之存入输出路径"images/"文件夹下.
                     name: path.posix.join("", 'images/[name].[ext]?[hash]')
                 }
             },
@@ -45,8 +46,7 @@ module.exports = {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 10000,
-                    //name:path.join('/static', 'fonts/[name].[hash:7].[ext]'),
+                    limit: 1024*500,
                     name: path.posix.join("", 'fonts/[name].[hash:7].[ext]')
                 }
             }
@@ -58,6 +58,6 @@ module.exports = {
             'process.env':{
                 NODE_ENV: isDev ? '"development"' : '"production"'  //1:可以在要打包的js文件中引用环境变量；2：vue等框架会跟具不同环境区分打包（如：开发环境会包含一些很好的错误提示代码，而生产环境就没有必须加入这些，不然会影响效率）
             }
-        }),
+        })
     ]
 }

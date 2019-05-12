@@ -23,7 +23,7 @@ Vue.component('chart', ECharts);
 Vue.use(iView);
 
 new Vue({
-    el: "#app",
+    el: "#DataD",
     router,
     render:h=>h(Main)
 });
