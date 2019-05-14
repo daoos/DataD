@@ -372,7 +372,7 @@ export default{
 
         let params = Object.assign({startTime:"", endTime:"", max:_max, min:_min}, paramsDevelop);
         let Common = Object.assign({},common);
-        Common.start(eCharts, config.url||"/charts/map", params, config.interval)((data, isSeries=true) =>{
+        Common.start(eCharts, config.url||"/demo/charts/map", params, config.interval)((data, isSeries=true) =>{
             console.debug("===成功=map==",data);
             let result = data.series;
             option.series[0].data = this._linesData(result);//line

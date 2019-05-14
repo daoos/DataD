@@ -77,7 +77,7 @@ export default{
 
         let params = Object.assign({legends:_legendData, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
-        Common.start(eCharts, config.url||"/charts/radar", params, config.interval)(data =>{
+        Common.start(eCharts, config.url||"/demo/charts/radar", params, config.interval)(data =>{
             console.debug("===成功=radar==",data);
             if(data["series"]){
                 _seriesData.forEach(x=> x.value = data["series"][x.name]);

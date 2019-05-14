@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
 import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
-import { addDdPage, selectDdPage, deleteDdPage, updateDdPage } from "../service/serverApi"
+import { addDdPage, deleteDdPage, updateDdPage, selectDdPage } from "../service/serverApi"
 import {DrawNavgetion} from "./components/drawNavgetion";
 
 export default {
@@ -125,7 +125,7 @@ export default {
         //序列化
         saveTotalConfig(submitType){
             if(!submitType){
-                deleteDdPage(this.app.id).then(response=>{
+                deleteDdPage(this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
                     let re = response.data;
                     if(re){
                         this.$router.push({
@@ -155,7 +155,7 @@ export default {
                         })
                     };
                     if(submitType==1){
-                        addDdPage(totalConfig).then(response=>{
+                        addDdPage(totalConfig, this.$DataDOption.isUseIndexedDB).then(response=>{
                             let id = response.data;
                             if(id) {
                                 sessionStorage.removeItem("curTheme");
@@ -163,7 +163,7 @@ export default {
                             }
                         });
                     }else if(submitType==2){
-                        updateDdPage(totalConfig, this.app.id).then(response=>{
+                        updateDdPage(totalConfig, this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
                             let re = response.data;
                             if(re) {
                                 sessionStorage.removeItem("curTheme");
@@ -188,7 +188,7 @@ export default {
             }
             if(pageId){
                 let gridMainEl = this.$refs.gridMain;
-                selectDdPage(+pageId).then(response=>{
+                selectDdPage(+pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
                     let totalConfig = response.data;
                     if(totalConfig){
                         if(!curTheme){

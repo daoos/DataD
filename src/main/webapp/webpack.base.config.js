@@ -1,8 +1,7 @@
 const path = require('path')
-const webpack = require('webpack');
+const webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const isDev = process.env.NODE_ENV === 'development' //设置的环境变量都是存放在 process.env 中
 
 module.exports = {

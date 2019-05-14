@@ -162,7 +162,7 @@
                     x.x++; x.y++;
                     return {x:x.x, y:x.y, w:x.w, h:x.h, l:0};
                 });
-                addDdGrid(newGrid).then(response=>{
+                addDdGrid(newGrid, this.$DataDOption.isUseIndexedDB).then(response=>{
                     let id = response.data;
                     if(id){
                         this.$set(this.templets, id, newGrid);
@@ -173,7 +173,7 @@
                 this.$Modal.confirm({
                     title: '确定该删除模板 ?',
                     onOk: () => {
-                        deleteDdGrid(+templetId).then(response=>{
+                        deleteDdGrid(+templetId, this.$DataDOption.isUseIndexedDB).then(response=>{
                             let re = response.data;
                             if(re){
                                 this.$delete(this.templets,templetId);
@@ -184,7 +184,7 @@
             }
         },
         mounted() {
-            selectAllDdGrid().then(response=>{
+            selectAllDdGrid(this.$DataDOption.isUseIndexedDB).then(response=>{
                 let datas = response.data;
                 if(datas){
                     datas.forEach(x=> templets[x.key] = x.value);

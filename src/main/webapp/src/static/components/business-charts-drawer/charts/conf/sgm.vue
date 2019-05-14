@@ -48,11 +48,12 @@
     import {getAppList,getServiceList,getMethodList,getLegendList} from '../../../../../service/serverApi';
     import * as baseChartsConf from '../../../base-charts-drawer/charts/conf';
     import * as baseCharts from "../../../base-charts-drawer/charts";
-
+    
+   
+    
     export default {
         data(){
             return {
-                defaultUrl:"",
                 legends:[],
                 quotasRadar:{
                     legend:["健康度"],
@@ -79,12 +80,12 @@
         },
         methods: {
             legendSelect(){
-                getLegendList().then((response)=>{
+                getLegendList(this.$DataDOption.businessChartModuleConfig.sgm.getLegendListUrl).then((response)=>{
                     this.legends = response.data || [];
                 });
             },
             appSelect(){
-                getAppList().then((response)=>{
+                getAppList(this.$DataDOption.businessChartModuleConfig.sgm.getAppListUrl).then((response)=>{
                     this.selectData.apps = response.data || {};
                 });
             },
@@ -92,7 +93,7 @@
                 this.service="";
                 this.method ="";
                 if(app){
-                    getServiceList(app).then((response)=>{
+                    getServiceList(app, this.$DataDOption.businessChartModuleConfig.sgm.getServiceListUrl).then((response)=>{
                         this.selectData.services = response.data || [];
                         this.service = service;
                     });
@@ -104,7 +105,7 @@
             methodSelect(app,service,method){
                 this.method ="";
                 if(service){
-                    getMethodList(app,service).then((response)=>{
+                    getMethodList(app, service, this.$DataDOption.businessChartModuleConfig.sgm.getMethodListUrl).then((response)=>{
                         this.selectData.methods = response.data || [];
                         this.method = method;
                     });
@@ -120,7 +121,7 @@
                 this.baseChartType = config.baseChartType;
                 if(typeof(config)=="object"){
                     this.$nextTick(function() {
-                        config.url = this.defaultUrl;
+                        config.url = this.$DataDOption.businessChartModuleConfig.sgm.dataUrl||"";
                         this.$refs.baseChildComponentDrawer.initConfig(config);
                     });
                 }

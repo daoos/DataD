@@ -177,7 +177,7 @@ export default{
         }
         let params = Object.assign({legends:legends, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
-        Common.start(diagram, config.url||"/charts/topo", params, config.interval)(result =>{
+        Common.start(diagram, config.url||"/demo/charts/topo", params, config.interval)(result =>{
             console.debug("===成功=topo==",result);
             if(Array.isArray(result["series"])){
                 diagram.model.nodeDataArray.forEach(elem =>{
@@ -438,16 +438,16 @@ export default{
             return "#EEEEEE"
             //return "rgba(150,150,150,.5)";//灰
         }else if(level>=3){
-            return "#8C0095";
+            return '#f44336';
             //return "rgba(255,88,80,.5)";  //红
         }else if(level>=2){
-            return "#AC193D";
+            return '#fc9700';
             //return "rgba(255,125,15,.5)"; //橙
         }else if(level>=1){
-            return "#D24726";
+            return '#ffde00';
             //return "rgba(245,195,25,.5)"; //黄
         }else{
             return defualtColor;
         }
-    },
+    }
 }

@@ -81,7 +81,7 @@ export default{
         let params = Object.assign({legends:_legendData, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         params.duration = params.duration||config.interval;
         let Common = Object.assign({},common);
-        Common.start(eCharts, config.url||"/charts/linebar", params, config.interval)((result, isSeries=true) =>{
+        Common.start(eCharts, config.url||"/demo/charts/linebar", params, config.interval)((result, isSeries=true) =>{
            console.debug(isSeries,"===成功=linebar==",result);
            if(result){
                let _comm = this._common(eCharts, result, Common.requestCount)

@@ -79,7 +79,7 @@
                 });
             },
             list(){
-                selectAllDdPage().then(response=>{
+                selectAllDdPage(this.$DataDOption.isUseIndexedDB).then(response=>{
                     let datas = response.data;
                     if(datas){
                         this.pageList = datas;
