@@ -186,6 +186,8 @@
                 this.isSeries=true;
             },
             search(){
+                this.handleSave(this.editIndex);
+                this.editIndex = -1;
                 //缓存查询扩展请求参数.
                 localStorage.setItem("searchParam_"+ this.$route.query["id"], JSON.stringify(this.data));
                 let _datePicker = this.datePicker.value;

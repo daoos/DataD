@@ -25,7 +25,7 @@
                     <nav class="box-head">
                         <div class='title'>
                             <div class="text">{{ appName }}</div>
-                            <div class="subtext">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
+                            <div class="subtext" id="sysDate">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
                         </div>
                         <div class="tool">
                             <Icon type="ios-search"  title="查询" @click="openDrawerFun('search-drawer',false,true)"/>
@@ -48,5 +48,9 @@
 <script>
     import styleLess from './static/style.less';
     import dataD from './static/datad';
+    import { formatDate } from './utils/formatDate';
+    setInterval(()=>{
+        document.getElementById("sysDate").innerText = formatDate(Date.now(),'yyyy年MM月dd日 hh时mm分ss秒');
+    },1000);
     export default dataD;
 </script>

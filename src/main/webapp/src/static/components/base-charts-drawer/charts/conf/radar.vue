@@ -1,6 +1,6 @@
 <template>
     <div class="charts-radar">
-        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
         <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;">
             <Col span="3" class="tab">图例配置：</Col>
@@ -102,7 +102,7 @@
 <script>
     import common from './common.vue';
     export default {
-        props:["quotasRadar"],
+        props:["quotasRadar","isDisabledUrl"],
         components: {
             'charts-common': common,
         },
@@ -214,6 +214,20 @@
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     if(tables[0].data.length>0 && tables[1].data.length>0){
+                        let tables0_col1 = new Set([... tables[0].data.map(x=>{
+                            return x.col1;
+                        })]);
+                        let tables1_col1 = new Set([... tables[1].data.map(x=>{
+                            return x.col1;
+                        })]);
+                        if(tables[0].data.length != tables0_col1.size){
+                            this.$Notice.error({title: '图例名称不能重复!!!'});
+                            return;
+                        }
+                        if(tables[1].data.length != tables1_col1.size){
+                            this.$Notice.error({title: '指标名称不能重复!!!'});
+                            return;
+                        }
                         if(tables[1].data.length<3){
                             this.$Notice.error({title: '指标项必须大于或等于3项!!!'});
                             return;

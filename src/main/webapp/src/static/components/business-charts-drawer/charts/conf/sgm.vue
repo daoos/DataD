@@ -29,18 +29,18 @@
         <br>
         <Row>
             <Col span="12">
-                <Select  v-model="baseChartType" placeholder="基础图形">
-                    <Option value="linebar">线、柱图 <Icon type="md-pulse" style="float:right;"/></Option>
-                    <Option value="pie">饼图 <Icon type="md-pie" style="float:right;"/></Option>
-                    <Option value="radar">雷达图 <Icon type="md-wifi" style="float:right;"/></Option>
-                    <Option value="liquidfill">水位图 <Icon type="ios-radio-button-on" style="float:right;"/></Option>
-                    <Option value="number" disabled>数字图 <Icon type="md-barcode" style="float:right;"/></Option>
+                <Select  v-model="baseChartType" placeholder="监控图形">
+                    <Option value="linebar">性能曲线 <Icon type="md-pulse" style="float:right;"/></Option>
+                    <Option value="pie">性能状态 <Icon type="md-pie" style="float:right;"/></Option>
+                    <Option value="radar">健康程度 <Icon type="md-wifi" style="float:right;"/></Option>
+                    <Option value="liquidfill">容量水位 <Icon type="ios-radio-button-on" style="float:right;"/></Option>
+                    <Option value="number" disabled>今天访问量 <Icon type="md-barcode" style="float:right;"/></Option>
                 </Select>
             </Col>
         </Row>
         <Divider dashed/>
 
-        <component class="charts-sgm-component" ref="baseChildComponentDrawer" :is="baseChildComponentDrawer" :legends="legends" :quotasRadar="quotasRadar"></component>
+        <component class="charts-sgm-component" ref="baseChildComponentDrawer" :is="baseChildComponentDrawer" :legends="legends" :quotasRadar="quotasRadar" :isDisabledUrl=true></component>
     </div>
 </template>
 
@@ -48,9 +48,7 @@
     import {getAppList,getServiceList,getMethodList,getLegendList} from '../../../../../service/serverApi';
     import * as baseChartsConf from '../../../base-charts-drawer/charts/conf';
     import * as baseCharts from "../../../base-charts-drawer/charts";
-    
-   
-    
+
     export default {
         data(){
             return {
@@ -75,25 +73,30 @@
         },
         watch:{
             baseChartType(val){
-                this.baseChildComponentDrawer = baseChartsConf[val];
+                if(val){
+                    this.baseChildComponentDrawer = baseChartsConf[val];
+                    // this.$nextTick(function(){
+                    //     this.$refs.baseChildComponentDrawer.initConfig({url:this.$DataDOption.businessChartModuleConfig.sgm.dataUrl||"",isDisabledUrl:true});
+                    // });
+                }
             }
         },
         methods: {
             legendSelect(){
-                getLegendList(this.$DataDOption.businessChartModuleConfig.sgm.getLegendListUrl).then((response)=>{
+                getLegendList(this.$DataDOption.businessChartModuleConfig.sgm.getLegendsUrl).then((response)=>{
                     this.legends = response.data || [];
                 });
             },
             appSelect(){
-                getAppList(this.$DataDOption.businessChartModuleConfig.sgm.getAppListUrl).then((response)=>{
+                getAppList(this.$DataDOption.businessChartModuleConfig.sgm.getAppsUrl).then((response)=>{
                     this.selectData.apps = response.data || {};
                 });
             },
             serviceSelect(app,service){
-                this.service="";
-                this.method ="";
+                this.service= undefined;
+                this.method = undefined;
                 if(app){
-                    getServiceList(app, this.$DataDOption.businessChartModuleConfig.sgm.getServiceListUrl).then((response)=>{
+                    getServiceList(app, this.$DataDOption.businessChartModuleConfig.sgm.getServicesUrl).then((response)=>{
                         this.selectData.services = response.data || [];
                         this.service = service;
                     });
@@ -103,9 +106,9 @@
                 }
             },
             methodSelect(app,service,method){
-                this.method ="";
+                this.method = undefined;
                 if(service){
-                    getMethodList(app, service, this.$DataDOption.businessChartModuleConfig.sgm.getMethodListUrl).then((response)=>{
+                    getMethodList(app, service, this.$DataDOption.businessChartModuleConfig.sgm.getMethodsUrl).then((response)=>{
                         this.selectData.methods = response.data || [];
                         this.method = method;
                     });
@@ -137,7 +140,7 @@
                     commonConf.service = this.service;
                     commonConf.method = this.method;
                     commonConf.baseChartType = this.baseChartType;
-
+                    commonConf.url = this.$DataDOption.businessChartModuleConfig.sgm.dataUrl||"";
                     let eCharts = this.eCharts;
                     baseCharts[this.baseChartType].init(eCharts, eCharts.themeName);
                     return commonConf;

@@ -370,7 +370,7 @@ export default{
         eCharts.setOption(option);
         eCharts.extend = this;
 
-        let params = Object.assign({startTime:"", endTime:"", max:_max, min:_min}, paramsDevelop);
+        let params = Object.assign({duration:config.interval, startTime:"", endTime:"", max:_max, min:_min}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(eCharts, config.url||"/demo/charts/map", params, config.interval)((data, isSeries=true) =>{
             console.debug("===成功=map==",data);

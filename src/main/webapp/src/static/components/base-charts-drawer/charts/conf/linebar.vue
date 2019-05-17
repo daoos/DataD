@@ -1,6 +1,6 @@
 <template>
     <div class="charts-linebar">
-        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
         <Row>
             <Col span="3" class="tab">刷新方式：</Col>
             <Col span="10">
@@ -100,7 +100,7 @@
 <script>
     import common from './common.vue';
     export default {
-        props:["seriesTypes","chartType","legends"],
+        props:["seriesTypes","chartType","legends","isDisabledUrl"],
         components: {
             'charts-common': common,
         },
@@ -201,6 +201,13 @@
                 if(commonConf){
                     commonConf.refurbishMode = this.refurbishMode;
                     if(this.data.length > 0){
+                        let legendTitleLength = new Set([... this.data.map(x=>{
+                            return x.legendTitle;
+                        })]);
+                        if(this.data.length != legendTitleLength.size){
+                            this.$Notice.error({title: '图例名称不能重复!!!'});
+                            return;
+                        }
                         commonConf.api = this.data;
                         return commonConf;
                     }else{

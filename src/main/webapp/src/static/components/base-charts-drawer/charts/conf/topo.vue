@@ -1,6 +1,6 @@
 <template>
     <div class="charts-topo">
-        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
         <div class="topo-edit">
             <div id="myPaletteDiv" class="palette"></div>
             <div id="myDiagramDiv" class="diagram"></div>
@@ -32,6 +32,7 @@
     import topo from "../topo"
     import common from './common.vue';
     export default {
+        props:["isDisabledUrl"],
         components: {
             'charts-common': common,
         },

@@ -30,3 +30,15 @@ Data Dashboard（数据仪表板）
         }
     } //定制开发的图表对外提供的参数配置（sgm为某一个内置图表，可自行扩展；isUseBusinessChartModule为false时，该参数可省略）
  }
+ 
+ 
+/** 备注：webpack打包时（npm run prod 与 npm run dev）报错内存溢出 javaScript heap out of memory **/
+打开自己项目文件：/node_modules/.bin/webpack.cmd 与 webpack-dev-server.cmd (使用本地开发环境启动)
+    --设置前
+    node  "%~dp0\..\xxxxxxxxxxxxx.js" %*
+    --设置后
+    node  --max_old_space_size=2048 "%~dp0\..\xxxxxxxxxxxxx.js" %*
+  
+// 调整NodeJs运行时内存限制的大小
+node --max-old-space-size=2048  // 单位为MB 
+node --max-new-space-size=1024  // 单位为KB

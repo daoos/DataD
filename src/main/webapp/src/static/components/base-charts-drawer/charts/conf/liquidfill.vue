@@ -1,6 +1,6 @@
 <template>
     <div class="charts-liquidfill">
-        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
         <Row>
             <Col span="3" class="tab">显示形状：</Col>
@@ -37,6 +37,7 @@
 <script>
     import common from './common.vue';
     export default {
+        props:["isDisabledUrl"],
         components: {
             'charts-common': common,
         },

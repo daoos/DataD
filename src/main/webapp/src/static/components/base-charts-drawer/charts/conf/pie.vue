@@ -1,6 +1,6 @@
 <template>
     <div class="charts-pie">
-        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
         <Row @click.native="handleSave(editIndex);editIndex = -1;">
             <Col span="3" class="tab">图例配置：</Col>
@@ -51,8 +51,8 @@
 <pre slot="content">
 {
     "series":{
-        "图例A":[43,87,10],
-        "图例B":[23,34,66]
+        "图例A":55,
+        "图例B":45
      }
 }</pre>
                 </Tooltip>
@@ -65,7 +65,7 @@
 <script>
     import common from './common.vue';
     export default {
-        props:["legends"],
+        props:["legends","isDisabledUrl"],
         components: {
             'charts-common': common,
         },
@@ -135,6 +135,13 @@
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     if(this.data.length > 0){
+                        let legendTitleLength = new Set([... this.data.map(x=>{
+                            return x.legendTitle;
+                        })]);
+                        if(this.data.length != legendTitleLength.size){
+                            this.$Notice.error({title: '图例名称不能重复!!!'});
+                            return;
+                        }
                         commonConf.api = this.data;
                         return commonConf;
                     }else{

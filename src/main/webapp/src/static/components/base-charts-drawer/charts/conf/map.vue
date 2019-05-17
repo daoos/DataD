@@ -1,6 +1,6 @@
 <template>
     <div class="charts-map">
-        <charts-common ref="commonConf" :chartName="chartName"></charts-common>
+        <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
         <Row>
             <Col span="3" class="tab">选择国家：</Col>
             <Col span="9">
@@ -40,6 +40,7 @@
 <script>
     import common from './common.vue';
     export default {
+        props:["isDisabledUrl"],
         components: {
             'charts-common': common,
         },

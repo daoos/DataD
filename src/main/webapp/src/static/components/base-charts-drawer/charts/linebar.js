@@ -75,7 +75,7 @@ export default{
         option.legend[0].data = _legendData;
         option.series = _series;
         eCharts.setOption(option,true); //第二个参数true == notMerge
-        eCharts.extend = this;
+        eCharts.extend = this;  //将当前出图逻辑.js配置加入到图表对象中（便于后面操作）
 
 
         let params = Object.assign({legends:_legendData, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
@@ -310,6 +310,8 @@ export default{
                     if(duration<=86400){
                         option.title[0].subtext=(startDate==endDate?endDate:`${startDate} - ${endDate}`);
                     }
+                }else{
+                    option.title[0].subtext="";
                 }
                 return this;
             },

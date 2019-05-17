@@ -74,7 +74,7 @@ export default{
         diagram.type = config.api.seriesType;
         diagram.extend = this;
 
-        let params = Object.assign({startTime:"", endTime:""}, paramsDevelop);
+        let params = Object.assign({duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(diagram, config.url||"/demo/charts/number", params, config.interval)(result =>{
             console.debug("===成功=number==",result);

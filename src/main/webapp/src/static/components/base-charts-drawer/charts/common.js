@@ -16,7 +16,7 @@ export default{
     ],
 
     aJax(url, params, dataType){
-        let ajaxOption = { url:url, data:params, dataType:dataType, type:"POST", jsonp:"jsonpcallback", processData:false};
+        let ajaxOption = { url:url, data:JSON.stringify(params), dataType:dataType, type:"POST", jsonp:"jsonpcallback", contentType:"application/json;charset=UTF-8"};
         return {
             defual(){
                 // 1：默认内部域名访问
@@ -24,8 +24,8 @@ export default{
                     jquery.ajax(ajaxOption).done(response=>{
                         resolve(response);
                     }).fail(error=>{
-                        console.error(JSON.stringify(ajaxOption,null,4));
-                        console.error("==1=Defual Access Fail -> Jsonp Access===",error);
+                        //console.error(JSON.stringify(ajaxOption,null,4));
+                        console.error("==1=Defual Access Fail===");
                         reject(error);
                     });
                 });
@@ -36,7 +36,7 @@ export default{
                     jquery.ajax(Object.assign(ajaxOption,{dataType:"jsonp"})).done(response=>{
                         resolve(response);
                     }).fail(error=>{
-                        console.error("==2=Jsonp Access Fail -> Http Proxy===",error);
+                        console.error("==2=Jsonp Access Fail===",error);
                         reject(error);
                     });
                 });
@@ -88,6 +88,7 @@ export default{
                             textColor: theme.length==0?"#333333":theme[0].titleColor,
                             maskColor: 'rgba(0, 0, 0, 0)'
                         });
+                        console.error("***三种方式尝试连接都失败,轮询将终断***");
                         return error;
                     });
                 });

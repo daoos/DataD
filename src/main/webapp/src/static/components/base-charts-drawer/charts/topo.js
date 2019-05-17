@@ -175,7 +175,7 @@ export default{
         for(let elem of originalNodes.values()){
             if(elem.id) legends.push(elem.id);
         }
-        let params = Object.assign({legends:legends, startTime:"", endTime:""}, paramsDevelop);
+        let params = Object.assign({legends:legends, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(diagram, config.url||"/demo/charts/topo", params, config.interval)(result =>{
             console.debug("===成功=topo==",result);

@@ -63,7 +63,7 @@ export default{
         eCharts.setOption(option);
         eCharts.extend = this;
 
-        let params = Object.assign({startTime:"", endTime:""}, paramsDevelop);
+        let params = Object.assign({duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(eCharts, config.url||"/demo/charts/liquidfill", params, config.interval)((data, isSeries=true) =>{
             console.debug("===成功=liquidFill==",data);

@@ -264,9 +264,5 @@ export default {
         this.zoom();
         //图表宽高自适应
         WindowResize(this);
-
-        // setInterval(()=>{
-        //     this.sysDate = Date.now();
-        // },1000)
     }
 }

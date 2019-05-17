@@ -75,7 +75,7 @@ export default{
         eCharts.setOption(option,true);
         eCharts.extend = this;
 
-        let params = Object.assign({legends:_legendData, startTime:"", endTime:""}, paramsDevelop);
+        let params = Object.assign({legends:_legendData, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(eCharts, config.url||"/demo/charts/radar", params, config.interval)(data =>{
             console.debug("===成功=radar==",data);

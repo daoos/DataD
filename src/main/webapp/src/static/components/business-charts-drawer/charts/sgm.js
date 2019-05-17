@@ -60,7 +60,8 @@ export default{
     options(eCharts, paramsDevelop={}){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===SGM===",option,config,paramsDevelop);
-        Object.assign(paramsDevelop,{app:config.app, service:config.service, method:config.method});
+        Object.assign(paramsDevelop,{app:config.app, service:config.service, method:config.method, chartType:config.baseChartType});
         baseCharts[config.baseChartType].options(eCharts,paramsDevelop);
+        eCharts.extend = this;
     }
 }
