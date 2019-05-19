@@ -28,7 +28,7 @@ export default {
             app:{
                 id:null,
                 name: "",
-                flag:1,
+                flag:2,
                 theme:"",
                 background:"",
                 photo:""
@@ -257,6 +257,7 @@ export default {
         }
     },
     mounted(){
+        this.templet = [{"x":1,"y":1,"w":4,"h":6,"l":0}];
         //初始化页面 http://127.0.0.1:8070/#/?id=14  |   http://127.0.0.1:8070/#/edit?id=14
         this.initPage(this.$route.query["id"]);
         this.isEdit = this.$route.path.includes("/edit");

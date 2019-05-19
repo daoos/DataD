@@ -67,7 +67,7 @@ export default{
         let Common = Object.assign({},common);
         Common.start(eCharts, config.url||"/demo/charts/liquidfill", params, config.interval)((data, isSeries=true) =>{
             console.debug("===成功=liquidFill==",data);
-            if(data["series"]){
+            if("series" in data){
                 option.series[0].data = [data["series"]];
                 eCharts.setOption(option);
                 eCharts.hideLoading();

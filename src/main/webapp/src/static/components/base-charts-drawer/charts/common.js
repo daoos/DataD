@@ -16,7 +16,7 @@ export default{
     ],
 
     aJax(url, params, dataType){
-        let ajaxOption = { url:url, data:JSON.stringify(params), dataType:dataType, type:"POST", jsonp:"jsonpcallback", contentType:"application/json;charset=UTF-8"};
+        let ajaxOption = { url:url, data:JSON.stringify(params), dataType:dataType, type:"POST", jsonp:"jsonpCallback", contentType:"application/json;charset=UTF-8"};
         return {
             defual(){
                 // 1：默认内部域名访问
@@ -41,7 +41,7 @@ export default{
                     });
                 });
             },
-            proxy(proxy_url = "/chart/http_proxy_forward"){
+            proxy(proxy_url = "/dashboard/http_proxy_forward"){
                 // 3：服务器 Http 代理转发
                 return new Promise((resolve,reject)=>{
                     Object.assign(params,{url:url});
@@ -74,20 +74,27 @@ export default{
                     });
                 })
                 .catch(error=>{
-                    let proxy_url = "/chart/http_proxy_forward";
+                    let proxy_url = "/dashboard/http_proxy_forward";
                     return _ajax.proxy(proxy_url).then(response=>{
                         Object.assign(params,{url:url});
                         url=proxy_url;
                         return response;
                     }).catch(error=>{
                         isSeries = false;
-                        let theme = this.themes.filter(x=> x.id.includes(chart.themeName));
-                        chart.showLoading(null, {
-                            text: '无效访问',
-                            color: '#c23531',
-                            textColor: theme.length==0?"#333333":theme[0].titleColor,
-                            maskColor: 'rgba(0, 0, 0, 0)'
-                        });
+                        //let theme = this.themes.filter(x=> x.id.includes(chart.themeName));
+                        // chart.showLoading(null, {
+                        //     text: '无效访问',
+                        //     color: 'rgba(0, 0, 0, 0)',
+                        //     textColor: theme.length==0?"#333333":theme[0].titleColor,
+                        //     maskColor: 'rgba(0, 0, 0, 0)'
+                        // });
+                        chart.hideLoading();
+                        let _option = chart.getOption();
+                        _option.title[0].subtext="访问失败!!!";
+                        _option.title[0].subtextStyle = {
+                            lineHeight:chart._dom.clientHeight-78,
+                        };
+                        chart.setOption(_option);
                         console.error("***三种方式尝试连接都失败,轮询将终断***");
                         return error;
                     });

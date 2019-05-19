@@ -70,5 +70,11 @@ export function CreateGridsLayoutStyle(ElemThis){
             document.getElementsByTagName('HEAD').item(0).appendChild(style) ;
         }
     };
-    const g = new _grids(ElemThis);
+
+    new _grids(ElemThis);
+
+    window.onresize=()=>{
+        let gridMain = document.getElementById("gridMain");
+        new _grids(gridMain);
+    };
 }

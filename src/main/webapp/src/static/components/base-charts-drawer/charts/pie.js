@@ -71,7 +71,7 @@ export default{
         _seriesData = config.api.map(x=> {
             _legendData.push(x.legendTitle);
             return {
-                value: 0,
+                value: undefined,
                 name: x.legendTitle,
                 itemStyle: {normal: {color: x.color}}
             }

@@ -229,7 +229,7 @@
                             return;
                         }
                         if(tables[1].data.length<3){
-                            this.$Notice.error({title: '指标项必须大于或等于3项!!!'});
+                            this.$Notice.error({title: '指标项必须大于2项!!!'});
                             return;
                         }
                         commonConf.api = {

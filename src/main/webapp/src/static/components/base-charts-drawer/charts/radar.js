@@ -56,7 +56,7 @@ export default{
     options(eCharts, paramsDevelop){
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===radar===",option,config);
-        let [_legendData, _seriesData] = [[],[]];
+        let [_legendData, _seriesData, _indicatorName] = [[],[],[]];
         _seriesData = config.api.legend.map(x=>{
             _legendData.push(x.legendTitle);
             return {
@@ -64,6 +64,9 @@ export default{
                 name: x.legendTitle,
                 itemStyle: {normal: {color: x.color}}
             }
+        });
+        _indicatorName = config.api.indicator.map(x=>{
+            return x.name;
         });
         option.title[0].text = config.title;
         option.legend[0].data = _legendData;
@@ -75,11 +78,11 @@ export default{
         eCharts.setOption(option,true);
         eCharts.extend = this;
 
-        let params = Object.assign({legends:_legendData, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
+        let params = Object.assign({legends:_legendData, indicators:_indicatorName, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(eCharts, config.url||"/demo/charts/radar", params, config.interval)(data =>{
             console.debug("===成功=radar==",data);
-            if(data["series"]){
+            if("series" in data){
                 _seriesData.forEach(x=> x.value = data["series"][x.name]);
                 option.series[0].data = _seriesData;
                 eCharts.setOption(option);
