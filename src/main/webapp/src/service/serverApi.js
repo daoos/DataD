@@ -16,9 +16,10 @@ if (process.env.NODE_ENV === 'production') {
 require('../service/mockApi');
 
 /**数据库**MOCK后端读写数据库操作API接口****/
-const DataD_DB = DB.open("DataD",2).then(db=>{
+const DataD_DB = DB.open("DataD",1).then(db=>{
     db.createTable("grids");
-    db.createTable("pages");
+    //db.createTable("pages");
+    db.createTable("pages","id");
     return db;
 });
 let _add = (tableName, param)=>{
@@ -128,10 +129,16 @@ export { addDdGrid, deleteDdGrid, selectAllDdGrid, addDdPage, deleteDdPage, upda
 
 
 /**
- * 性能监控
+ * 企业版定制扩展
  */
+//性能监控
 const getAppList = (url='/demo/apps') => axios.get(url);
 const getServiceList = (appName, url='/demo/services') => axios.get(url, {params: {app: appName}});
 const getMethodList = (appName, serviceName, url='/demo/methods') => axios.get(url, {params: {app: appName,clazz: serviceName}});
 const getLegendList = (url='/demo/supplyconfig') => axios.get(url);
 export { getAppList, getServiceList, getMethodList, getLegendList }
+//页面收藏
+const addCustom = (param, url="/demo/customAdd")=> axios.post(url, param);
+const updateCustom = (param, url="/demo/customUpdate")=> axios.put(url, qs.stringify(param));
+const getCustom =(id, url="/demo/dashboard") => axios.get(url+"/"+id);
+export { addCustom, updateCustom, getCustom }

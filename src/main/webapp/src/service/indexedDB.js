@@ -67,6 +67,7 @@ function _DbEnhance(db){
      */
     db.createTable = (tableName, primaryKey)=>{
         if (!db.objectStoreNames.contains(tableName)) {
+            // keyPath:数据中的字段做为主键; autoIncrement:主键自动生成.
             let obj = primaryKey ? {keyPath: primaryKey}: {autoIncrement:true};
             let objectStore = db.createObjectStore(tableName, obj);
             //新建索引(只有主键和索引字段才能参与条件查询)
@@ -108,7 +109,12 @@ function _DbEnhance(db){
             update(data,primaryKey){
                 return new Promise((resolve,reject)=>{
                     // 把更新过的对象放回数据库
-                    let row = table.put(data, primaryKey);
+                    let row = null;
+                    if(table.keyPath){
+                        row = table.put(data); //数据中的字段做为主键
+                    }else{
+                        row = table.put(data, primaryKey); //主键自动生成（autoIncrement:true）时,需要传入key
+                    }
                     row.onsuccess = (event)=> {
                         resolve({data: "done"});  // 完成，数据已更新！
                     };

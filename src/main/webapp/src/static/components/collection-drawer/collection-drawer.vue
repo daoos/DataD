@@ -13,12 +13,13 @@
         <Drawer title="页面收藏" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight">
             <Form ref="custom" :model="app" :rules="ruleInline" inline>
                 <FormItem prop="name" label="图表名称：" style="width: 100%;">
-                    <Input v-model="app.name" placeholder="Please enter chart name..." />
+                    <Input v-model="app.name" placeholder="Please enter chart name..." clearable/>
                 </FormItem>
                 <FormItem prop="flag" label="适用范围：" style="width: 100%;">
                     <Select v-model="app.flag">
-                        <Option :value=1>所有人可见</Option>
-                        <Option :value=2>仅自己可见</Option>
+                        <Option :value=1>仅自己可见</Option>
+                        <Option :value=2>仅组内可见</Option>
+                        <Option :value=3>所有人可见</Option>
                     </Select>
                 </FormItem>
                 <Divider />

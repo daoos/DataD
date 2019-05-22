@@ -45,7 +45,13 @@ export default{
             },{
                 name: '总量',
                 type: 'line',
-                data: [5, 20, 36, 10, 10, 20]
+                data: [5, 20, 36, 10, 10, 20],
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                }
             }]
         },true);
         return eCharts;
@@ -56,6 +62,12 @@ export default{
         let [_legendData, _series, _yAxisIndexSet] = [[],[],new Set()];
         config.api.forEach(x=> {
             let _seriesType = x.seriesType.split("_");
+            let _markPoint = _seriesType[0]=="line"?{
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            }:"";
             _yAxisIndexSet.add(x.unit);
             _legendData.push(x.legendTitle);
             _series.push(Object.assign({
@@ -64,10 +76,12 @@ export default{
                 type: _seriesType[0],
                 itemStyle: {normal: {color: x.color}},
                 yAxisIndex: [..._yAxisIndexSet].findIndex(y=>y==x.unit),
-                data: []
+                data: [],
+                markPoint: _markPoint
             },(+_seriesType[1]?{
                 stack:_seriesType[1],
-                areaStyle:{normal: {}}
+                areaStyle:{normal: {}},
+                markPoint:{}
             }:{})));
         });
         option.xAxis[0].data = [];

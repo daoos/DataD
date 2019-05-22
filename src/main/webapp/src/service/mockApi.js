@@ -199,3 +199,13 @@ Mock.mock(/(demo\/supplyconfig)/,function(options){
     let result = ["TPS","AVG","TP","TP999"];
     return result;
 });
+
+//页面收藏ADD
+Mock.mock(/(demo\/customAdd)/,function(options){
+    return {data:Date.now()};
+});
+
+//页面收藏Update
+Mock.mock(/(demo\/customUpdate)/,function(options){
+    return {status:200};
+});
