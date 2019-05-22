@@ -18,8 +18,8 @@ require('../service/mockApi');
 /**数据库**MOCK后端读写数据库操作API接口****/
 const DataD_DB = DB.open("DataD",1).then(db=>{
     db.createTable("grids");
-    //db.createTable("pages");
-    db.createTable("pages","id");
+    //db.createTable("pages");    //单机版
+    db.createTable("pages","id"); //多机版
     return db;
 });
 let _add = (tableName, param)=>{

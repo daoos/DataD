@@ -1,5 +1,6 @@
 <template>
     <div class="theme-drawer">
+        {{$parent.themeDrawerR}}
         <Drawer title="主题列表" :transfer="false" :inner="true" :mask="false" :width="390"  placement="left" v-model="isDrawerLeft">
             <div class="theme-templet">
                 <template v-for="item in models">
@@ -9,12 +10,12 @@
             </div>
             <div class="drawer-footer">
                 <ButtonGroup>
-                    <Button @click="isDrawerRight=true;" type="primary">高级设置</Button>
+                    <Button @click="isDrawerRight_1=true;" type="primary">高级设置</Button>
                 </ButtonGroup>
             </div>
         </Drawer>
 
-        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight">
+        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight_1">
             <Row>
                 <Col span="4">默认方案：</Col>
                 <Col span="20">{{app.theme}}</Col>
@@ -89,7 +90,8 @@
                             {x: 1, y: 5, w: 4, h: 2, l: 0}
                         ]
                     }],
-                themes: chartConfCommon.themes
+                themes: chartConfCommon.themes,
+                isDrawerRight_1:false
             }
         },
         methods:{

@@ -134,6 +134,10 @@
                     this.$Notice.error({title: '请选择应用!!!'});
                     return;
                 }
+                if(!this.baseChartType){
+                    this.$Notice.error({title: '请选择监控图形!!!'});
+                    return;
+                }
                 let commonConf = this.$refs.baseChildComponentDrawer.submitConf();
                 if(commonConf){
                     commonConf.app = this.app;
