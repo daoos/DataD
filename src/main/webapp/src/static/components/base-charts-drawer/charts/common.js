@@ -1,4 +1,5 @@
 import jquery from "jquery";
+import qs from 'qs';
 
 /**
  * 公共代码
@@ -15,16 +16,14 @@ export default{
         {id:"vintage", colors: ["#d87c7c","#919e8b","#d7ab82","#6e7074","#61a0a8","#efa18d","#787464","#cc7e63"],titleColor:"#333333"}
     ],
 
-    aJax(url, params, dataType){
-        let ajaxOption = { url:url, data:JSON.stringify(params), dataType:dataType, type:"POST", jsonp:"jsonpCallback", contentType:"application/json;charset=UTF-8"};
+    aJax(url, params){
         return {
             defual(){
                 // 1：默认内部域名访问
                 return new Promise((resolve,reject)=>{
-                    jquery.ajax(ajaxOption).done(response=>{
+                    jquery.ajax({url:url, data:JSON.stringify(params), type:"POST", dataType:"json", contentType:"application/json;charset=UTF-8"}).done(response=>{
                         resolve(response);
                     }).fail(error=>{
-                        //console.error(JSON.stringify(ajaxOption,null,4));
                         console.error("==1=Defual Access Fail===");
                         reject(error);
                     });
@@ -33,7 +32,7 @@ export default{
             jsonp(){
                 // 2：Jsonp 跨域名访问
                 return new Promise((resolve,reject)=>{
-                    jquery.ajax(Object.assign(ajaxOption,{dataType:"jsonp"})).done(response=>{
+                    jquery.ajax({url:url, data:decodeURI(qs.stringify(params)).replace(/(\[\d\])/g,""), type:"GET", dataType:"jsonp", jsonp:"jsonpCallback"}).done(response=>{
                         resolve(response);
                     }).fail(error=>{
                         console.error("==2=Jsonp Access Fail===",error);
@@ -42,10 +41,9 @@ export default{
                 });
             },
             proxy(proxy_url = "/dashboard/http_proxy_forward"){
-                // 3：服务器 Http 代理转发
+                //3：服务器 Http 代理转发
                 return new Promise((resolve,reject)=>{
-                    Object.assign(params,{url:url});
-                    jquery.ajax(Object.assign(ajaxOption,{url:proxy_url})).done(response=>{
+                    jquery.ajax({url:proxy_url, data:JSON.stringify(Object.assign(params,{url:url})), type:"POST", dataType:"json", contentType:"application/json;charset=UTF-8"}).done(response=>{
                         resolve(response);
                     }).fail(error=>{
                         console.error("==3=Http Proxy Fail===",error);
@@ -56,20 +54,22 @@ export default{
         }
     },
 
-    start(chart, url, params, asynInterval=3, dataType="json", isSeries=true){
+    start(chart, url, params, asynInterval=4, isSeries=true, aJaxDefault=null){
+        //aJaxDefault = [defual() | jsonp() | proxy()];  静态变量（默认请求方式）
         this.requestCount++;
         this.stop(chart);
         if(params["startTime"] && params["endTime"]){
             isSeries = false;
         }
         return (callback)=>{
-            let _ajax = this.aJax(url, params, dataType);
-            let _defual = _ajax.defual();
+            let _promise = null;
+            let _ajax = this.aJax(url, params);
             if(this.requestCount==1){
-                _defual
+                aJaxDefault = _ajax.defual;
+                _promise = aJaxDefault()
                 .catch(error=>{
                     return _ajax.jsonp().then(response=>{
-                        dataType="jsonp";
+                        aJaxDefault = _ajax.jsonp;
                         return response;
                     });
                 })
@@ -77,17 +77,10 @@ export default{
                     let proxy_url = "/dashboard/http_proxy_forward";
                     return _ajax.proxy(proxy_url).then(response=>{
                         Object.assign(params,{url:url});
-                        url=proxy_url;
+                        aJaxDefault = _ajax.proxy;
                         return response;
                     }).catch(error=>{
                         isSeries = false;
-                        //let theme = this.themes.filter(x=> x.id.includes(chart.themeName));
-                        // chart.showLoading(null, {
-                        //     text: '无效访问',
-                        //     color: 'rgba(0, 0, 0, 0)',
-                        //     textColor: theme.length==0?"#333333":theme[0].titleColor,
-                        //     maskColor: 'rgba(0, 0, 0, 0)'
-                        // });
                         chart.hideLoading();
                         let _option = chart.getOption();
                         _option.title[0].subtext="访问失败!!!";
@@ -99,11 +92,13 @@ export default{
                         return error;
                     });
                 });
+            }else{
+                _promise = aJaxDefault();
             }
-            _defual
-            .then(response=>{
+            _promise.then(response=>{
                 callback(response, isSeries);
-            }).catch(error=>{
+            })
+            .catch(error=>{
                 if(this.requestCount>2) {
                     console.error("===error=访问间接终端==", error);
                 }
@@ -111,7 +106,7 @@ export default{
             .finally(()=>{
                 if(isSeries){
                     chart.timeout = setTimeout(()=>{
-                        this.start(chart, url, params, asynInterval, dataType, isSeries)(callback);
+                        this.start(chart, url, params, asynInterval, isSeries, aJaxDefault)(callback);
                     },Math.ceil(asynInterval)*1000);
                 }
             });
