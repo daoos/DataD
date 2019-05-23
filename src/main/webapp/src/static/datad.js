@@ -85,7 +85,8 @@ export default {
         previewFun(edit=""){
             if(!this.app.id && !edit){
                 this.$Modal.confirm({
-                    title: '确定预览（页面未保存，配置的图表会丢失）?',
+                    title: '确定预览 ?',
+                    content:'页面未保存，配置的图表会丢失',
                     onOk: () => {
                         this.$router.push({path:'/'+edit});
                         window.location.reload();
@@ -143,84 +144,106 @@ export default {
                     };
                 });
             }else{
-                //拍照成功后入库
-                this.photograph().then(()=>{
-                    let gridMainEl = this.$refs.gridMain;
-                    let totalConfig = {
-                        name:this.app.name,
-                        flag:this.app.flag,
-                        theme:this.app.theme,
-                        background:this.app.background,
-                        photo:this.app.photo,
-                        moduleList: this.templet.map(el=> {
-                            let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
-                            el.l = +gswEl.getAttribute("data-l");
-                            el.chartList = [];
-                            gswEl.querySelectorAll("#gridMain .chart").forEach(x=>{
-                                el.chartList.push( ChartsFactory.call({"chartElement":x}).configs() );
-                            });
-                            return el;
-                        })
-                    };
-                    if(submitType==1){
-                        // addDdPage(totalConfig, this.$DataDOption.isUseIndexedDB).then(response=>{
-                        //     let id = response.data;
-                        //     if(id) {
-                        //         sessionStorage.removeItem("curTheme");
-                        //         this.$Message.success('收藏成功.');
-                        //     }
-                        //     return response;
-                        // });
-
-                        //远程+本地存储（企业特殊定制）
-                        delete totalConfig["photo"];
-                        addCustom({url:"/DataD", menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig), type:8}, this.$DataDOption.businessChartModuleConfig.sgm.customAdd).then(response=>{
-                            if(response.data==0 || response.data==-1){
-                                this.$Message.error('收藏失败!!!');
-                                return "";
-                            }else{
-                                return response.data;
-                            }
-                        }).then(pageId =>{
-                            addDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), this.$DataDOption.isUseIndexedDB).then(response=>{
-                                let id = response.data;
-                                if(id){
-                                    sessionStorage.removeItem("curTheme");
-                                    this.$Message.success('收藏成功.');
-                                }
-                            })
-                        });
-                    }else if(submitType==2){
-                        // updateDdPage(totalConfig, this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
-                        //     let re = response.data;
-                        //     if(re) {
-                        //         sessionStorage.removeItem("curTheme");
-                        //         this.$Message.success('修改成功.');
-                        //     }
-                        //     return response;
-                        // });
-
-                        //远程+本地更新（企业特殊定制）
-                        delete totalConfig["photo"];
-                        updateCustom({id:this.app.id, menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig)}, this.$DataDOption.businessChartModuleConfig.sgm.customUpdate).then(response=>{
-                            if(response.status==200){
-                                return this.app.id;
-                            }else{
-                                this.$Message.error('修改失败!!!');
-                                return "";
-                            }
-                        }).then(pageId =>{
-                            updateDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
-                                let re = response.data;
-                                if(re) {
-                                    sessionStorage.removeItem("curTheme");
-                                    this.$Message.success('修改成功.');
-                                }
-                            })
-                        });
-                    }
+                let untreatedChart = [];
+                let gridMainEl  = this.$refs.gridMain;
+                let _moduleList = this.templet.map(el=> {
+                    let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
+                    el.l = +gswEl.getAttribute("data-l");
+                    el.chartList = [];
+                    gswEl.querySelectorAll("#gridMain .chart").forEach(x=>{
+                        let _configs = ChartsFactory.call({"chartElement":x}).configs();
+                        if(typeof(_configs)==="object"){
+                            el.chartList.push(_configs);
+                        }else{
+                            //检索出拖入主板中但未进行配置的图表
+                            x.setAttribute("untreated",true);
+                            untreatedChart.push(_configs);
+                        }
+                    });
+                    return el;
                 });
+                if(untreatedChart.length>0){
+                    this.$Modal.confirm({
+                        title: '确定保存 ?',
+                        content:'页面中存在未进行配置的图表，保存后会丢失',
+                        onOk: () => {
+                            this.savePage(submitType,_moduleList);
+                        }
+                    });
+                }else{
+                    this.savePage(submitType,_moduleList);
+                }
             }
+        },
+        savePage(submitType,_moduleList){
+            //拍照成功后入库
+            this.photograph().then(()=>{
+                let totalConfig = {
+                    name:this.app.name,
+                    flag:this.app.flag,
+                    theme:this.app.theme,
+                    background:this.app.background,
+                    photo:this.app.photo,
+                    moduleList: _moduleList
+                };
+                if(submitType==1){
+                    // addDdPage(totalConfig, this.$DataDOption.isUseIndexedDB).then(response=>{
+                    //     let id = response.data;
+                    //     if(id) {
+                    //         sessionStorage.removeItem("curTheme");
+                    //         this.$Message.success('收藏成功.');
+                    //     }
+                    //     return response;
+                    // });
+
+                    //远程+本地存储（企业特殊定制）
+                    delete totalConfig["photo"];
+                    addCustom({url:"/DataD", menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig), type:8}, this.$DataDOption.businessChartModuleConfig.sgm.customAdd).then(response=>{
+                        if(response.data==0 || response.data==-1){
+                            this.$Message.error('收藏失败!!!');
+                            return "";
+                        }else{
+                            return response.data;
+                        }
+                    }).then(pageId =>{
+                        addDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), this.$DataDOption.isUseIndexedDB).then(response=>{
+                            let id = response.data;
+                            if(id){
+                                sessionStorage.removeItem("curTheme");
+                                this.$Message.success('收藏成功.');
+                            }
+                        })
+                    });
+                }else if(submitType==2){
+                    // updateDdPage(totalConfig, this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
+                    //     let re = response.data;
+                    //     if(re) {
+                    //         sessionStorage.removeItem("curTheme");
+                    //         this.$Message.success('修改成功.');
+                    //     }
+                    //     return response;
+                    // });
+
+                    //远程+本地更新（企业特殊定制）
+                    delete totalConfig["photo"];
+                    updateCustom({id:this.app.id, menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig)}, this.$DataDOption.businessChartModuleConfig.sgm.customUpdate).then(response=>{
+                        if(response.status==200){
+                            return this.app.id;
+                        }else{
+                            this.$Message.error('修改失败!!!');
+                            return "";
+                        }
+                    }).then(pageId =>{
+                        updateDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
+                            let re = response.data;
+                            if(re) {
+                                sessionStorage.removeItem("curTheme");
+                                this.$Message.success('修改成功.');
+                            }
+                        })
+                    });
+                }
+            });
         },
         //反序列化
         initPage(pageId){
