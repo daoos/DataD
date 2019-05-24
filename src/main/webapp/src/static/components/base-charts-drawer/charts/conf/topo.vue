@@ -10,10 +10,13 @@
             </div>
         </div>
         <Row>
-            <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
+            <Col span="12" style="text-align: right;margin-top: 20px;font-size: 9px;text-align: left;">
+            删除节点或线（鼠标选中后按Delete键）
+            </Col>
+            <Col span="12" style="text-align: right;margin-top: 20px;font-size: 9px;">
             <Tooltip placement="bottom-end" max-width=550 >
                 数据返回格式说明：<Icon type="md-help-circle" size="16"/>
-<pre slot="content">
+                <pre slot="content">
 {
    "series":[
         {id:'A', alarmlevel:0, items:[{name:'TPS',value:3},{name:'AVG',value:5}]},
