@@ -1,0 +1,260 @@
+/***Less函数定义**/
+//Less主题样式动态切换
+//.-theme{
+//    .theme();
+//    .theme(rgba(240,240,240,.8));
+//    &:before{
+//        content: '- 无选择模板 -';
+//        position: absolute;
+//        z-index: -1;
+//        top:50%;
+//        left:50%;
+//        transform: translate(-50%);
+//        text-align: center;
+//        font-size: 32px;
+//        font-weight: bold;
+//        color:rgba(0,0,0,.08);
+//    }
+//}
+.-theme,.shine-theme,.customed-theme,.infographic-theme,.macarons-theme,.roma-theme{
+    .theme();
+    .gs-w{
+        border: 1px solid rgba(0,0,0,.1) !important;
+    }
+}
+.dark-theme{
+    .theme(radial-gradient(#0e284d 0%, #1f2630 70%));
+    .gs-w{
+        border: 1.5px solid rgba(0,0,0,.5)!important;
+        background:
+        linear-gradient(to left, #4daff0, #4daff0) left top no-repeat,
+        linear-gradient(to bottom, #4daff0, #4daff0) left top no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) right top no-repeat,
+        linear-gradient(to bottom, #4daff0, #4daff0) right top no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) left bottom no-repeat,
+        linear-gradient(to bottom, #4daff0, #4daff0) left bottom no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat,
+        linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat;
+        background-size: 2px 7px, 7px 2px, 2px 7px, 7px 2px;
+    }
+}
+.vintage-theme{
+    .theme(rgba(254,248,239,1));
+    .gs-w{
+        border: 1px solid rgba(0,0,0,.1) !important;
+    }
+}
+.theme(@bg:url(images/bg.png)){
+    background: @bg;
+}
+
+::-webkit-scrollbar {
+    width:14px;
+    height:14px;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    border: 5px solid transparent;
+}
+::-webkit-scrollbar-track {
+    box-shadow: 1px 1px 5px rgba(0,0,0,.2) inset;
+}
+::-webkit-scrollbar-thumb {
+    min-height: 20px;
+    background-clip: content-box;
+    box-shadow: 0 0 0 5px rgba(0,0,0,.4) inset;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+.main-container{
+    margin: 0px;
+    overflow: hidden;
+    font-family: 'proxima-nova', Helvetica;
+    background:url("images/bg_w.png");
+    display: flex;
+    flex-flow: column;
+    height: inherit;
+    .navgetion{
+        height: 57px;
+        background: rgb(33,37,40);
+        color:rgb(231,230,231);
+        font-size: 14px;
+        .menu{
+            margin:0px 100px;
+            position: relative;
+            height: inherit;
+            text-align: center;
+            display: flex;
+            div{
+                i{
+                    width: inherit;
+                    font-size: 24px;
+                    margin-top: 8px;
+                }
+                width: 85px;
+                font-weight: bold;
+                &:hover{
+                    cursor: pointer;
+                    background: rgb(55,60,65);
+                }
+            }
+        }
+    }
+    .container{
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        .main-box{
+            height: 100%;
+            #box{
+                height: inherit;
+                border:1px solid #000000;
+                box-shadow: 0px 0px 15px;
+                transform: scale(0.5);
+                transition: all 0.5s;
+                display: flex;
+                flex-flow: column;
+                .box-head{
+                    color: white;
+                    height: 40px;
+                    z-index: 2;
+                    position: relative;
+                    .title {
+                        width:400px;
+                        height:70px;
+                        line-height:40px;
+                        text-align:center;
+                        text-shadow: rgba(0,0,0,1) 0px 0px 15px;
+                        font-weight: bold;
+                        font-size:20px;
+                        position:absolute;
+                        left: 50%;
+                        transform: translate(-50%, 0%);
+                        .text{
+                            margin-top:5px;
+                        }
+                        .subtext{
+                            font-weight: normal;
+                            font-size:12px;
+                            margin-top:-10px;
+                            color:rgba(0,250,255,.8);
+                        }
+                    }
+                    .tool{
+                        width:300px;
+                        height: inherit;
+                        padding: 0px 0px;
+                        position: absolute;
+                        right:0px;
+                        top:0px;
+                        font-size: 20px;
+                        display: flex;
+                        flex-flow: row wrap;
+                        align-content:center;
+                        justify-content: flex-end;
+                        i{
+                            cursor: pointer;
+                            width:42px;
+                            height: 42px;
+                            line-height: 42px;
+                            font-weight: bold;
+                            text-align: center;
+                            color:rgba(81,90,110);
+                            transition: all .5s;
+                            &:hover{
+                                box-shadow: 0px 0px 15px 5px rgba(0,0,0,.6)inset;
+                            }
+                        }
+                    }
+                }
+                .box-body{
+                    flex: 1;
+                    #gridMain{
+                        width: 100%;
+                        height: 100%;
+                        position: relative;
+                        list-style-type: none;
+                        .gs-w{
+                            display: flex;
+                            overflow: hidden;
+                            position: absolute;
+                            box-sizing: border-box;
+                            &[data-x="1"]{
+                                border-left:none!important;
+                            }
+                            &[data-y="1"]{
+                                border-top:none!important;
+                            }
+                            .chartTemplet{
+                                list-style: none;
+                                position: relative;
+                                display:flex;
+                                .move_handle{
+                                    width:32px;
+                                    height: 100%;
+                                    right:0px;
+                                    position: absolute;
+                                    z-index: 99;
+                                    display:flex;
+                                    flex-flow: column;
+                                    align-items:center;
+                                    justify-content: center;
+                                    cursor: Move;
+                                    border-left: 1px solid transparent;
+                                    &:hover{
+                                        background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,.25) 50%, rgba(0, 0, 0, 0) 100%);
+                                        border-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0)) 1 100;
+                                        border-left: 1px solid;
+                                    }
+                                    .btu{
+                                        cursor:pointer;
+                                        margin: 10px 0px;
+                                        font-size: 26px;
+                                        &:hover{
+                                            color: white;
+                                        }
+                                    }
+                                }
+                                .chart {
+                                    &[untreated]{
+                                        box-shadow: 0px 0px 100px rgba(0,0,0,.5) inset;
+                                    }
+                                    width: 100%;
+                                    canvas {
+                                        outline: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .drawer-footer{
+            width: 100%;
+            padding: 10px 16px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            border-top: 1px solid #e8e8e8;
+            background: #fff;
+            text-align: center;
+        }
+    }
+
+    /*** vue-grid ***/
+    .vue-grid-item{
+        &:not(.vue-grid-placeholder){
+            background: #ccc;
+            box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
+        }
+        &.vue-grid-placeholder {
+            background: rgb(55,60,65)!important;
+        }
+    }
+}
+
+
