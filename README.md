@@ -7,6 +7,7 @@ Data Dashboard（数据仪表板）
 <h3>使用方式：</h3>
 <pre>
     1、安装：npm install https://github.com/yangjijiang/DataD.git
+    
     2、引用/调用（跟具自己具体情况进行调整）：
         a）将DataD中dist目录下的内容复制到自己的工程目录中（webpack.config.js中配置）
             const CopyPlugin = require('copy-webpack-plugin');
@@ -36,6 +37,7 @@ Data Dashboard（数据仪表板）
             图表第一次发起数据URL请求时，进行三种策略验证，从而达到在后续的请求以哪种策略进行轮询的目地。
             检测顺序为 Default -> Jsonp -> Proxy ，当Default请求失败时进行Jsonp，而当Jsonp也失败时再进行Proxy，Proxy还失败，三种策略验证都失败此时将报出该URL无法访问异常，该图表后续的轮询将终断。
             在第一次发起数据URL请求时只要有一个策略验证通过，将记录当前验证通过的策略，并在后续的请求轮询中都用该策略。如果在后续请求轮询中出现访问异常（如：网络终断、后端服务器宕机等）轮询不会停止，将一直轮询下去直到网络或服务器恢复正常状态。
+    
     2：页面配置存储（本机存储、远端存储）
         配置主要是对两个配置信息的存储：布局模板（grids表）、 页面整体（page表），表结构都是以Key-Value的形式存储，其它Key默认为自增ID。             
         a）本机存储
