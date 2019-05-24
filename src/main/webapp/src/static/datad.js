@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
-import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
+import { WindowResize, CreateGridsLayoutStyle, fireworks, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
 import { addDdPage, deleteDdPage, updateDdPage, selectDdPage, addCustom, updateCustom, getCustom} from "../service/serverApi"
 import {DrawNavgetion} from "./components/drawNavgetion";
 
@@ -24,6 +24,7 @@ export default {
                 'collection-drawer':[false, false],
                 'search-drawer':[false, false]
             },
+            isOpenFireworks:false,
             isEdit:false,
             app:{
                 id:null,
@@ -40,6 +41,12 @@ export default {
     computed:{
         appName(){
             return this.app.name||"请定制您的页面";
+        },
+        fireworksSingle:function(){
+            let fir = new fireworks("fireworks");
+            fir.init();
+            fir.stop();
+            return fir;
         }
     },
     watch: {
@@ -69,9 +76,20 @@ export default {
                     });
                 });
             });
+        },
+        isOpenFireworks:function(bool){
+            let fir = this.fireworksSingle;
+            if(bool){
+                fir.start();
+            }else{
+                fir.stop();
+            }
         }
     },
     methods: {
+        openFireworks(bool){
+            this.isOpenFireworks = bool;
+        },
         openDrawerFun(componentName,isDrawerLeft=true, isDrawerRight=false){
             Object.keys(this.isDrawerOpen).forEach(x=>{
                 this.isDrawerOpen[x] = [false,false];

@@ -1,6 +1,5 @@
 <template>
     <div class="theme-drawer">
-        {{$parent.themeDrawerR}}
         <Drawer title="主题列表" :transfer="false" :inner="true" :mask="false" :width="390"  placement="left" v-model="isDrawerLeft">
             <div class="theme-templet">
                 <template v-for="item in models">
@@ -31,7 +30,6 @@
                 </Col>
             </Row>
             <Divider dashed/>
-
             <Row>
                 <Col span="4">背景颜色：</Col>
                 <Col span="20">
@@ -45,11 +43,29 @@
                 </Col>
             </Row>
             <Divider dashed/>
+            <Row>
+                <Col span="4">庆祝特效：</Col>
+                <Col span="20">
+                    <i-switch v-model="isOpenFireworks">
+                        <span slot="open">开</span>
+                        <span slot="close">关</span>
+                    </i-switch>
+                </Col>
+            </Row>
+            <Row v-show="isOpenFireworks">
+                <Col span="24">
+                    <Tabs value="name1" style="margin-top: 10px;height: 200px;">
+                        <TabPane label="触发方式一" name="name1">标签一的内容</TabPane>
+                        <TabPane label="触发方式二" name="name2">标签二的内容</TabPane>
+                    </Tabs>
+                </Col>
+            </Row>
 
+            <Divider dashed/>
             <div class="drawer-footer">
                 <ButtonGroup>
                     <Button @click="submitConf()" type="primary">确定</Button>
-                    <Button @click="isDrawerRight = false">取消</Button>
+                    <Button @click="isDrawerRight_1 = false">取消</Button>
                 </ButtonGroup>
             </div>
         </Drawer>
@@ -91,7 +107,13 @@
                         ]
                     }],
                 themes: chartConfCommon.themes,
-                isDrawerRight_1:false
+                isDrawerRight_1:false,
+                isOpenFireworks:false,
+            }
+        },
+        watch: {
+            isOpenFireworks:function(newVal){
+                this.$emit('openFireworks',newVal);
             }
         },
         methods:{
