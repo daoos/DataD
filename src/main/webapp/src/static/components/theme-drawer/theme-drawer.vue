@@ -14,54 +14,92 @@
             </div>
         </Drawer>
 
-        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight_1">
-            <Row>
-                <Col span="4">默认方案：</Col>
-                <Col span="20">{{app.theme}}</Col>
-            </Row>
-            <Row>
-                <Col span="4">&nbsp;</Col>
-                <Col span="20">
-                    <RadioGroup v-model="app.theme" type="button" style="display: flex;flex-flow: column;">
-                        <Radio class="item-group" :id="item.id" :label="item.id" v-for="item in themes">
-                            <span class="item" :style="'background:'+ color" v-for="color in item.colors"></span>
-                        </Radio>
-                    </RadioGroup>
-                </Col>
-            </Row>
-            <Divider dashed/>
-            <Row>
-                <Col span="4">背景颜色：</Col>
-                <Col span="20">
-                    <ColorPicker v-model="app.background" alpha recommend size="small"/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span="4">&nbsp;</Col>
-                <Col span="20">
-                    <div class="setting-bg" :style="'background:'+app.background"></div>
-                </Col>
-            </Row>
-            <Divider dashed/>
-            <Row>
-                <Col span="4">庆祝特效：</Col>
-                <Col span="20">
-                    <i-switch v-model="isOpenFireworks">
-                        <span slot="open">开</span>
-                        <span slot="close">关</span>
-                    </i-switch>
-                </Col>
-            </Row>
-            <Row v-show="isOpenFireworks">
-                <Col span="24">
-                    <Tabs value="name1" style="margin-top: 10px;height: 200px;">
-                        <TabPane label="触发方式一" name="name1">标签一的内容</TabPane>
-                        <TabPane label="触发方式二" name="name2">标签二的内容</TabPane>
-                    </Tabs>
-                </Col>
-            </Row>
-
-            <Divider dashed/>
+        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight_1" >
+            <div style="overflow: hidden;">
+                <Row>
+                    <Col span="4">默认方案：</Col>
+                    <Col span="20">{{app.theme}}</Col>
+                </Row>
+                <Row>
+                    <Col span="4">&nbsp;</Col>
+                    <Col span="20">
+                        <RadioGroup v-model="app.theme" type="button" style="display: flex;flex-flow: column;">
+                            <Radio class="item-group" :id="item.id" :label="item.id" v-for="item in themes">
+                                <span class="item" :style="'background:'+ color" v-for="color in item.colors"></span>
+                            </Radio>
+                        </RadioGroup>
+                    </Col>
+                </Row>
+                <Divider dashed/>
+                <Row>
+                    <Col span="4">背景颜色：</Col>
+                    <Col span="20">
+                        <ColorPicker v-model="app.background" alpha recommend size="small"/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="4">&nbsp;</Col>
+                    <Col span="20">
+                        <div class="setting-bg" :style="'background:'+app.background"></div>
+                    </Col>
+                </Row>
+                <Divider dashed/>
+                <Row>
+                    <Col span="4">庆祝特效：</Col>
+                    <Col span="20">
+                        <i-switch v-model="bgEffectsIsOpen" @on-change="bgEffectsIsOpenChange">
+                            <span slot="open">开</span>
+                            <span slot="close">关</span>
+                        </i-switch>
+                    </Col>
+                </Row>
+                <Row v-show="bgEffectsIsOpen">
+                    <Col span="24">
+                        <br>
+                        <Tabs type="card" size="small">
+                            <TabPane label="触发方式一">
+                                <Row>
+                                    <Col span="2">&nbsp;</Col>
+                                    <Col span="22">
+                                        轮播时间：
+                                        <Checkbox v-model="timeCheckbox">
+                                            <Input v-model="bgEffectsTime" type="number" placeholder="当前时间后每（分钟）轮播" style="width: 210px;margin-left: 5px;" :disabled="!timeCheckbox" />
+                                        </Checkbox >
+                                    </Col>
+                                </Row>
+                                <p style="margin: 6px 0;"></p>
+                                <Row>
+                                    <Col span="6">&nbsp;</Col>
+                                    <Col span="18">
+                                        <Checkbox  v-model="dateCheckbox">
+                                            <DatePicker v-model="bgEffectsDate" type="datetime" placeholder="仅播放一次（年-月-日 时:分:秒）" style="width: 210px;margin-left: 5px;" :disabled="!dateCheckbox" :options="options"></DatePicker>
+                                        </Checkbox >
+                                    </Col>
+                                </Row>
+                                <p style="margin: 12px 0;"></p>
+                                <Row>
+                                    <Col span="2">&nbsp;</Col>
+                                    <Col span="22">
+                                        播放内容：
+                                        <Input v-model="app.bgEffects.values" placeholder="(非必填) 如：新年快乐,618发发发" clearable style="width: 210px;margin-left: 20px;" clearable/>
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane label="触发方式二">
+                                <Row>
+                                    <Col span="2">&nbsp;</Col>
+                                    <Col span="22">
+                                        数据URL：
+                                        <Input placeholder="后端提供触发数据" style="width: 210px;margin-left: 5px;" :disabled="true" title="未上线"/>
+                                        <Divider dashed style="margin: 15px 0;"/>
+                                        返回格式说明：{"isOpen":true, "series":"新年快乐,618发发发"}
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                        </Tabs>
+                    </Col>
+                </Row>
+            </div>
             <div class="drawer-footer">
                 <ButtonGroup>
                     <Button @click="submitConf()" type="primary">确定</Button>
@@ -108,36 +146,74 @@
                     }],
                 themes: chartConfCommon.themes,
                 isDrawerRight_1:false,
-                isOpenFireworks:false,
+                options: {
+                    disabledDate (date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                bgEffectsIsOpen:false,
+                bgEffectsValues:"",
+                bgEffectsTime:"",
+                bgEffectsDate:"",
+                timeCheckbox:true,
+                dateCheckbox:false,
             }
         },
-        watch: {
-            isOpenFireworks:function(newVal){
-                this.$emit('openFireworks',newVal);
+        computed:{
+            bgEffectsDateTime(){
+                return this.app.bgEffects.datetime;
+            }
+        },
+        watch:{
+            timeCheckbox(v){
+                this.dateCheckbox = !v;
+            },
+            dateCheckbox(v){
+                this.timeCheckbox = !v;
+            },
+            bgEffectsDateTime(datatime){
+                if(datatime){
+                    this.bgEffectsIsOpen = true;
+                    if(isNaN(datatime)){
+                        this.dateCheckbox = true;
+                        this.bgEffectsDate = new Date(datatime);
+                    }else{
+                        this.timeCheckbox = true;
+                        this.bgEffectsTime = +datatime;
+                    }
+                }
             }
         },
         methods:{
+            bgEffectsIsOpenChange(bool){
+                this.$emit('openFireworks$Parent',bool);
+            },
             themeSelect(theme){
                 this.app.theme = theme.name;
                 this.app.background="";
                 this.submitConf(JSON.stringify(theme.grid));
             },
             submitConf(grid=`""`){
-                //图表配置变动时也要提示
-                // let pageId = this.$route.query.id;
-                // if(!pageId){
-                //     this.$Modal.confirm({
-                //         title: '确定更换主题风格 ?',
-                //         content:"当前页面尚未保存收藏，更换主题时页面会刷新。",
-                //         onOk: () => {
-                //             sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
-                //             window.location.reload();
-                //         }
-                //     });
-                // }else{
-                //     sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}"}`);
-                //     window.location.reload();
-                // }
+                let strDate="",strValues="";
+                if(this.bgEffectsIsOpen){
+                    let _hms = this.bgEffectsTime, _ymd = this.bgEffectsDate;
+                    if(this.timeCheckbox && _hms){
+                        strDate = +_hms;
+                        if(strDate<5){
+                            this.$Notice.error({title: '轮播时间不能小于5分钟!!!'});
+                            return;
+                        }
+                    }
+                    if(this.bgEffectsDate && (_ymd instanceof Date)){
+                        if(_ymd.getTime() < Date.now()){
+                            this.$Notice.error({title: '指定播放时间不能小于当前系统时间!!!'});
+                            return;
+                        }
+                        strDate = this.$formatDate(_ymd);
+                    }
+                    strValues = this.app.bgEffects.values;
+                }
+                sessionStorage.setItem("bgEffects",`{"datetime":"${strDate}","values":"${strValues}"}`);
                 sessionStorage.setItem("curTheme",`{"theme":"${this.app.theme}", "background":"${this.app.background}","grid":${grid}}`);
                 window.location.reload();
             }
@@ -178,6 +254,9 @@
             background:white url(../../images/bg.png);
         }
         .ivu-drawer-body{
+            overflow: initial;
+        }
+        .ivu-tabs{
             overflow: initial;
         }
     }
