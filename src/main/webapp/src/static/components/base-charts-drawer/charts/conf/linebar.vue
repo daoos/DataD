@@ -28,7 +28,7 @@
         </Row>
         <Divider dashed/>
 
-        <Row @click.native="handleSave(editIndex);editIndex = -1;">
+        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -93,7 +93,7 @@
                 </Table>
             </Col>
         </Row>
-        <Row @click.native="handleSave(editIndex);editIndex = -1;" style="height:200px;"></Row>
+        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -173,6 +173,9 @@
                     this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
                 }
                 this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
+            },
+            handleClearCurrentRow(){
+                this.$refs.dataTable.clearCurrentRow();
             },
             addRow(){
                 let _this = this;

@@ -2,7 +2,7 @@
     <div class="charts-radar">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;">
+        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleClearCurrentRow1();">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -44,7 +44,7 @@
         </Row>
         <br/>
 
-        <Row @click.native="handleSave(table2.editIndex,2);table2.editIndex = -1;">
+        <Row @click.native="handleSave(table2.editIndex,2);table2.editIndex = -1;handleClearCurrentRow2();">
             <Col span="3" class="tab">指标配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -95,7 +95,7 @@
                 </Tooltip>
             </Col>
         </Row>
-        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleSave(table2.editIndex,2);table2.editIndex = -1;" style="height:200px;"></Row>
+        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleSave(table2.editIndex,2);table2.editIndex = -1;handleClearCurrentRow1();handleClearCurrentRow2()" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -179,6 +179,12 @@
             },
             currentChange2(currentRow,oldCurrentRow,tabIndex=2){
                this.currentChange1(currentRow,oldCurrentRow,tabIndex);
+            },
+            handleClearCurrentRow1(){
+                this.$refs.dataTable1.clearCurrentRow();
+            },
+            handleClearCurrentRow2(){
+                this.$refs.dataTable2.clearCurrentRow();
             },
             addRow(tabIndex){
                 let _table = this["table"+tabIndex];
