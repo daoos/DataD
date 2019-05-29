@@ -41,7 +41,10 @@
                     <div class="box-foot">
                         <canvas id='fireworks' :open="isOpenFireworks"></canvas>
                         <div style="display:none">
-                            <div class="shape" v-for="item in app.bgEffects.values.split(',')">{{item}}</div>
+                            <div v-if="app.bgEffects.values.length==0" class="shape">
+                                欢迎使用DataD
+                            </div>
+                            <div v-else class="shape" v-for="item in app.bgEffects.values.split(',')">{{item}}</div>
                         </div>
                     </div>
                 </div>
