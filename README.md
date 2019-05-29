@@ -4,15 +4,6 @@ Data Dashboard（数据仪表板）
 /** 安装使用说明 **/
 1：将工程（DataD）源码安装到自己项目的node_modules目录下（可通过复制源码 或 npm link 或 npm install 的方式安装）
 2：确认 DataD 工程模块下已经编译生成dist文件目录（如果没有dist目录，进入webapp下执行npm run prod）
-3：在自己项目中的main.js中加载 DataD 工程，并初始化接口相关配置即可，如：
-   import { DataD } from 'DataD';
-   new DataD({
-       isUseIndexedDB:true,
-       isUseBusinessChartModule:true,
-       businessChartModuleConfig:{
-           ... ...
-       }
-   });
 
    
 /** 对外提供接口说明 **/

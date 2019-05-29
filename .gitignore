@@ -3,7 +3,4 @@
 **/*.iml
 **/node_modules
 **/dist
-**/main/index.html
-**/prodIndex.html
 **/package-lock.json
-
