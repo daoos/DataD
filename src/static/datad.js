@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
-import { WindowResize, CreateGridsLayoutStyle, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
+import { WindowResize, CreateGridsLayoutStyle, fireworks, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
 import { addDdPage, deleteDdPage, updateDdPage, selectDdPage, addCustom, updateCustom, getCustom} from "../service/serverApi"
 import {DrawNavgetion} from "./components/drawNavgetion";
 
@@ -24,6 +24,7 @@ export default {
                 'collection-drawer':[false, false],
                 'search-drawer':[false, false]
             },
+            isOpenFireworks:false,
             isEdit:false,
             app:{
                 id:null,
@@ -31,7 +32,11 @@ export default {
                 flag:1,
                 theme:"",
                 background:"",
-                photo:""
+                photo:"",
+                bgEffects:{
+                    datetime:"",
+                    values:""
+                }
             },
             sysDate:Date.now(),
             templet:[] //主板当前选中格子模型
@@ -40,6 +45,12 @@ export default {
     computed:{
         appName(){
             return this.app.name||"请定制您的页面";
+        },
+        fireworksSingle:function(){
+            let fir = new fireworks("fireworks");
+            fir.init();
+            fir.stop();
+            return fir;
         }
     },
     watch: {
@@ -69,9 +80,51 @@ export default {
                     });
                 });
             });
+        },
+        isOpenFireworks:function(bool){
+            let fir = this.fireworksSingle;
+            if(bool){
+                fir.start();
+                //播放1分钟自动关闭背景特效
+                window.clearTimeout(window.autoStopFireworks);
+                window.autoStopFireworks = setTimeout(()=>{
+                    this.isOpenFireworks = false;
+                },60000);
+            }else{
+                fir.stop();
+            }
         }
     },
     methods: {
+        _bgEffects(_themeConf){
+            let _this = this;
+            //背景特效控制
+            let _bgEffects = _themeConf["bgEffects"];
+            if(_bgEffects) {
+                let _date = _bgEffects["datetime"];
+                if (_date) {
+                    if (isNaN(_date)) {
+                        if (new Date(_date).getTime() >= Date.now()) {
+                            window.clearInterval(window.timeout1);
+                            window.timeout1 = setInterval(() => {
+                                if (new Date(_date).getTime() <= Date.now()) {
+                                    _this.isOpenFireworks = true;
+                                    window.clearInterval(window.timeout1);
+                                }
+                            }, 1000);
+                        }
+                    } else {
+                        window.clearInterval(window.timeout2);
+                        window.timeout2 = setInterval(() => {
+                            _this.isOpenFireworks = true;
+                        }, (+_date) * 60000);
+                    }
+                }
+            }
+        },
+        openFireworks(bool){
+            this.isOpenFireworks = bool;
+        },
         openDrawerFun(componentName,isDrawerLeft=true, isDrawerRight=false){
             Object.keys(this.isDrawerOpen).forEach(x=>{
                 this.isDrawerOpen[x] = [false,false];
@@ -184,6 +237,7 @@ export default {
                     theme:this.app.theme,
                     background:this.app.background,
                     photo:this.app.photo,
+                    bgEffects:this.app.bgEffects,
                     moduleList: _moduleList
                 };
                 if(submitType==1){
@@ -265,6 +319,10 @@ export default {
                         if(!curTheme){
                             Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
                         }
+                        if(!sessionStorage.getItem("bgEffects")){
+                            Object.assign(_this.app,{bgEffects:totalConfig.bgEffects});
+                        }
+                        this._bgEffects(totalConfig);
                         //主板格子模型反序列化
                         Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag});
                         this.templet = totalConfig.moduleList.map(el=>{
@@ -343,6 +401,10 @@ export default {
                 //         if(!curTheme){
                 //             Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
                 //         }
+                //         if(!sessionStorage.getItem("bgEffects")){
+                //             Object.assign(_this.app,{bgEffects:totalConfig.bgEffects});
+                //         }
+                //         this._bgEffects(totalConfig);
                 //         //主板格子模型反序列化
                 //         Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag});
                 //         this.templet = totalConfig.moduleList.map(el=>{

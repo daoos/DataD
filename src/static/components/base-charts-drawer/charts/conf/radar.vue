@@ -2,7 +2,7 @@
     <div class="charts-radar">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;">
+        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleClearCurrentRow1();">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -13,38 +13,38 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-current-change="currentChange1">
-                    <template slot-scope="{ row, index }" slot="col1">
-                        <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
-                            <Select v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in quotasRadar.legend">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
-                                <span v-if="row.col1">{{ row.col1 }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填"/>
-                            <span v-else>
-                                <span v-if="row.col1">{{ row.col1 }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="col2">
-                        <ColorPicker v-model="table1.editCol2" v-if="table1.editIndex === index" recommend alpha/>
+            <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-current-change="currentChange1">
+                <template slot-scope="{ row, index }" slot="col1">
+                    <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
+                        <Select v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填">
+                            <Option :value="elem" v-for="elem in quotasRadar.legend">{{elem}}</Option>
+                        </Select>
                         <span v-else>
+                                <span v-if="row.col1">{{ row.col1 }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                    </template>
+                    <template v-else>
+                        <Input v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填"/>
+                        <span v-else>
+                                <span v-if="row.col1">{{ row.col1 }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                    </template>
+                </template>
+                <template slot-scope="{ row, index }" slot="col2">
+                    <ColorPicker v-model="table1.editCol2" v-if="table1.editIndex === index" recommend alpha/>
+                    <span v-else>
                             <span v-if="row.col2" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.col2"></span>
                             <span v-else>自动</span>
                         </span>
-                    </template>
-                </Table>
+                </template>
+            </Table>
             </Col>
         </Row>
         <br/>
 
-        <Row @click.native="handleSave(table2.editIndex,2);table2.editIndex = -1;">
+        <Row @click.native="handleSave(table2.editIndex,2);table2.editIndex = -1;handleClearCurrentRow2();">
             <Col span="3" class="tab">指标配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -55,47 +55,47 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-current-change="currentChange2">
-                    <template slot-scope="{ row, index }" slot="col1">
-                        <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
-                            <Select v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in quotasRadar.indicator">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
+            <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-current-change="currentChange2">
+                <template slot-scope="{ row, index }" slot="col1">
+                    <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
+                        <Select v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填">
+                            <Option :value="elem" v-for="elem in quotasRadar.indicator">{{elem}}</Option>
+                        </Select>
+                        <span v-else>
                                 <span v-if="row.col1">{{ row.col1 }}</span>
                                 <span v-else style="color:#ed4014">必填</span>
                             </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填"/>
-                            <span v-else>
+                    </template>
+                    <template v-else>
+                        <Input v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填"/>
+                        <span v-else>
                                 <span v-if="row.col1">{{ row.col1 }}</span>
                                 <span v-else style="color:#ed4014">必填</span>
                             </span>
-                        </template>
                     </template>
-                    <template slot-scope="{ row, index }" slot="col2">
-                        <InputNumber v-model="table2.editCol2"  v-if="table2.editIndex === index" :min="0"></InputNumber>
-                        <span v-else>{{ row.col2 || 100 }}</span>
-                    </template>
-                </Table>
+                </template>
+                <template slot-scope="{ row, index }" slot="col2">
+                    <InputNumber v-model="table2.editCol2"  v-if="table2.editIndex === index" :min="0"></InputNumber>
+                    <span v-else>{{ row.col2 || 100 }}</span>
+                </template>
+            </Table>
             </Col>
         </Row>
         <Row>
             <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom-end" max-width=300 >
-                    数据返回格式说明：<Icon type="md-help-circle" size="16"/>
-<pre slot="content">
+            <Tooltip placement="bottom-end" max-width=300 >
+                数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+                <pre slot="content">
 {
     "series":{
         "图例A":[43,87,10],
         "图例B":[23,34,66]
     }
 }</pre>
-                </Tooltip>
+            </Tooltip>
             </Col>
         </Row>
-        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleSave(table2.editIndex,2);table2.editIndex = -1;" style="height:200px;"></Row>
+        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleSave(table2.editIndex,2);table2.editIndex = -1;handleClearCurrentRow1();handleClearCurrentRow2()" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -171,14 +171,22 @@
                 _table.data[index].col2 = _table.editCol2;
             },
             currentChange1(currentRow,oldCurrentRow,tabIndex=1){
-                let _table = this["table"+tabIndex];
-                if(oldCurrentRow) {
-                    this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
-                }
-                this.handleEdit(currentRow,_table.data.findIndex(x=>x.col1==currentRow.col1),tabIndex);
+                try{
+                    let _table = this["table"+tabIndex];
+                    if(oldCurrentRow) {
+                        this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
+                    }
+                    this.handleEdit(currentRow,_table.data.findIndex(x=>x.col1==currentRow.col1),tabIndex);
+                }catch (e) {}
             },
             currentChange2(currentRow,oldCurrentRow,tabIndex=2){
-               this.currentChange1(currentRow,oldCurrentRow,tabIndex);
+                this.currentChange1(currentRow,oldCurrentRow,tabIndex);
+            },
+            handleClearCurrentRow1(){
+                this.$refs.dataTable1.clearCurrentRow();
+            },
+            handleClearCurrentRow2(){
+                this.$refs.dataTable2.clearCurrentRow();
             },
             addRow(tabIndex){
                 let _table = this["table"+tabIndex];

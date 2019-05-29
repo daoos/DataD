@@ -13,7 +13,7 @@
         </nav>
         <nav class="container">
             <!--<component :is="childComponentDrawer" :isDrawerLeft="isDrawerLeft" :isDrawerRight="isDrawerRight" :app="app" @setTemplet$Parent="setTemplet" @saveTotalConfig$Parent="saveTotalConfig"></component>-->
-            <theme-drawer :isDrawerLeft="isDrawerOpen['theme-drawer'][0]" :isDrawerRight="isDrawerOpen['theme-drawer'][1]"                               :app="app"></theme-drawer>
+            <theme-drawer :isDrawerLeft="isDrawerOpen['theme-drawer'][0]" :isDrawerRight="isDrawerOpen['theme-drawer'][1]"                               :app="app" @openFireworks$Parent="openFireworks"></theme-drawer>
             <grids-drawer :isDrawerLeft="isDrawerOpen['grids-drawer'][0]" :isDrawerRight="isDrawerOpen['grids-drawer'][1]"                               @setTemplet$Parent="setTemplet"></grids-drawer>
             <base-charts-drawer :isDrawerLeft="isDrawerOpen['base-charts-drawer'][0]" :isDrawerRight="isDrawerOpen['base-charts-drawer'][1]"             :app="app"></base-charts-drawer>
             <business-charts-drawer v-if="$DataDOption.isUseBusinessChartModule" :isDrawerLeft="isDrawerOpen['business-charts-drawer'][0]" :isDrawerRight="isDrawerOpen['business-charts-drawer'][1]" :app="app"></business-charts-drawer>
@@ -25,7 +25,7 @@
                     <nav class="box-head">
                         <div class='title'>
                             <div class="text">{{ appName }}</div>
-                            <div class="subtext" id="sysDate">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
+                            <div class="subtext" id="sysDate">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }} </div>
                         </div>
                         <div class="tool">
                             <Icon type="ios-search"  title="查询" @click="openDrawerFun('search-drawer',false,true)"/>
@@ -38,6 +38,12 @@
                             <li :data-x="value.x" :data-y="value.y" :data-w="value.w" :data-h="value.h" :data-l="value.l||0" class="gs-w" ref="gsw" v-for="value in templet"></li>
                         </ul>
                     </nav>
+                    <div class="box-foot">
+                        <canvas id='fireworks' :open="isOpenFireworks"></canvas>
+                        <div style="display:none">
+                            <div class="shape" v-for="item in app.bgEffects.values.split(',')">{{item}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>

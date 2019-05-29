@@ -2,7 +2,7 @@
     <div class="charts-pie">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleSave(editIndex);editIndex = -1;">
+        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -14,51 +14,51 @@
 
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
-                    <template slot-scope="{ row, index }" slot="legendTitle">
-                        <template  v-if="legends && legends.length > 0">
-                            <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in legends">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
-                            <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="color">
-                        <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
+            <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
+                <template slot-scope="{ row, index }" slot="legendTitle">
+                    <template  v-if="legends && legends.length > 0">
+                        <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
+                            <Option :value="elem" v-for="elem in legends">{{elem}}</Option>
+                        </Select>
                         <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                    </template>
+                    <template v-else>
+                        <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
+                        <span v-else>
+                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
+                                <span v-else style="color:#ed4014">必填</span>
+                            </span>
+                    </template>
+                </template>
+                <template slot-scope="{ row, index }" slot="color">
+                    <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
+                    <span v-else>
                             <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
                             <span v-else>自动</span>
                         </span>
-                    </template>
-                </Table>
+                </template>
+            </Table>
             </Col>
         </Row>
 
         <Row>
             <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom-end" max-width=500>
-                    数据返回格式说明：<Icon type="md-help-circle" size="16"/>
-<pre slot="content">
+            <Tooltip placement="bottom-end" max-width=500>
+                数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+                <pre slot="content">
 {
     "series":{
         "图例A":55,
         "图例B":45
      }
 }</pre>
-                </Tooltip>
+            </Tooltip>
             </Col>
         </Row>
-        <Row @click.native="handleSave(editIndex);editIndex = -1;" style="height:200px;"></Row>
+        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -107,10 +107,15 @@
                 this.data[index].color = this.editColor;
             },
             currentChange(currentRow,oldCurrentRow){
-                if(oldCurrentRow) {
-                    this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
-                }
-                this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
+                try{
+                    if(oldCurrentRow) {
+                        this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
+                    }
+                    this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
+                }catch (e) {}
+            },
+            handleClearCurrentRow(){
+                this.$refs.dataTable.clearCurrentRow();
             },
             addRow(){
                 let _this = this;

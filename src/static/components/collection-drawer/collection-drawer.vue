@@ -61,12 +61,14 @@
         },
         methods:{
             add(){
+                sessionStorage.removeItem("bgEffects");
                 this.$emit('saveTotalConfig$Parent',1);
             },
             update(){
                 this.$Modal.confirm({
                     title: '确定该修改 ?',
                     onOk: () => {
+                        sessionStorage.removeItem("bgEffects");
                         this.$emit('saveTotalConfig$Parent',2);
                     }
                 });
@@ -75,16 +77,14 @@
                 this.$Modal.confirm({
                     title: '确定该删除 ?',
                     onOk: () => {
+                        sessionStorage.removeItem("bgEffects");
                         this.$emit('saveTotalConfig$Parent',0);
                     }
                 });
             },
             list(){
                 selectAllDdPage(this.$DataDOption.isUseIndexedDB).then(response=>{
-                    let datas = response.data;
-                    if(datas){
-                        this.pageList = datas;
-                    }
+                    this.pageList = response.data||[];
                 });
             },
             openPage(pageId){
@@ -101,6 +101,10 @@
                 let _themeConf= JSON.parse(curTheme);
                 this.app.theme=_themeConf.theme;
                 this.app.background=_themeConf.background;
+            }
+            let bgEffects = sessionStorage.getItem("bgEffects");
+            if(bgEffects){
+                Object.assign(this.app.bgEffects, JSON.parse(bgEffects));
             }
             this.list();
         }

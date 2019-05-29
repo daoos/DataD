@@ -25,16 +25,16 @@
 .dark-theme{
     .theme(radial-gradient(#0e284d 0%, #1f2630 70%));
     .gs-w{
-        border: 1.5px solid rgba(0,0,0,.5)!important;
+        border: 1.5px solid rgba(0,0,0,.25)!important;
         background:
-        linear-gradient(to left, #4daff0, #4daff0) left top no-repeat,
-        linear-gradient(to bottom, #4daff0, #4daff0) left top no-repeat,
-        linear-gradient(to left, #4daff0, #4daff0) right top no-repeat,
-        linear-gradient(to bottom, #4daff0, #4daff0) right top no-repeat,
-        linear-gradient(to left, #4daff0, #4daff0) left bottom no-repeat,
-        linear-gradient(to bottom, #4daff0, #4daff0) left bottom no-repeat,
-        linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat,
-        linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat;
+                linear-gradient(to left, #4daff0, #4daff0) left top no-repeat,
+                linear-gradient(to bottom, #4daff0, #4daff0) left top no-repeat,
+                linear-gradient(to left, #4daff0, #4daff0) right top no-repeat,
+                linear-gradient(to bottom, #4daff0, #4daff0) right top no-repeat,
+                linear-gradient(to left, #4daff0, #4daff0) left bottom no-repeat,
+                linear-gradient(to bottom, #4daff0, #4daff0) left bottom no-repeat,
+                linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat,
+                linear-gradient(to left, #4daff0, #4daff0) right bottom no-repeat;
         background-size: 2px 7px, 7px 2px, 2px 7px, 7px 2px;
     }
 }
@@ -231,6 +231,21 @@
                         }
                     }
                 }
+                .box-foot{
+                    filter: blur(1.5px);
+                    width: 100%;
+                    height: inherit;
+                    position: absolute;
+                    z-index:-1;
+                    #fireworks{
+                        width: inherit;
+                        height: inherit;
+                        opacity: 0;
+                        &[open] {
+                            opacity: 1;
+                        }
+                    }
+                }
             }
         }
         .drawer-footer{
@@ -255,6 +270,7 @@
             background: rgb(55,60,65)!important;
         }
     }
+    .ivu-table-wrapper{
+        overflow: initial;
+    }
 }
-
-
