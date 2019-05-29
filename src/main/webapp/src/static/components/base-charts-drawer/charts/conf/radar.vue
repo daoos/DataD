@@ -171,11 +171,13 @@
                 _table.data[index].col2 = _table.editCol2;
             },
             currentChange1(currentRow,oldCurrentRow,tabIndex=1){
-                let _table = this["table"+tabIndex];
-                if(oldCurrentRow) {
-                    this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
-                }
-                this.handleEdit(currentRow,_table.data.findIndex(x=>x.col1==currentRow.col1),tabIndex);
+                try{
+                    let _table = this["table"+tabIndex];
+                    if(oldCurrentRow) {
+                        this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
+                    }
+                    this.handleEdit(currentRow,_table.data.findIndex(x=>x.col1==currentRow.col1),tabIndex);
+                }catch (e) {}
             },
             currentChange2(currentRow,oldCurrentRow,tabIndex=2){
                this.currentChange1(currentRow,oldCurrentRow,tabIndex);

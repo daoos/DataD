@@ -107,10 +107,12 @@
                 this.data[index].color = this.editColor;
             },
             currentChange(currentRow,oldCurrentRow){
-                if(oldCurrentRow) {
-                    this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
-                }
-                this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
+                try{
+                    if(oldCurrentRow) {
+                        this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
+                    }
+                    this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
+                }catch (e) {}
             },
             handleClearCurrentRow(){
                 this.$refs.dataTable.clearCurrentRow();
