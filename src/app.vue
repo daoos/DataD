@@ -41,7 +41,8 @@
                     <div class="box-foot">
                         <canvas id='fireworks' :open="isOpenFireworks"></canvas>
                         <div style="display:none">
-                            <div class="shape" v-for="item in app.bgEffects.values.split(',')">{{item}}</div>
+                            <div v-if="app.bgEffects.values.length==0 && app.bgEffects.datetime.length==0" class="shape">{{ $formatDate(sysDate,'yy-MM-dd hh:mm:ss') }}</div>
+                            <div v-else class="shape" v-for="item in app.bgEffects.values.split(',')">{{item}}</div>
                         </div>
                     </div>
                 </div>

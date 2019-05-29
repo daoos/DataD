@@ -155,7 +155,7 @@ export default{
             //设置图的x、y坐标的值
             setAxis(){
                 if(xAxisData && xAxisData.length > 0){
-                    if(false && _isCover=="cover"){
+                    if(_isCover=="cover"){
                         //数据覆盖 cover
                         xAxis.data = xAxisData;
                     }else{

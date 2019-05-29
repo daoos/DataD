@@ -21,7 +21,8 @@ export default{
             defual(){
                 // 1：默认内部域名访问
                 return new Promise((resolve,reject)=>{
-                    jquery.ajax({url:url, data:JSON.stringify(params), type:"POST", dataType:"json", contentType:"application/json;charset=UTF-8"}).done(response=>{
+                    //jquery.ajax({url:url, data:JSON.stringify(params), type:"POST", dataType:"json", contentType:"application/json;charset=UTF-8"}).done(response=>{
+                    jquery.ajax({url:url, data:decodeURI(qs.stringify(params)).replace(/(\[\d\])/g,""), type:"GET", dataType:"json"}).done(response=>{
                         resolve(response);
                     }).fail(error=>{
                         console.error("==1=Defual Access Fail===");
