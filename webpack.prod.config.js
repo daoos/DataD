@@ -7,8 +7,8 @@ module.exports = merge(webpackBaseConfig, {
     output: {
         //publicPath: 'dist/',
         path: path.join(__dirname, './dist/'),
-        filename: '[name].bundle.js',
-        chunkFilename: '[name].chunk.js'
+        filename: '[name].[hash].bundle.js',
+        chunkFilename: '[name].[hash].chunk.js'
     },
     module: {
         rules: []
