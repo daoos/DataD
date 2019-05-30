@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
 import { WindowResize, CreateGridsLayoutStyle, fireworks, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
@@ -157,15 +156,40 @@ export default {
         },
         //主板内容区域缩放
         zoom(){
-            let box =  d3.select(".main-box #box");
+            let box = document.querySelector(".main-box #box");
             if(this.isEdit){
-                d3.select(".main-box").call(d3.zoom().scaleExtent([0.25, 1]).on("zoom", function(){
-                    let {k,x,y} = d3.event.transform;
-                    box.style("transform", `scale(${k})`);
-                    //box.style("transform", `translate(${x}px,${y}px) scale(${k})`);
-                }));
+                let [scrollMin,scrollMax,scrollCur,step] = [0.25,1,0.5,0.125];
+                let scrollFunc = function (e) {
+                    e = e || window.event;
+                    if (e.wheelDelta) { //第一步：先判断浏览器IE，谷歌滑轮事件
+                        if (e.wheelDelta > 0) { //当滑轮向上滚动时
+                            scrollCur += step;
+                            scrollCur = scrollCur>scrollMax?scrollMax:scrollCur;
+                        }
+                        if (e.wheelDelta < 0) { //当滑轮向下滚动时
+                            scrollCur -= step;
+                            scrollCur = scrollCur<scrollMin?scrollMin:scrollCur;
+                        }
+                    } else if (e.detail) { //Firefox滑轮事件
+                        if (e.detail > 0) { //当滑轮向上滚动时
+                            scrollCur += step;
+                            scrollCur = scrollCur>scrollMax?scrollMax:scrollCur;
+                        }
+                        if (e.detail < 0) { //当滑轮向下滚动时
+                            scrollCur -= step;
+                            scrollCur = scrollCur<scrollMin?scrollMin:scrollCur;
+                        }
+                    }
+                    box.style=`transform:scale(${scrollCur})`;
+                }
+                //给页面绑定滑轮滚动事件
+                if (document.addEventListener) {//firefox
+                    document.addEventListener('DOMMouseScroll', scrollFunc, false);
+                }
+                //滚动滑轮触发scrollFunc方法 //ie 谷歌
+                window.onmousewheel = document.onmousewheel = scrollFunc;
             }else{
-                box.style("transform", "scale(1)");
+                box.style="transform:scale(1);transition:initial";
             }
         },
         //主板内容拍照

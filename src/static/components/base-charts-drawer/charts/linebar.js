@@ -155,44 +155,51 @@ export default{
             //设置图的x、y坐标的值
             setAxis(){
                 if(xAxisData && xAxisData.length > 0){
+                    let dateFormatTransf = ()=>{
+                        //只对时间戳进行处理
+                        if(requestCount==1){
+                            let yyyy = new Set(),MM = new Set(),dd = new Set(), HH = new Set(), mm = new Set(), ss = new Set(), _yyyy="",_MM="",_dd="",_HH="",_mm="",_ss="";
+                            xAxisData.forEach(elem =>{
+                                let dateTime = new Date(+`${elem}000`);
+                                yyyy.add( dateTime.getFullYear() );
+                                MM.add( dateTime.getMonth()+1 );
+                                dd.add( dateTime.getDate() );
+                                HH.add( dateTime.getHours() );
+                                mm.add( dateTime.getMinutes() );
+                                ss.add( dateTime.getSeconds() );
+                            });
+                            if(yyyy.size>1) _yyyy = "yyyy/";
+                            if(MM.size>1) _MM = "MM/";
+                            if(dd.size>1) _dd = "dd";
+                            if(HH.size>1) _HH = " hh";
+                            if(mm.size>1) _mm = ":mm";
+                            if(ss.size>1) _ss = ":ss";
+                            _xAxisFormat=_yyyy+_MM+_dd+_HH+_mm+_ss;
+                        }
+                        if(_xAxisFormat==" hh:mm" || _xAxisFormat==":mm:ss" || _xAxisFormat==":mm" || _xAxisFormat==":ss"){
+                            _xAxisFormat = "hh:mm:ss";
+                        }
+                        return xAxisData.map(elem=>{
+                            if(SecondReg.test(elem)){
+                                return formatDate(+`${elem}000`,_xAxisFormat) //秒
+                            }else if(MillisecondReg.test(elem)){
+                                return formatDate(elem,_xAxisFormat) //毫秒
+                            }
+                            return elem;
+                        });
+                    };
                     if(_isCover=="cover"){
                         //数据覆盖 cover
-                        xAxis.data = xAxisData;
+                        if(SecondReg.test(xAxisData[0]) || MillisecondReg.test(xAxisData[0])){
+                            xAxis.data = dateFormatTransf();
+                        }else{
+                            xAxis.data = xAxisData;
+                        }
                     }else{
                         //数据追加 add
                         let _xAxis = xAxis.data;
                         if(SecondReg.test(xAxisData[0]) || MillisecondReg.test(xAxisData[0])){
-                            //只对时间戳进行处理
-                            if(requestCount==1){
-                                let yyyy = new Set(),MM = new Set(),dd = new Set(), HH = new Set(), mm = new Set(), ss = new Set(), _yyyy="",_MM="",_dd="",_HH="",_mm="",_ss="";
-                                xAxisData.forEach(elem =>{
-                                    let dateTime = new Date(+`${elem}000`);
-                                    yyyy.add( dateTime.getFullYear() );
-                                    MM.add( dateTime.getMonth()+1 );
-                                    dd.add( dateTime.getDate() );
-                                    HH.add( dateTime.getHours() );
-                                    mm.add( dateTime.getMinutes() );
-                                    ss.add( dateTime.getSeconds() );
-                                });
-                                if(yyyy.size>1) _yyyy = "yyyy/";
-                                if(MM.size>1) _MM = "MM/";
-                                if(dd.size>1) _dd = "dd";
-                                if(HH.size>1) _HH = " hh";
-                                if(mm.size>1) _mm = ":mm";
-                                if(ss.size>1) _ss = ":ss";
-                                _xAxisFormat=_yyyy+_MM+_dd+_HH+_mm+_ss;
-                            }
-                            if(_xAxisFormat==" hh:mm" || _xAxisFormat==":mm:ss" || _xAxisFormat==":mm" || _xAxisFormat==":ss"){
-                                _xAxisFormat = "hh:mm:ss";
-                            }
-                            _xAxis.push.apply(_xAxis, xAxisData.map(elem=>{
-                                if(SecondReg.test(elem)){
-                                    return formatDate(+`${elem}000`,_xAxisFormat) //秒
-                                }else if(MillisecondReg.test(elem)){
-                                    return formatDate(elem,_xAxisFormat) //毫秒
-                                }
-                                return elem;
-                            }));
+                            _xAxis.push.apply(_xAxis, dateFormatTransf());
                         }else{
                             _xAxis.push.apply(_xAxis, xAxisData);
                         }
