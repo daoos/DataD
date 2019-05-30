@@ -23,80 +23,80 @@
                 <Row>
                     <Col span="4">&nbsp;</Col>
                     <Col span="20">
-                    <RadioGroup v-model="app.theme" type="button" style="display: flex;flex-flow: column;">
-                        <Radio class="item-group" :id="item.id" :label="item.id" v-for="item in themes">
-                            <span class="item" :style="'background:'+ color" v-for="color in item.colors"></span>
-                        </Radio>
-                    </RadioGroup>
+                        <RadioGroup v-model="app.theme" type="button" style="display: flex;flex-flow: column;">
+                            <Radio class="item-group" :id="item.id" :label="item.id" v-for="item in themes">
+                                <span class="item" :style="'background:'+ color" v-for="color in item.colors"></span>
+                            </Radio>
+                        </RadioGroup>
                     </Col>
                 </Row>
                 <Divider dashed/>
                 <Row>
                     <Col span="4">背景颜色：</Col>
                     <Col span="20">
-                    <ColorPicker v-model="app.background" alpha recommend size="small"/>
+                        <ColorPicker v-model="app.background" alpha recommend size="small"/>
                     </Col>
                 </Row>
                 <Row>
                     <Col span="4">&nbsp;</Col>
                     <Col span="20">
-                    <div class="setting-bg" :style="'background:'+app.background"></div>
+                        <div class="setting-bg" :style="'background:'+app.background"></div>
                     </Col>
                 </Row>
                 <Divider dashed/>
                 <Row>
                     <Col span="4">庆祝特效：</Col>
                     <Col span="20">
-                    <i-switch v-model="bgEffectsIsOpen" @on-change="bgEffectsIsOpenChange">
-                        <span slot="open">开</span>
-                        <span slot="close">关</span>
-                    </i-switch>
+                        <i-switch v-model="bgEffectsIsOpen" @on-change="bgEffectsIsOpenChange">
+                            <span slot="open">开</span>
+                            <span slot="close">关</span>
+                        </i-switch>
                     </Col>
                 </Row>
                 <Row v-show="bgEffectsIsOpen">
                     <Col span="24">
-                    <br>
-                    <Tabs type="card" size="small">
-                        <TabPane label="触发方式一">
-                            <Row>
-                                <Col span="2">&nbsp;</Col>
-                                <Col span="22">
-                                轮播时间：
-                                <Checkbox v-model="timeCheckbox">
-                                    <Input v-model="bgEffectsTime" type="number" placeholder="当前时间后每（分钟）轮播" style="width: 210px;margin-left: 5px;" :disabled="!timeCheckbox" />
-                                </Checkbox >
-                                </Col>
-                            </Row>
-                            <p style="margin: 6px 0;"></p>
-                            <Row>
-                                <Col span="6">&nbsp;</Col>
-                                <Col span="18">
-                                <Checkbox  v-model="dateCheckbox">
-                                    <DatePicker v-model="bgEffectsDate" type="datetime" placeholder="仅播放一次（年-月-日 时:分:秒）" style="width: 210px;margin-left: 5px;" :disabled="!dateCheckbox" :options="options"></DatePicker>
-                                </Checkbox >
-                                </Col>
-                            </Row>
-                            <p style="margin: 12px 0;"></p>
-                            <Row>
-                                <Col span="2">&nbsp;</Col>
-                                <Col span="22">
-                                播放内容：
-                                <Input v-model="app.bgEffects.values" placeholder="(非必填) 如：新年快乐,618发发发" clearable style="width: 210px;margin-left: 20px;" clearable/>
-                                </Col>
-                            </Row>
-                        </TabPane>
-                        <TabPane label="触发方式二">
-                            <Row>
-                                <Col span="2">&nbsp;</Col>
-                                <Col span="22">
-                                数据URL：
-                                <Input placeholder="后端提供触发数据" style="width: 210px;margin-left: 5px;" :disabled="true" title="未上线"/>
-                                <Divider dashed style="margin: 15px 0;"/>
-                                返回格式说明：{"isOpen":true, "series":"新年快乐,618发发发"}
-                                </Col>
-                            </Row>
-                        </TabPane>
-                    </Tabs>
+                        <br>
+                        <Tabs type="card" size="small">
+                            <TabPane label="触发方式一">
+                                <Row>
+                                    <Col span="2">&nbsp;</Col>
+                                    <Col span="22">
+                                        轮播时间：
+                                        <Checkbox v-model="timeCheckbox">
+                                            <Input v-model="bgEffectsTime" type="number" placeholder="当前时间后每（分钟）轮播" style="width: 210px;margin-left: 5px;" :disabled="!timeCheckbox" />
+                                        </Checkbox >
+                                    </Col>
+                                </Row>
+                                <p style="margin: 6px 0;"></p>
+                                <Row>
+                                    <Col span="6">&nbsp;</Col>
+                                    <Col span="18">
+                                        <Checkbox  v-model="dateCheckbox">
+                                            <DatePicker v-model="bgEffectsDate" type="datetime" placeholder="仅播放一次（年-月-日 时:分:秒）" style="width: 210px;margin-left: 5px;" :disabled="!dateCheckbox" :options="options"></DatePicker>
+                                        </Checkbox >
+                                    </Col>
+                                </Row>
+                                <p style="margin: 12px 0;"></p>
+                                <Row>
+                                    <Col span="2">&nbsp;</Col>
+                                    <Col span="22">
+                                        播放内容：
+                                        <Input v-model="app.bgEffects.values" placeholder="(非必填) 如：新年快乐,618发发发" clearable style="width: 210px;margin-left: 20px;" clearable/>
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane label="触发方式二">
+                                <Row>
+                                    <Col span="2">&nbsp;</Col>
+                                    <Col span="22">
+                                        数据URL：
+                                        <Input placeholder="后端提供触发数据" style="width: 210px;margin-left: 5px;" :disabled="true" title="未上线"/>
+                                        <Divider dashed style="margin: 15px 0;"/>
+                                        返回格式说明：{"isOpen":true, "series":"新年快乐,618发发发"}
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                        </Tabs>
                     </Col>
                 </Row>
             </div>

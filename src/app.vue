@@ -25,7 +25,7 @@
                     <nav class="box-head">
                         <div class='title'>
                             <div class="text">{{ appName }}</div>
-                            <div class="subtext" id="sysDate">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }}</div>
+                            <div class="subtext" id="sysDate">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }} </div>
                         </div>
                         <div class="tool">
                             <Icon type="ios-search"  title="查询" @click="openDrawerFun('search-drawer',false,true)"/>
@@ -41,7 +41,7 @@
                     <div class="box-foot">
                         <canvas id='fireworks' :open="isOpenFireworks"></canvas>
                         <div style="display:none">
-                            <div v-if="app.bgEffects.values.length==0" class="shape">{{ $formatDate(sysDate,'yy-MM-dd hh:mm:ss') }}</div>
+                            <div v-if="app.bgEffects.values.length==0 && app.bgEffects.datetime.length==0" class="shape">{{ $formatDate(sysDate,'yy-MM-dd hh:mm:ss') }}</div>
                             <div v-else class="shape" v-for="item in app.bgEffects.values.split(',')">{{item}}</div>
                         </div>
                     </div>

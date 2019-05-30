@@ -1,5 +1,5 @@
 {
-  "name": "DataD",
+  "name": "datad",
   "version": "1.0.0",
   "description": "webpack4 + vue2.x + less3.x + iview3.x",
   "main": "main.js",
@@ -37,7 +37,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cross-env": "^5.2.0",
-    "d3": "^5.7.0",
     "echarts": "^4.1.0",
     "echarts-liquidfill": "^2.0.4",
     "html2canvas": "^1.0.0-rc.1",

@@ -28,7 +28,7 @@
         </Drawer>
         <Drawer title="添加模板" :transfer="false" :inner="true" :width="590" :styles="styles" v-model="isDrawerRight">
             <nav class="grids-conf">
-                <Divider dashed orientation="left"><Icon type="md-open" /> 最大尺寸：6 * 4</Divider>
+                <Divider dashed orientation="left"><Icon type="md-open" /> 最大尺寸：4 * 6</Divider>
                 <div style="text-align: right">
                     <ButtonGroup size="small" class="button-group">
                         <Button icon="md-add-circle" @click="addDdGrid">添加</Button>

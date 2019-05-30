@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
 import { WindowResize, CreateGridsLayoutStyle, fireworks, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
@@ -157,15 +156,40 @@ export default {
         },
         //主板内容区域缩放
         zoom(){
-            let box =  d3.select(".main-box #box");
+            let box = document.querySelector(".main-box #box");
             if(this.isEdit){
-                d3.select(".main-box").call(d3.zoom().scaleExtent([0.25, 1]).on("zoom", function(){
-                    let {k,x,y} = d3.event.transform;
-                    box.style("transform", `scale(${k})`);
-                    //box.style("transform", `translate(${x}px,${y}px) scale(${k})`);
-                }));
+                let [scrollMin,scrollMax,scrollCur,step] = [0.25,1,0.5,0.125];
+                let scrollFunc = function (e) {
+                    e = e || window.event;
+                    if (e.wheelDelta) { //第一步：先判断浏览器IE，谷歌滑轮事件
+                        if (e.wheelDelta > 0) { //当滑轮向上滚动时
+                            scrollCur += step;
+                            scrollCur = scrollCur>scrollMax?scrollMax:scrollCur;
+                        }
+                        if (e.wheelDelta < 0) { //当滑轮向下滚动时
+                            scrollCur -= step;
+                            scrollCur = scrollCur<scrollMin?scrollMin:scrollCur;
+                        }
+                    } else if (e.detail) { //Firefox滑轮事件
+                        if (e.detail > 0) { //当滑轮向上滚动时
+                            scrollCur += step;
+                            scrollCur = scrollCur>scrollMax?scrollMax:scrollCur;
+                        }
+                        if (e.detail < 0) { //当滑轮向下滚动时
+                            scrollCur -= step;
+                            scrollCur = scrollCur<scrollMin?scrollMin:scrollCur;
+                        }
+                    }
+                    box.style=`transform:scale(${scrollCur})`;
+                }
+                //给页面绑定滑轮滚动事件
+                if (document.addEventListener) {//firefox
+                    document.addEventListener('DOMMouseScroll', scrollFunc, false);
+                }
+                //滚动滑轮触发scrollFunc方法 //ie 谷歌
+                window.onmousewheel = document.onmousewheel = scrollFunc;
             }else{
-                box.style("transform", "scale(1)");
+                box.style="transform:scale(1);transition:initial";
             }
         },
         //主板内容拍照
@@ -241,61 +265,61 @@ export default {
                     moduleList: _moduleList
                 };
                 if(submitType==1){
-                    addDdPage(totalConfig, this.$DataDOption.isUseIndexedDB).then(response=>{
-                        let id = response.data;
-                        if(id) {
-                            sessionStorage.removeItem("curTheme");
-                            this.$Message.success('收藏成功.');
-                        }
-                        return response;
-                    });
-
-                    // //远程+本地存储（企业特殊定制）
-                    // delete totalConfig["photo"];
-                    // addCustom({url:"/DataD", menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig), type:8}, this.$DataDOption.businessChartModuleConfig.sgm.customAdd).then(response=>{
-                    //     if(response.data==0 || response.data==-1){
-                    //         this.$Message.error('收藏失败!!!');
-                    //         return "";
-                    //     }else{
-                    //         return response.data;
+                    // addDdPage(totalConfig, this.$DataDOption.isUseIndexedDB).then(response=>{
+                    //     let id = response.data;
+                    //     if(id) {
+                    //         sessionStorage.removeItem("curTheme");
+                    //         this.$Message.success('收藏成功.');
                     //     }
-                    // }).then(pageId =>{
-                    //     addDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), this.$DataDOption.isUseIndexedDB).then(response=>{
-                    //         let id = response.data;
-                    //         if(id){
-                    //             sessionStorage.removeItem("curTheme");
-                    //             this.$Message.success('收藏成功.');
-                    //         }
-                    //     })
+                    //     return response;
                     // });
+
+                    //远程+本地存储（企业特殊定制）
+                    delete totalConfig["photo"];
+                    addCustom({url:"/DataD", menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig), type:8}, this.$DataDOption.businessChartModuleConfig.sgm.customAdd).then(response=>{
+                        if(response.data==0 || response.data==-1){
+                            this.$Message.error('收藏失败!!!');
+                            return "";
+                        }else{
+                            return response.data;
+                        }
+                    }).then(pageId =>{
+                        addDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), this.$DataDOption.isUseIndexedDB).then(response=>{
+                            let id = response.data;
+                            if(id){
+                                sessionStorage.removeItem("curTheme");
+                                this.$Message.success('收藏成功.');
+                            }
+                        })
+                    });
                 }else if(submitType==2){
-                    updateDdPage(totalConfig, this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
-                        let re = response.data;
-                        if(re) {
-                            sessionStorage.removeItem("curTheme");
-                            this.$Message.success('修改成功.');
-                        }
-                        return response;
-                    });
-
-                    // //远程+本地更新（企业特殊定制）
-                    // delete totalConfig["photo"];
-                    // updateCustom({id:this.app.id, menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig)}, this.$DataDOption.businessChartModuleConfig.sgm.customUpdate).then(response=>{
-                    //     if(response.status==200){
-                    //         return this.app.id;
-                    //     }else{
-                    //         this.$Message.error('修改失败!!!');
-                    //         return "";
+                    // updateDdPage(totalConfig, this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
+                    //     let re = response.data;
+                    //     if(re) {
+                    //         sessionStorage.removeItem("curTheme");
+                    //         this.$Message.success('修改成功.');
                     //     }
-                    // }).then(pageId =>{
-                    //     updateDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
-                    //         let re = response.data;
-                    //         if(re) {
-                    //             sessionStorage.removeItem("curTheme");
-                    //             this.$Message.success('修改成功.');
-                    //         }
-                    //     })
+                    //     return response;
                     // });
+
+                    //远程+本地更新（企业特殊定制）
+                    delete totalConfig["photo"];
+                    updateCustom({id:this.app.id, menu_name:totalConfig.name, flag:totalConfig.flag, parameter:JSON.stringify(totalConfig)}, this.$DataDOption.businessChartModuleConfig.sgm.customUpdate).then(response=>{
+                        if(response.status==200){
+                            return this.app.id;
+                        }else{
+                            this.$Message.error('修改失败!!!');
+                            return "";
+                        }
+                    }).then(pageId =>{
+                        updateDdPage(Object.assign(totalConfig,{id:pageId, photo:this.app.photo}), pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
+                            let re = response.data;
+                            if(re) {
+                                sessionStorage.removeItem("curTheme");
+                                this.$Message.success('修改成功.');
+                            }
+                        })
+                    });
                 }
             });
         },
@@ -313,90 +337,8 @@ export default {
             }
             if(pageId){
                 let gridMainEl = this.$refs.gridMain;
-                selectDdPage(+pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
-                    let totalConfig = response.data;
-                    if(totalConfig){
-                        if(!curTheme){
-                            Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
-                        }
-                        if(!sessionStorage.getItem("bgEffects")){
-                            Object.assign(_this.app,{bgEffects:totalConfig.bgEffects});
-                        }
-                        this._bgEffects(totalConfig);
-                        //主板格子模型反序列化
-                        Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag});
-                        this.templet = totalConfig.moduleList.map(el=>{
-                            return {x:el.x, y:el.y, w:el.w, h:el.h, l:el.l};
-                        });
-                        //各图表配置反序列化
-                        totalConfig.moduleList.forEach(el=>{
-                            _this.$nextTick(()=>{
-                                let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
-                                el.chartList.forEach(config=>{
-                                    let ul = document.createElement('ul');
-                                    let chartEl = document.createElement('li');
-                                    chartEl.setAttribute("data-id",config.chartType);
-                                    chartEl.setAttribute("business-data-id",config.baseChartType); //业务（内置）图表存在该属性
-                                    chartEl.setAttribute("class","chart");
-                                    ul.appendChild(chartEl);
-                                    ul.setAttribute("class","chartTemplet");
-                                    if(this.isEdit){
-                                        let ol = document.createElement('ol');
-                                        let moveBtuEl = document.createElement('i');
-                                        moveBtuEl.setAttribute("class","btu ivu-icon ivu-icon-md-reorder");
-                                        moveBtuEl.setAttribute("title","拖拽");
-                                        let settingsBtuEl = document.createElement('i');
-                                        settingsBtuEl.setAttribute("class","btu settings ivu-icon ivu-icon-ios-settings");
-                                        settingsBtuEl.setAttribute("title","设置");
-                                        settingsBtuEl.setAttribute("chart-type",config.chartType);
-                                        settingsBtuEl.onmousedown = (event)=>{
-                                            event.stopPropagation();
-                                            _this.$nextTick(()=>{
-                                                if(config.baseChartType){
-                                                    window.BusinessChartsDrawer.settingsCharts(event.target);
-                                                }else{
-                                                    window.BaseChartsDrawer.settingsCharts(event.target);
-                                                }
-                                            });
-                                        }
-                                        let trashBtuEl = document.createElement('i');
-                                        trashBtuEl.setAttribute("class","btu trash ivu-icon ivu-icon-ios-trash");
-                                        trashBtuEl.setAttribute("title","删除");
-                                        trashBtuEl.onmousedown = (event)=>{
-                                            event.stopPropagation();
-                                            let element = event.target;
-                                            ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).destroy();
-                                        }
-                                        ol.appendChild(settingsBtuEl);
-                                        ol.appendChild(moveBtuEl);
-                                        ol.appendChild(trashBtuEl);
-                                        ol.setAttribute("class","move_handle");
-                                        ul.appendChild(ol);
-                                    }
-                                    gswEl.appendChild(ul);
-                                    _this.$nextTick(()=>{
-                                        ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
-                                    });
-                                });
-                            });
-                        });
-                    }
-                });
-
-                // //获取配置（企业特殊定制:前端缓存有取前端配置，反之取后端配置）
                 // selectDdPage(+pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
-                //     return response.data;
-                // }).then(config=>{
-                //     if(config){
-                //         return config;
-                //     }else{
-                //         return new Promise(resolve=>{
-                //             getCustom(pageId, this.$DataDOption.businessChartModuleConfig.sgm.getCustom).then(response=>{
-                //                 resolve(response.data);
-                //             });
-                //         });
-                //     }
-                // }).then(totalConfig=>{
+                //     let totalConfig = response.data;
                 //     if(totalConfig){
                 //         if(!curTheme){
                 //             Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
@@ -464,6 +406,88 @@ export default {
                 //         });
                 //     }
                 // });
+
+                //获取配置（企业特殊定制:前端缓存有取前端配置，反之取后端配置）
+                selectDdPage(+pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
+                    return response.data;
+                }).then(config=>{
+                    if(config){
+                        return config;
+                    }else{
+                        return new Promise(resolve=>{
+                            getCustom(pageId, this.$DataDOption.businessChartModuleConfig.sgm.getCustom).then(response=>{
+                                resolve(response.data);
+                            });
+                        });
+                    }
+                }).then(totalConfig=>{
+                    if(totalConfig){
+                        if(!curTheme){
+                            Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
+                        }
+                        if(!sessionStorage.getItem("bgEffects")){
+                            Object.assign(_this.app,{bgEffects:totalConfig.bgEffects});
+                        }
+                        this._bgEffects(totalConfig);
+                        //主板格子模型反序列化
+                        Object.assign(_this.app, {id:+pageId, name:totalConfig.name, flag:totalConfig.flag});
+                        this.templet = totalConfig.moduleList.map(el=>{
+                            return {x:el.x, y:el.y, w:el.w, h:el.h, l:el.l};
+                        });
+                        //各图表配置反序列化
+                        totalConfig.moduleList.forEach(el=>{
+                            _this.$nextTick(()=>{
+                                let gswEl = gridMainEl.querySelector(`.gs-w[data-x='${el.x}'][data-y='${el.y}'][data-w='${el.w}'][data-h='${el.h}']`);
+                                el.chartList.forEach(config=>{
+                                    let ul = document.createElement('ul');
+                                    let chartEl = document.createElement('li');
+                                    chartEl.setAttribute("data-id",config.chartType);
+                                    chartEl.setAttribute("business-data-id",config.baseChartType); //业务（内置）图表存在该属性
+                                    chartEl.setAttribute("class","chart");
+                                    ul.appendChild(chartEl);
+                                    ul.setAttribute("class","chartTemplet");
+                                    if(this.isEdit){
+                                        let ol = document.createElement('ol');
+                                        let moveBtuEl = document.createElement('i');
+                                        moveBtuEl.setAttribute("class","btu ivu-icon ivu-icon-md-reorder");
+                                        moveBtuEl.setAttribute("title","拖拽");
+                                        let settingsBtuEl = document.createElement('i');
+                                        settingsBtuEl.setAttribute("class","btu settings ivu-icon ivu-icon-ios-settings");
+                                        settingsBtuEl.setAttribute("title","设置");
+                                        settingsBtuEl.setAttribute("chart-type",config.chartType);
+                                        settingsBtuEl.onmousedown = (event)=>{
+                                            event.stopPropagation();
+                                            _this.$nextTick(()=>{
+                                                if(config.baseChartType){
+                                                    window.BusinessChartsDrawer.settingsCharts(event.target);
+                                                }else{
+                                                    window.BaseChartsDrawer.settingsCharts(event.target);
+                                                }
+                                            });
+                                        }
+                                        let trashBtuEl = document.createElement('i');
+                                        trashBtuEl.setAttribute("class","btu trash ivu-icon ivu-icon-ios-trash");
+                                        trashBtuEl.setAttribute("title","删除");
+                                        trashBtuEl.onmousedown = (event)=>{
+                                            event.stopPropagation();
+                                            let element = event.target;
+                                            ChartsFactory.call({"chartElement":element.parentNode.previousElementSibling}).destroy();
+                                        }
+                                        ol.appendChild(settingsBtuEl);
+                                        ol.appendChild(moveBtuEl);
+                                        ol.appendChild(trashBtuEl);
+                                        ol.setAttribute("class","move_handle");
+                                        ul.appendChild(ol);
+                                    }
+                                    gswEl.appendChild(ul);
+                                    _this.$nextTick(()=>{
+                                        ChartsFactory.call({"chartElement":chartEl}).init(_this.app.theme).configs(config);
+                                    });
+                                });
+                            });
+                        });
+                    }
+                });
             }
         }
     },

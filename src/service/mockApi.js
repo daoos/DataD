@@ -1,11 +1,15 @@
 import Mock from 'mockjs'
+import qs from 'qs';
 
 /****==========================常规图表测试数据API===============================****/
 //线、柱图测试数据
 Mock.mock(/(demo\/charts\/linebar)/,function(options){
     console.debug("---mock---",options);
     let result = { series: {}, xAxis:[] };
-    let {legends,duration,startTime,endTime} = JSON.parse(options.body);
+    let {legends,duration,startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
+    duration = +duration;
+    startTime = +startTime;
+    endTime = +endTime;
     legends.forEach((legend)=>{
         result.series[legend] = [];
     });
@@ -34,7 +38,7 @@ Mock.mock(/(demo\/charts\/linebar)/,function(options){
 Mock.mock(/(demo\/charts\/pie)/,function(options){
     console.debug("---mock---",options);
     let series = {};
-    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let {legends,startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
     legends.forEach((legend)=>{
         series[legend] = Mock.Random.natural(0,1000);
     });
@@ -45,7 +49,7 @@ Mock.mock(/(demo\/charts\/pie)/,function(options){
 Mock.mock(/(demo\/charts\/radar)/,function(options){
     console.debug("---mock---",options);
     let series = {};
-    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let {legends,startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
     legends.forEach((legend)=>{
         series[legend] = [Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100)];
     });
@@ -55,7 +59,7 @@ Mock.mock(/(demo\/charts\/radar)/,function(options){
 //水位图测试数据
 Mock.mock(/(demo\/charts\/liquidfill)/,function(options){
     console.debug("---mock---",options);
-    let {startTime,endTime} = JSON.parse(options.body);
+    let {startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
     let result = {
         series:Mock.Random.natural(30,100)/100
     };
@@ -87,7 +91,7 @@ Mock.mock(/(demo\/charts\/topo)/,function(options){
    }
    */
     console.debug("---mock---",options);
-    let {legends,startTime,endTime} = JSON.parse(options.body);
+    let {legends,startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
     let result = {
         "series":[]
     };
@@ -116,10 +120,7 @@ Mock.mock(/(demo\/charts\/map)/,function(options){
    }
    */
     console.debug("---mock---",options);
-    function getValue(){
-        return Mock.Random.natural(0, 100);
-    };
-    let {startTime,endTime,max,min} = JSON.parse(options.body);
+    let {startTime,endTime,max,min} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
     let series  = Mock.mock({
         "series|5-22": [
             {
