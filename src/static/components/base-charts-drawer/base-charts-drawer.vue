@@ -37,9 +37,11 @@
     import * as chartsConf from './charts/conf'
 
     export default {
-        props:["isDrawerLeft","isDrawerRight","app"],
+        props:["isDrawerOpen","app"],
         data() {
             return {
+                isDrawerLeft:false,
+                isDrawerRight:false,
                 styles: {
                     height: 'calc(100% - 75px)',
                     overflow: 'auto',
@@ -49,6 +51,14 @@
                 childComponentChart: null,
                 chartElement:null,
                 chartType:""
+            }
+        },
+        watch: {
+            isDrawerOpen(bool){
+                this.isDrawerLeft = bool;
+            },
+            isDrawerLeft(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"baseChartsDrawer");
             }
         },
         methods: {

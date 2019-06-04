@@ -39,9 +39,10 @@
 <script>
     import { selectAllDdPage } from "../../../service/serverApi";
     export default {
-        props:["isDrawerLeft","isDrawerRight","app"],
+        props:["isDrawerOpenLeft","isDrawerOpenRight","app"],
         data() {
             return {
+                isDrawerLeft:false,
                 isDrawerRight:false,
                 styles: {
                     height: 'calc(100% - 75px)',
@@ -55,8 +56,18 @@
             }
         },
         watch:{
-            isDrawerLeft(newVal){
-                if(newVal) this.list();
+            isDrawerOpenLeft(bool){
+                this.isDrawerLeft = bool;
+                if(bool) this.list();
+            },
+            isDrawerOpenRight(bool){
+                this.isDrawerRight = bool;
+            },
+            isDrawerLeft(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"collectionDrawerLeft");
+            },
+            isDrawerRight(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"collectionDrawerRight");
             }
         },
         methods:{

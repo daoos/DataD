@@ -73,7 +73,7 @@
     import { ChartsFactory } from '../base-charts-drawer/chartsFactory';
 
     export default {
-        props:["isDrawerLeft","isDrawerRight"],
+        props:["isDrawerOpen"],
         data() {
             return {
                 isDrawerRight:false,
@@ -142,6 +142,12 @@
             }
         },
         watch:{
+            isDrawerOpen(bool){
+                this.isDrawerRight = bool;
+            },
+            isDrawerRight(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"searchDrawer");
+            },
             isSeries(v) {
                 this.duration = v?60:"";
                 Object.assign(this.datePicker,{value:"",disabled:v});

@@ -9,12 +9,12 @@
             </div>
             <div class="drawer-footer">
                 <ButtonGroup>
-                    <Button @click="isDrawerRight_1=true;" type="primary">高级设置</Button>
+                    <Button @click="isDrawerRight=true;" type="primary">高级设置</Button>
                 </ButtonGroup>
             </div>
         </Drawer>
 
-        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight_1" >
+        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight" >
             <div style="overflow: hidden;">
                 <Row>
                     <Col span="4">默认方案：</Col>
@@ -103,7 +103,7 @@
             <div class="drawer-footer">
                 <ButtonGroup>
                     <Button @click="submitConf()" type="primary">确定</Button>
-                    <Button @click="isDrawerRight_1 = false">取消</Button>
+                    <Button @click="isDrawerRight = false">取消</Button>
                 </ButtonGroup>
             </div>
         </Drawer>
@@ -113,7 +113,7 @@
 <script>
     import chartConfCommon from "./../base-charts-drawer/charts/common";
     export default {
-        props:["isDrawerLeft","isDrawerRight","app"],
+        props:["isDrawerOpen","app"],
         data() {
             return {
                 models:[
@@ -145,7 +145,8 @@
                         ]
                     }],
                 themes: chartConfCommon.themes,
-                isDrawerRight_1:false,
+                isDrawerLeft:false,
+                isDrawerRight:false,
                 options: {
                     disabledDate (date) {
                         return date && date.valueOf() < Date.now() - 86400000;
@@ -165,6 +166,12 @@
             }
         },
         watch:{
+            isDrawerOpen(bool){
+                this.isDrawerLeft = bool;
+            },
+            isDrawerLeft(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"themeDrawer");
+            },
             timeCheckbox(v){
                 this.dateCheckbox = !v;
             },
