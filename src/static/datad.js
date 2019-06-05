@@ -94,14 +94,14 @@ export default {
         }
     },
     methods: {
-        isDrawerOpen(bool,drawerName){
+        isDrawerOpenFun(bool,drawerName){
             this[drawerName] = bool;
         },
         openDrawerFun(drawerName){
             Object.keys(this).filter(x=> x!=drawerName && x.includes("_drawer")).forEach(x=>{
                 this[x] = false;
             });
-            this[drawerName] = true;
+            this[drawerName] = !this[drawerName];
         },
         _bgEffects(_themeConf){
             let _this = this;

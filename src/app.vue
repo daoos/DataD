@@ -13,12 +13,12 @@
         </nav>
         <nav class="container">
             <!--<component :is="childComponentDrawer" :isDrawerLeft="isDrawerLeft" :isDrawerRight="isDrawerRight" :app="app" @setTemplet$Parent="setTemplet" @saveTotalConfig$Parent="saveTotalConfig"></component> themeDrawer=true;gridsDrawer=false-->
-            <theme-drawer :isDrawerOpen="theme_drawer"  @isDrawerOpen$Parent="isDrawerOpen" :app="app" @openFireworks$Parent="openFireworks"></theme-drawer>
-            <grids-drawer :isDrawerOpen="grids_drawer"  @isDrawerOpen$Parent="isDrawerOpen"  @setTemplet$Parent="setTemplet"></grids-drawer>
-            <base-charts-drawer :isDrawerOpen="baseCharts_drawer" @isDrawerOpen$Parent="isDrawerOpen" :app="app"></base-charts-drawer>
-            <business-charts-drawer  :isDrawerOpen="businessCharts_drawer" @isDrawerOpen$Parent="isDrawerOpen" :app="app" v-if="$DataDOption.isUseBusinessChartModule"></business-charts-drawer>
-            <collection-drawer :isDrawerOpenLeft="collection_drawerLeft" :isDrawerOpenRight="collection_drawerRight" @isDrawerOpen$Parent="isDrawerOpen" :app="app" @saveTotalConfig$Parent="saveTotalConfig"></collection-drawer>
-            <search-drawer :isDrawerOpen="search_drawer" @isDrawerOpen$Parent="isDrawerOpen" ></search-drawer>
+            <theme-drawer :isDrawerOpen="theme_drawer"  @isDrawerOpen$Parent="isDrawerOpenFun" :app="app" @openFireworks$Parent="openFireworks"></theme-drawer>
+            <grids-drawer :isDrawerOpen="grids_drawer"  @isDrawerOpen$Parent="isDrawerOpenFun"  @setTemplet$Parent="setTemplet"></grids-drawer>
+            <base-charts-drawer :isDrawerOpen="baseCharts_drawer" @isDrawerOpen$Parent="isDrawerOpenFun" :app="app"></base-charts-drawer>
+            <business-charts-drawer  :isDrawerOpen="businessCharts_drawer" @isDrawerOpen$Parent="isDrawerOpenFun" :app="app" v-if="$DataDOption.isUseBusinessChartModule"></business-charts-drawer>
+            <collection-drawer :isDrawerOpenLeft="collection_drawerLeft" :isDrawerOpenRight="collection_drawerRight" @isDrawerOpen$Parent="isDrawerOpenFun" :app="app" @saveTotalConfig$Parent="saveTotalConfig"></collection-drawer>
+            <search-drawer :isDrawerOpen="search_drawer" @isDrawerOpen$Parent="isDrawerOpenFun" ></search-drawer>
             <div class="main-box">
                 <div id="box" :class="app.theme+'-theme'" :style="'background:'+app.background">
                     <nav class="box-head">
@@ -27,7 +27,7 @@
                             <div class="subtext" id="sysDate">{{ $formatDate(sysDate,'yyyy年MM月dd日 hh时mm分ss秒') }} </div>
                         </div>
                         <div class="tool">
-                            <Icon type="ios-search"  title="查询" @click="search_drawer=true"/>
+                            <Icon type="ios-search"  title="查询" @click="openDrawerFun('search_drawer')"/>
                             <Icon type="md-contract" title="编辑" @click="previewFun('edit')" v-if="!isEdit"/>
                         </div>
                         <svg id="svgroot" width="100%" height="80px"></svg>
