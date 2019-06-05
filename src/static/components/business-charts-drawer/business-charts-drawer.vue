@@ -18,7 +18,7 @@
             </div>
             <div class="drawer-footer"></div>
         </Drawer>
-        <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
+        <Drawer title="图表配置" :transfer="false" :inner="true" :mask-closable="false" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
             <component class="chartConfig" ref="chartConfComponent" :is="childComponentChart"></component>
             <div class="drawer-footer">
                 <ButtonGroup>
@@ -79,6 +79,7 @@
             submitConf(){
                 let config = this.$refs.chartConfComponent.submitConf();
                 if(config){
+                    this.isDrawerRight = false;
                     config.chartType = this.chartType;
                     ChartsFactory.call({"chartElement":this.chartElement, "gswElementLayout":config.layout}).configs(config).resize();
                 }

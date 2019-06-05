@@ -34,7 +34,8 @@ const defaultOption = {
             getLegendsUrl:"/dashboard/legends",
             customAdd:"/custom/add",
             customUpdate:"/custom/update",
-            getCustom:"/dashboard"
+            getCustom:"/dashboard",
+            customDelete:"/custom/delete"
         }
     } //定制开发的图表对外提供的参数配置（sgm为某一个内置图表，可自行扩展；isUseBusinessChartModule为false时，该参数可省略）
 };

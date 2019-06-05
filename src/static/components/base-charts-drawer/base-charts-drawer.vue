@@ -80,6 +80,7 @@
             submitConf(){
                 let config = this.$refs.chartConfComponent.submitConf();
                 if(config){
+                    this.isDrawerRight = false;
                     config.chartType = this.chartType;
                     ChartsFactory.call({"chartElement":this.chartElement, "gswElementLayout":config.layout}).configs(config).resize();
                 }

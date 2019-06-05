@@ -141,4 +141,5 @@ export { getAppList, getServiceList, getMethodList, getLegendList }
 const addCustom = (param, url="/demo/customAdd")=> axios.post(url, param);
 const updateCustom = (param, url="/demo/customUpdate")=> axios.put(url, qs.stringify(param));
 const getCustom =(id, url="/demo/dashboard") => axios.get(url+"/"+id);
-export { addCustom, updateCustom, getCustom }
+const deleteCustom =(id, url="/demo/customDelete") => axios.delete(url,{params: {id: id}});
+export { addCustom, updateCustom, getCustom, deleteCustom}
