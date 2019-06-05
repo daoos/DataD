@@ -2,7 +2,7 @@
     <div class="charts-radar">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleClearCurrentRow1();">
+        <Row @click.native="handleClearCurrentRow1">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -13,7 +13,7 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-current-change="currentChange1">
+                <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-row-click="rowClick1" @on-current-change="currentChange1" >
                     <template slot-scope="{ row, index }" slot="col1">
                         <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
                             <Select v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填">
@@ -44,7 +44,7 @@
         </Row>
         <br/>
 
-        <Row @click.native="handleSave(table2.editIndex,2);table2.editIndex = -1;handleClearCurrentRow2();">
+        <Row @click.native="handleClearCurrentRow2">
             <Col span="3" class="tab">指标配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -55,7 +55,7 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-current-change="currentChange2">
+                <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-row-click="rowClick2" @on-current-change="currentChange2">
                     <template slot-scope="{ row, index }" slot="col1">
                         <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
                             <Select v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填">
@@ -81,21 +81,20 @@
                 </Table>
             </Col>
         </Row>
-        <Row>
+        <Row @click.native="handleClearCurrentRow1();handleClearCurrentRow2()" style="height:200px;">
             <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom-end" max-width=300 >
-                    数据返回格式说明：<Icon type="md-help-circle" size="16"/>
-<pre slot="content">
+            <Tooltip placement="bottom-end" max-width=300 >
+                数据返回格式说明：<Icon type="md-help-circle" size="16"/>
+                <pre slot="content">
 {
     "series":{
         "图例A":[43,87,10],
         "图例B":[23,34,66]
     }
 }</pre>
-                </Tooltip>
+            </Tooltip>
             </Col>
         </Row>
-        <Row @click.native="handleSave(table1.editIndex,1);table1.editIndex = -1;handleSave(table2.editIndex,2);table2.editIndex = -1;handleClearCurrentRow1();handleClearCurrentRow2()" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -170,23 +169,32 @@
                 _table.data[index].col1 = _table.editCol1;
                 _table.data[index].col2 = _table.editCol2;
             },
+            handleClearCurrentRow1(){
+                let _table = this.table1;
+                this.handleSave(_table.editIndex,1);
+                _table.editIndex = -1;
+                this.$refs.dataTable1.clearCurrentRow();
+            },
+            handleClearCurrentRow2(){
+                let _table = this.table2;
+                this.handleSave(_table.editIndex,2);
+                _table.editIndex = -1;
+                this.$refs.dataTable2.clearCurrentRow();
+            },
             currentChange1(currentRow,oldCurrentRow,tabIndex=1){
-                try{
-                    let _table = this["table"+tabIndex];
-                    if(oldCurrentRow) {
-                        this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
-                    }
-                    this.handleEdit(currentRow,_table.data.findIndex(x=>x.col1==currentRow.col1),tabIndex);
-                }catch (e) {}
+                let _table = this["table"+tabIndex];
+                if(oldCurrentRow) {
+                    this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
+                }
             },
             currentChange2(currentRow,oldCurrentRow,tabIndex=2){
                this.currentChange1(currentRow,oldCurrentRow,tabIndex);
             },
-            handleClearCurrentRow1(){
-                this.$refs.dataTable1.clearCurrentRow();
+            rowClick1(currentRow,index){
+                this.handleEdit(currentRow,index,1);
             },
-            handleClearCurrentRow2(){
-                this.$refs.dataTable2.clearCurrentRow();
+            rowClick2(currentRow,index){
+                this.handleEdit(currentRow,index,2);
             },
             addRow(tabIndex){
                 let _table = this["table"+tabIndex];
@@ -197,10 +205,17 @@
             },
             removeRow(tabIndex){
                 let _table = this["table"+tabIndex];
-                this.$refs["dataTable"+tabIndex].getSelection().forEach(el=>{
-                    let _data = _table.data;
-                    _data.splice(_data.findIndex(x=>x.col1==el.col1),1);
+                this.handleSave(_table.editIndex,tabIndex);
+                _table.editIndex = -1;
+
+                let indexs = [];
+                [... this.$refs["dataTable"+tabIndex].$el.querySelectorAll("td .ivu-checkbox-input")].forEach((x,index)=>{
+                    if(x.checked) indexs.push(index);
                 });
+                let newIndexs = indexs.map((val, idx)=>{return val - idx;});
+                newIndexs.forEach((index)=>{
+                    _table.data.splice(index, 1);
+                })
             },
             initConfig(config){
                 if(config["api"]){
@@ -214,11 +229,9 @@
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
-                let tables = [this["table1"],this["table2"]].map((x,index)=>{
-                    this.handleSave(x.editIndex,index+1);
-                    x.editIndex = -1;
-                    return x;
-                });
+                this.handleClearCurrentRow1();
+                this.handleClearCurrentRow2();
+                let tables = [this["table1"],this["table2"]];
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     if(tables[0].data.length>0 && tables[1].data.length>0){

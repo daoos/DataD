@@ -93,7 +93,7 @@ export function ChartsFactory(){
                     _height = _height / Math.ceil(chartElement.length / _dataLayout);
                 }
                 x.style.height = _height+'px';
-                //x.charts.resize();
+                x.charts.resize(); //去掉这里横向布局时会有问题
             });
             chartElement.forEach(x=> {
                 x.charts.resize();

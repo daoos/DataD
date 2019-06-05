@@ -78,6 +78,7 @@ export default{
         let Common = Object.assign({},common);
         Common.start(diagram, config.url||"/demo/charts/number", params, config.interval)(result =>{
             console.debug("===成功=number==",result);
+            diagram.color = config.api.color||diagram.themeColor;
             if("series" in result){
                 diagram.type = config.api.seriesType;
                 _this._drawText(diagram, result["series"]);

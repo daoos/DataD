@@ -9,13 +9,13 @@
             </div>
             <div class="drawer-footer">
                 <ButtonGroup>
-                    <Button @click="isDrawerRight=true;" type="primary">高级设置</Button>
+                    <Button @click="isDrawerRight=true" type="primary">高级设置</Button>
                 </ButtonGroup>
             </div>
         </Drawer>
 
-        <Drawer title="高级设置" :transfer="false" :inner="true" :width="400" v-model="isDrawerRight" >
-            <div style="overflow: hidden;">
+        <Drawer title="高级设置" :transfer="false" :inner="true" :width="406"  :styles="styles" v-model="isDrawerRight">
+            <div style="overflow: hidden">
                 <Row>
                     <Col span="4">默认方案：</Col>
                     <Col span="20">{{app.theme}}</Col>
@@ -99,6 +99,7 @@
                         </Tabs>
                     </Col>
                 </Row>
+                <br/>
             </div>
             <div class="drawer-footer">
                 <ButtonGroup>
@@ -144,6 +145,11 @@
                             {x: 1, y: 5, w: 4, h: 2, l: 0}
                         ]
                     }],
+                styles: {
+                    height: 'calc(100% - 90px)',
+                    overflow: 'auto',
+                    position: 'static'
+                },
                 themes: chartConfCommon.themes,
                 isDrawerLeft:false,
                 isDrawerRight:false,

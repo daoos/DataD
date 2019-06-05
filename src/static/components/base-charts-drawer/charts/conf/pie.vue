@@ -2,7 +2,7 @@
     <div class="charts-pie">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();">
+        <Row @click.native="handleClearCurrentRow">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -11,10 +11,9 @@
             </ButtonGroup>
             </Col>
         </Row>
-
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
+                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-row-click="rowClick" @on-current-change="currentChange">
                     <template slot-scope="{ row, index }" slot="legendTitle">
                         <template  v-if="legends && legends.length > 0">
                             <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
@@ -43,22 +42,21 @@
                 </Table>
             </Col>
         </Row>
-
-        <Row>
-            <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
-                <Tooltip placement="bottom-end" max-width=500>
+        <Row @click.native="handleClearCurrentRow" style="height:200px;">
+                <Col span="24" style="text-align: right;margin-top:20px;font-size: 9px;">
+                    <Tooltip placement="bottom-end" max-width=500>
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
-<pre slot="content">
+                    <pre slot="content">
 {
     "series":{
         "图例A":55,
         "图例B":45
      }
 }</pre>
-                </Tooltip>
-            </Col>
+                    </Tooltip>
+                </Col>
+
         </Row>
-        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -106,16 +104,18 @@
                 this.data[index].legendTitle = this.editLegendTitle;
                 this.data[index].color = this.editColor;
             },
-            currentChange(currentRow,oldCurrentRow){
-                try{
-                    if(oldCurrentRow) {
-                        this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
-                    }
-                    this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
-                }catch (e) {}
-            },
             handleClearCurrentRow(){
+                this.handleSave(this.editIndex);
+                this.editIndex = -1;
                 this.$refs.dataTable.clearCurrentRow();
+            },
+            currentChange(currentRow,oldCurrentRow){
+                if(oldCurrentRow) {
+                    this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
+                }
+            },
+            rowClick(currentRow,index){
+                this.handleEdit(currentRow,index);
             },
             addRow(){
                 let _this = this;
@@ -125,21 +125,26 @@
                 });
             },
             removeRow(){
-                this.$refs.dataTable.getSelection().forEach(el=>{
-                    this.data.splice(this.data.findIndex(x=>x.legendTitle==el.legendTitle),1);
+                this.handleClearCurrentRow();
+                let indexs = [];
+                [... this.$refs.dataTable.$el.querySelectorAll("td .ivu-checkbox-input")].forEach((x,index)=>{
+                    if(x.checked) indexs.push(index);
                 });
+                let newIndexs = indexs.map((val, idx)=>{return val - idx;});
+                newIndexs.forEach((index)=>{
+                    this.data.splice(index, 1);
+                })
             },
             initConfig(config){
-                this.data = config["api"] || [];
+                let _api = config["api"] || [];
+                this.data = Array.isArray(_api)?_api:JSON.parse(_api);
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
-                this.handleSave(this.editIndex);
-                this.editIndex = -1;
-
+                this.handleClearCurrentRow();
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
-                    if(this.data.length > 0){
+                    if(this.data.length > 1){
                         let legendTitleLength = new Set([... this.data.map(x=>{
                             return x.legendTitle;
                         })]);
@@ -147,10 +152,10 @@
                             this.$Notice.error({title: '图例名称不能重复!!!'});
                             return;
                         }
-                        commonConf.api = this.data;
+                        commonConf.api = JSON.stringify(this.data); //防止引用传递，实现深度克隆数组
                         return commonConf;
                     }else{
-                        this.$Notice.error({title: '请配置图例列表!!!'});
+                        this.$Notice.error({title: '请配置图例列表（图例数必大于1）!!!'});
                         return;
                     }
                 }else{

@@ -28,7 +28,7 @@
         </Row>
         <Divider dashed/>
 
-        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();">
+        <Row @click.native="handleClearCurrentRow">
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -39,7 +39,7 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
+                <Table highlight-row border ref="dataTable" :columns="columns" :data="data"  @on-row-click="rowClick" @on-current-change="currentChange">
                     <template slot-scope="{ row, index }" slot="legendTitle">
                         <template  v-if="legends && legends.length > 0">
                             <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
@@ -93,7 +93,7 @@
                 </Table>
             </Col>
         </Row>
-        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();" style="height:200px;"></Row>
+        <Row @click.native="handleClearCurrentRow" style="height:200px;"></Row>
     </div>
 </template>
 
@@ -168,16 +168,18 @@
                 this.data[index].unit = this.editUnit;
                 this.data[index].color = this.editColor;
             },
-            currentChange(currentRow,oldCurrentRow){
-                try{
-                    if(oldCurrentRow) {
-                        this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
-                    }
-                    this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
-                }catch (e) {}
-            },
             handleClearCurrentRow(){
+                this.handleSave(this.editIndex);
+                this.editIndex = -1;
                 this.$refs.dataTable.clearCurrentRow();
+            },
+            currentChange(currentRow,oldCurrentRow){
+                if(oldCurrentRow) {
+                    this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
+                }
+            },
+            rowClick(currentRow,index){
+                this.handleEdit(currentRow,index);
             },
             addRow(){
                 let _this = this;
@@ -189,19 +191,24 @@
                 });
             },
             removeRow(){
-                this.$refs.dataTable.getSelection().forEach(el=>{
-                    this.data.splice(this.data.findIndex(x=>x.legendTitle==el.legendTitle),1);
+                this.handleClearCurrentRow();
+                let indexs = [];
+                [... this.$refs.dataTable.$el.querySelectorAll("td .ivu-checkbox-input")].forEach((x,index)=>{
+                    if(x.checked) indexs.push(index);
                 });
+                let newIndexs = indexs.map((val, idx)=>{return val - idx;});
+                newIndexs.forEach((index)=>{
+                    this.data.splice(index, 1);
+                })
             },
             initConfig(config){
-                this.data = config["api"] || [];
+                let _api = config["api"] || [];
+                this.data = Array.isArray(_api)?_api:JSON.parse(_api);
                 this.refurbishMode = config["refurbishMode"] || "add";
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
-                this.handleSave(this.editIndex);
-                this.editIndex = -1;
-
+                this.handleClearCurrentRow();
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     commonConf.refurbishMode = this.refurbishMode;
@@ -213,7 +220,7 @@
                             this.$Notice.error({title: '图例名称不能重复!!!'});
                             return;
                         }
-                        commonConf.api = this.data;
+                        commonConf.api = JSON.stringify(this.data); //防止引用传递，实现深度克隆数组
                         return commonConf;
                     }else{
                         this.$Notice.error({title: '请配置图例列表!!!'});

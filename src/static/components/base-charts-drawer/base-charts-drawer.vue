@@ -18,7 +18,7 @@
             </div>
             <div class="drawer-footer"></div>
         </Drawer>
-        <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
+        <Drawer title="图表配置" :transfer="false" :inner="true" :mask-closable="false" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
             <component class="chartConfig" ref="chartConfComponent" :is="childComponentChart"></component>
             <div class="drawer-footer">
                 <ButtonGroup>
@@ -70,7 +70,8 @@
                 this.chartType = _chartType;
                 this.childComponentChart = chartsConf[_chartType];
                 this.$nextTick(function(){
-                    this.$refs.chartConfComponent.initConfig(ChartsFactory.call({"chartElement":_chartElement}).configs());
+                    let config = ChartsFactory.call({"chartElement":_chartElement}).configs();
+                    this.$refs.chartConfComponent.initConfig(config);
                 });
             },
             trashCharts(element){

@@ -60,7 +60,7 @@ export default{
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===linebar===",option,config);
         let [_legendData, _series, _yAxisIndexSet] = [[],[],new Set()];
-        config.api.forEach(x=> {
+        JSON.parse(config.api).forEach(x=> {
             let _seriesType = x.seriesType.split("_");
             let _markPoint = _seriesType[0]=="line"?{
                 data : [
