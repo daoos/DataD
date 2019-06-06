@@ -2,7 +2,7 @@
     <div class="charts-radar">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleClearCurrentRow1">
+        <Row>
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -13,38 +13,11 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data" @on-row-click="rowClick1" @on-current-change="currentChange1" >
-                    <template slot-scope="{ row, index }" slot="col1">
-                        <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
-                            <Select v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in quotasRadar.legend">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
-                                <span v-if="row.col1">{{ row.col1 }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="table1.editCol1" v-if="table1.editIndex === index" placeholder="必填"/>
-                            <span v-else>
-                                <span v-if="row.col1">{{ row.col1 }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="col2">
-                        <ColorPicker v-model="table1.editCol2" v-if="table1.editIndex === index" recommend alpha/>
-                        <span v-else>
-                            <span v-if="row.col2" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.col2"></span>
-                            <span v-else>自动</span>
-                        </span>
-                    </template>
-                </Table>
+                <Table highlight-row border ref="dataTable1" :columns="table1.columns" :data="table1.data"></Table>
             </Col>
         </Row>
         <br/>
-
-        <Row @click.native="handleClearCurrentRow2">
+        <Row>
             <Col span="3" class="tab">指标配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -55,33 +28,10 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data" @on-row-click="rowClick2" @on-current-change="currentChange2">
-                    <template slot-scope="{ row, index }" slot="col1">
-                        <template  v-if="quotasRadar && quotasRadar.legend.length > 0">
-                            <Select v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in quotasRadar.indicator">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
-                                <span v-if="row.col1">{{ row.col1 }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="table2.editCol1" v-if="table2.editIndex === index" placeholder="必填"/>
-                            <span v-else>
-                                <span v-if="row.col1">{{ row.col1 }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="col2">
-                        <InputNumber v-model="table2.editCol2"  v-if="table2.editIndex === index" :min="0"></InputNumber>
-                        <span v-else>{{ row.col2 || 100 }}</span>
-                    </template>
-                </Table>
+                <Table highlight-row border ref="dataTable2" :columns="table2.columns" :data="table2.data"></Table>
             </Col>
         </Row>
-        <Row @click.native="handleClearCurrentRow1();handleClearCurrentRow2()" style="height:200px;">
+        <Row>
             <Col span="24" style="text-align: right;margin-top: 20px;font-size: 9px;">
             <Tooltip placement="bottom-end" max-width=300 >
                 数据返回格式说明：<Icon type="md-help-circle" size="16"/>
@@ -117,18 +67,61 @@
                         },
                         {
                             title: '名称',
-                            slot: 'col1'
+                            key: 'col1',
+                            render: (h, params) => {
+                                if(this.quotasRadar && this.quotasRadar.legend.length > 0){
+                                    let _legends = this.quotasRadar.legend;
+                                    return h('Select',{
+                                        props: {
+                                            value: params.row[params.column.key],
+                                            placeholder:`必填`
+                                        },
+                                        on: {
+                                            'on-change':(val) => {
+                                                this.table1.data[params.index][params.column.key] = val;
+                                            }
+                                        }
+                                    },_legends.map(x=> h('Option',{props: {value: x}},x)));
+                                }else{
+                                    return h('Input',{
+                                        props: {
+                                            value: params.row[params.column.key],
+                                            placeholder:`必填`,
+                                            clearable:true,
+                                        },
+                                        on: {
+                                            'on-blur':(val) => {
+                                                this.table1.data[params.index][params.column.key] = val.target.value;
+                                            },
+                                            'on-clear':(val) => {
+                                                this.table1.data[params.index][params.column.key] = "";
+                                            }
+                                        }
+                                    });
+                                }
+                            }
                         },
                         {
-                            width: 170,
+                            width: 120,
                             title: '颜色',
-                            slot: 'col2'
+                            key: 'col2',
+                            render: (h, params) => {
+                                return h('ColorPicker',{
+                                    props: {
+                                        recommend:true,
+                                        alpha:true,
+                                        value: params.row[params.column.key],
+                                    },
+                                    on: {
+                                        'on-change':(val) => {
+                                            this.table1.data[params.index][params.column.key] = val;
+                                        }
+                                    }
+                                });
+                            }
                         }
                     ],
                     data: [],
-                    editIndex: -1,
-                    editCol1: '',
-                    editCol2: '',
                     rowNumber:1
                 },
                 table2:{
@@ -140,74 +133,81 @@
                         },
                         {
                             title: '名称',
-                            slot: 'col1'
+                            key: 'col1',
+                            render: (h, params) => {
+                                if(this.quotasRadar && this.quotasRadar.indicator.length > 0){
+                                    let _legends = this.quotasRadar.indicator;
+                                    return h('Select',{
+                                        props: {
+                                            value: params.row[params.column.key],
+                                            placeholder:`必填`
+                                        },
+                                        on: {
+                                            'on-change':(val) => {
+                                                this.table2.data[params.index][params.column.key] = val;
+                                            }
+                                        }
+                                    },_legends.map(x=> h('Option',{props: {value: x}},x)));
+                                }else{
+                                    return h('Input',{
+                                        props: {
+                                            value: params.row[params.column.key],
+                                            placeholder:`必填`,
+                                            clearable:true,
+                                        },
+                                        on: {
+                                            'on-blur':(val) => {
+                                                this.table2.data[params.index][params.column.key] = val.target.value;
+                                            },
+                                            'on-clear':(val) => {
+                                                this.table2.data[params.index][params.column.key] = "";
+                                            }
+                                        }
+                                    });
+                                }
+                            }
                         },
                         {
-                            width: 170,
+                            width: 120,
                             title: '最大值',
-                            slot: 'col2'
+                            key: 'col2',
+                            render: (h, params) => {
+                                return h('InputNumber',{
+                                    props: {
+                                        value: params.row[params.column.key],
+                                        min:1
+                                    },
+                                    on: {
+                                        'on-change':(val) => {
+                                            this.table2.data[params.index][params.column.key] = val;
+                                        }
+                                    }
+                                });
+                            }
                         }
                     ],
                     data: [],
-                    editIndex: -1,
-                    editCol1: '',
-                    editCol2: 100,
                     rowNumber:1
                 }
             }
         },
         methods: {
-            handleEdit (row, index, tabIndex) {
-                let _table = this["table"+tabIndex];
-                _table.editCol1 = row.col1;
-                _table.editCol2 = row.col2;
-                _table.editIndex = index;
-            },
-            handleSave (index, tabIndex) {
-                if(index==-1) return;
-                let _table = this["table"+tabIndex];
-                _table.data[index].col1 = _table.editCol1;
-                _table.data[index].col2 = _table.editCol2;
-            },
-            handleClearCurrentRow1(){
-                let _table = this.table1;
-                this.handleSave(_table.editIndex,1);
-                _table.editIndex = -1;
-                this.$refs.dataTable1.clearCurrentRow();
-            },
-            handleClearCurrentRow2(){
-                let _table = this.table2;
-                this.handleSave(_table.editIndex,2);
-                _table.editIndex = -1;
-                this.$refs.dataTable2.clearCurrentRow();
-            },
-            currentChange1(currentRow,oldCurrentRow,tabIndex=1){
-                let _table = this["table"+tabIndex];
-                if(oldCurrentRow) {
-                    this.handleSave(_table.data.findIndex(x=>x.col1==oldCurrentRow.col1),tabIndex);
-                }
-            },
-            currentChange2(currentRow,oldCurrentRow,tabIndex=2){
-               this.currentChange1(currentRow,oldCurrentRow,tabIndex);
-            },
-            rowClick1(currentRow,index){
-                this.handleEdit(currentRow,index,1);
-            },
-            rowClick2(currentRow,index){
-                this.handleEdit(currentRow,index,2);
-            },
             addRow(tabIndex){
+                let _strName = "";
+                let _quotasRadar = this.quotasRadar
+                if(tabIndex==1){
+                    _strName = (_quotasRadar && _quotasRadar.legend.length>0)?_quotasRadar.legend[0]:false;
+                }else{
+                    _strName = (_quotasRadar && _quotasRadar.indicator.length>0)?_quotasRadar.indicator[0]:false;
+                }
                 let _table = this["table"+tabIndex];
                 _table.data.push({
-                    col1: '图例'+(_table.rowNumber++),
+                    col1: _strName?_strName:'图例'+(_table.rowNumber++),
                     col2: tabIndex==1?"":100
                 });
             },
             removeRow(tabIndex){
                 let _table = this["table"+tabIndex];
-                this.handleSave(_table.editIndex,tabIndex);
-                _table.editIndex = -1;
-
                 let indexs = [];
                 [... this.$refs["dataTable"+tabIndex].$el.querySelectorAll("td .ivu-checkbox-input")].forEach((x,index)=>{
                     if(x.checked) indexs.push(index);
@@ -229,18 +229,31 @@
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
-                this.handleClearCurrentRow1();
-                this.handleClearCurrentRow2();
                 let tables = [this["table1"],this["table2"]];
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     if(tables[0].data.length>0 && tables[1].data.length>0){
+                        let isEmptyValidate0 = false,isEmptyValidate1 = false;
                         let tables0_col1 = new Set([... tables[0].data.map(x=>{
+                            if(x.col1.trim()==""){
+                                isEmptyValidate0 = true;
+                            }
                             return x.col1;
                         })]);
                         let tables1_col1 = new Set([... tables[1].data.map(x=>{
+                            if(x.col1.trim()==""){
+                                isEmptyValidate1 = true;
+                            }
                             return x.col1;
                         })]);
+                        if(isEmptyValidate0){
+                            this.$Notice.error({title: '图例名称不能为空!!!'});
+                            return;
+                        }
+                        if(isEmptyValidate1){
+                            this.$Notice.error({title: '指标名称不能为空!!!'});
+                            return;
+                        }
                         if(tables[0].data.length != tables0_col1.size){
                             this.$Notice.error({title: '图例名称不能重复!!!'});
                             return;

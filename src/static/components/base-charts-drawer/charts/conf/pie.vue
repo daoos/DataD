@@ -2,7 +2,7 @@
     <div class="charts-pie">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
 
-        <Row @click.native="handleClearCurrentRow">
+        <Row>
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -13,36 +13,10 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-row-click="rowClick" @on-current-change="currentChange">
-                    <template slot-scope="{ row, index }" slot="legendTitle">
-                        <template  v-if="legends && legends.length > 0">
-                            <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in legends">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
-                            <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="color">
-                        <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
-                        <span v-else>
-                            <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
-                            <span v-else>自动</span>
-                        </span>
-                    </template>
-                </Table>
+                <Table highlight-row border ref="dataTable" :columns="columns" :data="data"></Table>
             </Col>
         </Row>
-        <Row @click.native="handleClearCurrentRow" style="height:200px;">
+        <Row>
                 <Col span="24" style="text-align: right;margin-top:20px;font-size: 9px;">
                     <Tooltip placement="bottom-end" max-width=500>
                     数据返回格式说明：<Icon type="md-help-circle" size="16"/>
@@ -55,7 +29,6 @@
 }</pre>
                     </Tooltip>
                 </Col>
-
         </Row>
     </div>
 </template>
@@ -78,54 +51,73 @@
                     },
                     {
                         title: '名称',
-                        slot: 'legendTitle'
+                        key: 'legendTitle',
+                        render: (h, params) => {
+                            let _legends = this.legends;
+                            if(_legends && _legends.length > 0){
+                                return h('Select',{
+                                    props: {
+                                        value: params.row[params.column.key],
+                                        placeholder:`必填`
+                                    },
+                                    on: {
+                                        'on-change':(val) => {
+                                            this.data[params.index][params.column.key] = val;
+                                        }
+                                    }
+                                },_legends.map(x=> h('Option',{props: {value: x}},x)));
+                            }else{
+                                return h('Input',{
+                                    props: {
+                                        value: params.row[params.column.key],
+                                        placeholder:`必填`,
+                                        clearable:true,
+                                    },
+                                    on: {
+                                        'on-blur':(val) => {
+                                            this.data[params.index][params.column.key] = val.target.value;
+                                        },
+                                        'on-clear':(val) => {
+                                            this.data[params.index][params.column.key] = "";
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     },
                     {
                         width: 95,
                         title: '颜色',
-                        slot: 'color',
+                        key: 'color',
+                        render: (h, params) => {
+                            return h('ColorPicker',{
+                                props: {
+                                    recommend:true,
+                                    alpha:true,
+                                    value: params.row[params.column.key],
+                                },
+                                on: {
+                                    'on-change':(val) => {
+                                        this.data[params.index][params.column.key] = val;
+                                    }
+                                }
+                            });
+                        }
                     }
                 ],
                 data: [],
-                editIndex: -1,
-                editLegendTitle: '',
-                editColor: '',
                 rowNumber:1
             }
         },
         methods: {
-            handleEdit (row, index) {
-                this.editLegendTitle = row.legendTitle;
-                this.editColor = row.color;
-                this.editIndex = index;
-            },
-            handleSave (index) {
-                if(index==-1) return;
-                this.data[index].legendTitle = this.editLegendTitle;
-                this.data[index].color = this.editColor;
-            },
-            handleClearCurrentRow(){
-                this.handleSave(this.editIndex);
-                this.editIndex = -1;
-                this.$refs.dataTable.clearCurrentRow();
-            },
-            currentChange(currentRow,oldCurrentRow){
-                if(oldCurrentRow) {
-                    this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
-                }
-            },
-            rowClick(currentRow,index){
-                this.handleEdit(currentRow,index);
-            },
             addRow(){
                 let _this = this;
                 this.data.push({
-                    legendTitle: '图例'+(_this.rowNumber++),
+                    legendTitle: (this.legends && this.legends.length>0)?this.legends[0]:'图例'+(_this.rowNumber++),
                     color: ''
                 });
             },
             removeRow(){
-                this.handleClearCurrentRow();
                 let indexs = [];
                 [... this.$refs.dataTable.$el.querySelectorAll("td .ivu-checkbox-input")].forEach((x,index)=>{
                     if(x.checked) indexs.push(index);
@@ -141,13 +133,20 @@
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
-                this.handleClearCurrentRow();
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     if(this.data.length > 1){
+                        let isEmptyValidate = false;
                         let legendTitleLength = new Set([... this.data.map(x=>{
+                            if(x.legendTitle.trim()==""){
+                                isEmptyValidate = true;
+                            }
                             return x.legendTitle;
                         })]);
+                        if(isEmptyValidate){
+                            this.$Notice.error({title: '图例名称不能为空!!!'});
+                            return;
+                        }
                         if(this.data.length != legendTitleLength.size){
                             this.$Notice.error({title: '图例名称不能重复!!!'});
                             return;
