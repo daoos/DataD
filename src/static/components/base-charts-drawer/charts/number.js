@@ -11,25 +11,23 @@ export default{
         let myDiagram = document.createElement("canvas");
         chartElement.appendChild(myDiagram);
 
-        let canvasId = "number_"+Date.now();
-        setTimeout(()=>{
-            myDiagram.setAttribute("id",canvasId);
-            myDiagram.setAttribute("style","position: absolute;top:0px;left: 0px;");
-            myDiagram.setAttribute("width",chartElement.clientWidth);
-            myDiagram.setAttribute("height",chartElement.clientHeight);
-            myDiagram.fontSize = 200;
-            myDiagram.title = "数字图";
-            myDiagram.titleColor = theme.length==0?"#333333":theme[0].titleColor;
-            myDiagram.themeColor = theme.length==0?"rgb(116,153,159)":theme[0].colors[0];
-            myDiagram.color = theme.length==0?"rgb(116,153,159)":theme[0].colors[0];
-            myDiagram.series = "+123456789.87";
-            myDiagram.type = "default";
-            myDiagram.effects = {
-                "default":def(canvasId),
-                "particle":particle(canvasId)
-            };
-            this._drawText(myDiagram, myDiagram.series);
-        },100);
+        let canvasId = "number_"+Date.now()+"_"+Math.ceil(Math.random()*100000);
+        myDiagram.setAttribute("id",canvasId);
+        myDiagram.setAttribute("style","position: absolute;top:0px;left: 0px;");
+        myDiagram.setAttribute("width",chartElement.clientWidth);
+        myDiagram.setAttribute("height",chartElement.clientHeight);
+        myDiagram.fontSize = 200;
+        myDiagram.title = "数字图";
+        myDiagram.titleColor = theme.length==0?"#333333":theme[0].titleColor;
+        myDiagram.themeColor = theme.length==0?"rgb(116,153,159)":theme[0].colors[0];
+        myDiagram.color = theme.length==0?"rgb(116,153,159)":theme[0].colors[0];
+        myDiagram.series = "+123456789.87";
+        myDiagram.type = "default";
+        myDiagram.effects = {
+            "default":def(canvasId),
+            "particle":particle(canvasId)
+        };
+        this._drawText(myDiagram, myDiagram.series);
 
         myDiagram.resize = ()=>{
             setTimeout(()=>{
@@ -67,21 +65,17 @@ export default{
     },
 
     options(diagram, paramsDevelop){
-        let _this = this;
-        let config = diagram.myConfig;
-        diagram.title = config.title;
-        diagram.color = config.api.color||diagram.themeColor;
-        diagram.type = config.api.seriesType;
         diagram.extend = this;
-
+        let config = diagram.myConfig;
         let params = Object.assign({duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         let Common = Object.assign({},common);
         Common.start(diagram, config.url||"/demo/charts/number", params, config.interval)(result =>{
             console.debug("===成功=number==",result);
+            diagram.title = config.title;
             diagram.color = config.api.color||diagram.themeColor;
+            diagram.type = config.api.seriesType;
             if("series" in result){
-                diagram.type = config.api.seriesType;
-                _this._drawText(diagram, result["series"]);
+                this._drawText(diagram, result["series"]);
             }
         });
     }
