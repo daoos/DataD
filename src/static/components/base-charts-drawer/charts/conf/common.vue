@@ -20,11 +20,11 @@
             </Col>
         </Row>
         <Divider dashed/>
-        <Row>
+        <Row v-show="!isDisabledUrl">
             <Col span="3" class="tab">刷新频率：</Col>
             <Col span="9"><InputNumber v-model="interval" :max="86400" :min="1" placeholder="默认：4秒" size="large" style="width: 80px;"/>（单位：秒）</Col>
-            <Col span="3"  v-show="!isDisabledUrl" class="tab">数据URL：</Col>
-            <Col span="9" v-show="!isDisabledUrl">
+            <Col span="3" class="tab">数据URL：</Col>
+            <Col span="9">
                 <Input v-model="url" type="url" placeholder="http://.不填时为模拟数据" clearable size="large" style="width: 200px">
                     <span slot="append">
                         <Tooltip placement="bottom-end" max-width=550 >
@@ -60,7 +60,7 @@
                 </Input>
             </Col>
         </Row>
-        <Divider dashed/>
+        <Divider dashed v-show="!isDisabledUrl"/>
     </div>
 </template>
 

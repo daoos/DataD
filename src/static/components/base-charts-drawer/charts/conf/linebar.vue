@@ -1,7 +1,7 @@
 <template>
     <div class="charts-linebar">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
-        <Row>
+        <Row v-show="!isDisabledRefurbishMode">
             <Col span="3" class="tab">刷新方式：</Col>
             <Col span="10">
                 <RadioGroup v-model="refurbishMode" size="large">
@@ -26,7 +26,7 @@
                 </Tooltip>
             </Col>
         </Row>
-        <Divider dashed/>
+        <Divider dashed v-show="!isDisabledRefurbishMode"/>
 
         <Row>
             <Col span="3" class="tab">图例配置：</Col>
@@ -48,7 +48,7 @@
 <script>
     import common from './common.vue';
     export default {
-        props:["seriesTypes","chartType","legends","isDisabledUrl"],
+        props:["seriesTypes","chartType","legends","isDisabledUrl","isDisabledRefurbishMode","defaultRefurbishMode"],
         components: {
             'charts-common': common,
         },
@@ -163,7 +163,7 @@
                 ],
                 data: [],
                 rowNumber:1,
-                refurbishMode:"add"
+                refurbishMode:this.defaultRefurbishMode||"add"
             }
         },
         computed: {
