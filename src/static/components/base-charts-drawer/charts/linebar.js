@@ -112,7 +112,7 @@ export default{
         });
     },
 
-    _common(chart, result, requestCount, windowDuration = 150) { //windowDuration:图表窗口显示数据点数
+    _common(chart, result, requestCount, windowDuration = 75) { //windowDuration:图表窗口显示数据点数
         let _xAxisFormat = "hh:mm:ss";
         let [_isCover, option] = [chart.myConfig.refurbishMode, chart.getOption()];
         let [seriesData, xAxisData, legends, xAxis, yAxis, series] = [result.series, result.xAxis, option.legend[0], option.xAxis[0], option.yAxis, option.series];
@@ -210,15 +210,18 @@ export default{
             //设置series的最大长度
             setXAxisSeriesLen(isSeries){
                 if(isSeries){
-                    if(xAxis && xAxis.data.length > windowDuration){
-                        xAxis.data.splice(0, xAxis.data.length - windowDuration);
-                    }
-                    if(series){
-                        series.forEach(elem=>{
-                            if(elem && elem.data && elem.data.length > windowDuration){
-                                elem.data.splice(0,elem.data.length - windowDuration);
-                            }
-                        });
+                    if(_isCover!="cover"){
+                        /**数据追加 add**/
+                        if(xAxis && xAxis.data.length > windowDuration){
+                            xAxis.data.splice(0, xAxis.data.length - windowDuration);
+                        }
+                        if(series){
+                            series.forEach(elem=>{
+                                if(elem && elem.data && elem.data.length > windowDuration){
+                                    elem.data.splice(0,elem.data.length - windowDuration);
+                                }
+                            });
+                        }
                     }
                 }
                 return this;
