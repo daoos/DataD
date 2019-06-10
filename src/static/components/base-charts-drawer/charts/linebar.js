@@ -91,7 +91,7 @@ export default{
         eCharts.setOption(option,true); //第二个参数true == notMerge
         eCharts.extend = this;  //将当前出图逻辑.js配置加入到图表对象中（便于后面操作）
 
-
+        let xAxisFormat = {format:"hh:mm:ss"};
         let params = Object.assign({legends:_legendData, duration:config.interval, startTime:"", endTime:""}, paramsDevelop);
         params.duration = params.duration||config.interval;
         let Common = Object.assign({},common);
@@ -100,7 +100,7 @@ export default{
            if(result){
                let _comm = this._common(eCharts, result, Common.requestCount)
                    .setSeries(isSeries)
-                   .setAxis()
+                   .setAxis(xAxisFormat)
                    .setXAxisSeriesLen(isSeries)
                    .setYAxisFormatter()
                    .setSeriesTooltip()
@@ -113,7 +113,6 @@ export default{
     },
 
     _common(chart, result, requestCount, windowDuration = 75) { //windowDuration:图表窗口显示数据点数
-        let _xAxisFormat = "hh:mm:ss";
         let [_isCover, option] = [chart.myConfig.refurbishMode, chart.getOption()];
         let [seriesData, xAxisData, legends, xAxis, yAxis, series] = [result.series, result.xAxis, option.legend[0], option.xAxis[0], option.yAxis, option.series];
         return {
@@ -153,14 +152,14 @@ export default{
                 return this;
             },
             //设置图的x、y坐标的值
-            setAxis(){
+            setAxis(xAxisFormat){
                 if(xAxisData && xAxisData.length > 0){
                     let dateFormatTransf = ()=>{
                         //只对时间戳进行处理
                         if(requestCount==1){
                             let yyyy = new Set(),MM = new Set(),dd = new Set(), HH = new Set(), mm = new Set(), ss = new Set(), _yyyy="",_MM="",_dd="",_HH="",_mm="",_ss="";
                             xAxisData.forEach(elem =>{
-                                let dateTime = new Date(+`${elem}000`);
+                                let dateTime = new Date(+(SecondReg.test(elem)?elem+`000`:elem));
                                 yyyy.add( dateTime.getFullYear() );
                                 MM.add( dateTime.getMonth()+1 );
                                 dd.add( dateTime.getDate() );
@@ -174,16 +173,18 @@ export default{
                             if(HH.size>1) _HH = " hh";
                             if(mm.size>1) _mm = ":mm";
                             if(ss.size>1) _ss = ":ss";
-                            _xAxisFormat=_yyyy+_MM+_dd+_HH+_mm+_ss;
-                        }
-                        if(_xAxisFormat==" hh:mm" || _xAxisFormat==":mm:ss" || _xAxisFormat==":mm" || _xAxisFormat==":ss"){
-                            _xAxisFormat = "hh:mm:ss";
+                            xAxisFormat.format=_yyyy+_MM+_dd+_HH+_mm+_ss;
+                            if(xAxisFormat.format==" hh:mm"){
+                                xAxisFormat.format = "hh:mm:00";
+                            }else if(xAxisFormat.format==":mm:ss" || xAxisFormat.format==":mm" || xAxisFormat.format==":ss"){
+                                xAxisFormat.format = "hh:mm:ss";
+                            }
                         }
                         return xAxisData.map(elem=>{
                             if(SecondReg.test(elem)){
-                                return formatDate(+`${elem}000`,_xAxisFormat) //秒
+                                return formatDate(+`${elem}000`,xAxisFormat.format) //秒
                             }else if(MillisecondReg.test(elem)){
-                                return formatDate(elem,_xAxisFormat) //毫秒
+                                return formatDate(elem,xAxisFormat.format) //毫秒
                             }
                             return elem;
                         });

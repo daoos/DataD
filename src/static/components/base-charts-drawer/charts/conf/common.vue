@@ -24,7 +24,41 @@
             <Col span="3" class="tab">刷新频率：</Col>
             <Col span="9"><InputNumber v-model="interval" :max="86400" :min="1" placeholder="默认：4秒" size="large" style="width: 80px;"/>（单位：秒）</Col>
             <Col span="3"  v-show="!isDisabledUrl" class="tab">数据URL：</Col>
-            <Col span="9" v-show="!isDisabledUrl"><Input v-model="url" type="url" placeholder="http://...(为空时为模拟数据)" clearable size="large" style="width: 200px"/></Col>
+            <Col span="9" v-show="!isDisabledUrl">
+                <Input v-model="url" type="url" placeholder="http://.不填时为模拟数据" clearable size="large" style="width: 200px">
+                    <span slot="append">
+                        <Tooltip placement="bottom-end" max-width=550 >
+                            <Icon type="md-help-circle" size="16"/>
+                            <pre slot="content">
+数据URL跨域访问（您可以选择下方任意一种方式实现跨域资源共享）
+
+方式一（JSONP）：JSONP回调函数：jsonpCallback
+    后端Controller方法返回结果需要做进一步处理
+    {
+        ... ...
+        // return result ;
+        return "jsonpCallback("+result.toString()+")" ;
+    }
+
+方式二（CORS）：
+    后端Controller方法中自定义HTTP头部（如：只允许特定域发起跨域请求）
+    {
+        ... ...
+        String[] allowOrigin = {"http://sgm.jdfmgt.com","http://sgm.jd.com"};
+        Set&lt;String&gt; allowedOrigins = new HashSet(Arrays.asList(allowOrigin));
+        String originHeader = request.getHeader("Origin");
+        if(allowedOrigins.contains(originHeader)){
+             response.setHeader("Access-Control-Allow-Origin",originHeader);
+             response.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS");
+             response.setHeader("Access-Control-Allow-Headers","Content-type,x-requested-with");
+             ... ...
+        }
+        ... ...
+    }</pre>
+                        </Tooltip>
+                    </span>
+                </Input>
+            </Col>
         </Row>
         <Divider dashed/>
     </div>
