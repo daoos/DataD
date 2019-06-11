@@ -68,7 +68,7 @@ export default{
         let [option, config] = [eCharts.getOption(), eCharts.myConfig];
         console.debug("===pie===",option,config);
         let [_legendData, _seriesData] = [[],[]];
-        _seriesData = config.api.map(x=> {
+        _seriesData = JSON.parse(config.api).map(x=> {
             _legendData.push(x.legendTitle);
             return {
                 value: undefined,

@@ -10,7 +10,7 @@ Mock.mock(/(demo\/charts\/linebar)/,function(options){
     duration = +duration;
     startTime = +startTime;
     endTime = +endTime;
-    legends.forEach((legend)=>{
+    (Array.isArray(legends)?legends:[legends]).forEach((legend)=>{
         result.series[legend] = [];
     });
 
@@ -39,7 +39,7 @@ Mock.mock(/(demo\/charts\/pie)/,function(options){
     console.debug("---mock---",options);
     let series = {};
     let {legends,startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
-    legends.forEach((legend)=>{
+    (Array.isArray(legends)?legends:[legends]).forEach((legend)=>{
         series[legend] = Mock.Random.natural(0,1000);
     });
     return {series: series};
@@ -50,7 +50,7 @@ Mock.mock(/(demo\/charts\/radar)/,function(options){
     console.debug("---mock---",options);
     let series = {};
     let {legends,startTime,endTime} = qs.parse(options.url.substr(options.url.indexOf("?")+1)); //JSON.parse(options.body);
-    legends.forEach((legend)=>{
+    (Array.isArray(legends)?legends:[legends]).forEach((legend)=>{
         series[legend] = [Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100),Mock.Random.natural(0,100)];
     });
     return {series: series};
@@ -95,7 +95,7 @@ Mock.mock(/(demo\/charts\/topo)/,function(options){
     let result = {
         "series":[]
     };
-    legends.forEach(id =>{
+    (Array.isArray(legends)?legends:[legends]).forEach(id =>{
         let _items = [];
         for(let i=0;i<Mock.Random.natural(0, 10);i++){
             _items.push({name:Mock.Random.string('upper',1,5),value:Mock.Random.natural(10, 10000)});

@@ -1,7 +1,7 @@
 import Sortable from 'sortablejs';
 import html2canvas from 'html2canvas';
 import { WindowResize, CreateGridsLayoutStyle, fireworks, gridsDrawer, baseChartsDrawer, collectionDrawer, themeDrawer, searchDrawer, ChartsFactory, businessChartsDrawer} from './components'
-import { addDdPage, deleteDdPage, updateDdPage, selectDdPage, addCustom, updateCustom, getCustom} from "../service/serverApi"
+import { addDdPage, deleteDdPage, updateDdPage, selectDdPage, addCustom, updateCustom, getCustom, deleteCustom} from "../service/serverApi"
 import {DrawNavgetion} from "./components/drawNavgetion";
 
 export default {
@@ -15,14 +15,13 @@ export default {
     },
     data() {
         return {
-            isDrawerOpen:{
-                'theme-drawer':[false, false],
-                'grids-drawer':[false, false],
-                'base-charts-drawer':[false, false],
-                'business-charts-drawer':[false, false],
-                'collection-drawer':[false, false],
-                'search-drawer':[false, false]
-            },
+            theme_drawer:false,
+            grids_drawer:false,
+            baseCharts_drawer:false,
+            businessCharts_drawer:false,
+            collection_drawerLeft:false,
+            collection_drawerRight:false,
+            search_drawer:false,
             isOpenFireworks:false,
             isEdit:false,
             app:{
@@ -95,6 +94,15 @@ export default {
         }
     },
     methods: {
+        isDrawerOpenFun(bool,drawerName){
+            this[drawerName] = bool;
+        },
+        openDrawerFun(drawerName){
+            Object.keys(this).filter(x=> x!=drawerName && x.includes("_drawer")).forEach(x=>{
+                this[x] = false;
+            });
+            this[drawerName] = !this[drawerName];
+        },
         _bgEffects(_themeConf){
             let _this = this;
             //背景特效控制
@@ -124,12 +132,6 @@ export default {
         openFireworks(bool){
             this.isOpenFireworks = bool;
         },
-        openDrawerFun(componentName,isDrawerLeft=true, isDrawerRight=false){
-            Object.keys(this.isDrawerOpen).forEach(x=>{
-                this.isDrawerOpen[x] = [false,false];
-            });
-            this.isDrawerOpen[componentName] = [isDrawerLeft,isDrawerRight];
-        },
         setTemplet(gridsConf){
             this.templet = gridsConf;
         },
@@ -156,7 +158,8 @@ export default {
         },
         //主板内容区域缩放
         zoom(){
-            let box = document.querySelector(".main-box #box");
+            let mainBox = document.querySelector(".main-box");
+            let box = mainBox.querySelector("#box");
             if(this.isEdit){
                 let [scrollMin,scrollMax,scrollCur,step] = [0.25,1,0.5,0.125];
                 let scrollFunc = function (e) {
@@ -184,10 +187,12 @@ export default {
                 }
                 //给页面绑定滑轮滚动事件
                 if (document.addEventListener) {//firefox
-                    document.addEventListener('DOMMouseScroll', scrollFunc, false);
+                    //document.addEventListener('DOMMouseScroll', scrollFunc, false);
+                    mainBox.addEventListener('DOMMouseScroll', scrollFunc, false);
                 }
                 //滚动滑轮触发scrollFunc方法 //ie 谷歌
-                window.onmousewheel = document.onmousewheel = scrollFunc;
+                //window.onmousewheel = document.onmousewheel = scrollFunc;
+                mainBox.onmousewheel = scrollFunc;
             }else{
                 box.style="transform:scale(1);transition:initial";
             }
@@ -213,12 +218,30 @@ export default {
         //序列化
         saveTotalConfig(submitType){
             if(!submitType){
-                deleteDdPage(this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
-                    let re = response.data;
-                    if(re){
-                        this.$router.push({path:'/edit'});
-                        window.location.reload();
-                    };
+                // deleteDdPage(this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
+                //     let re = response.data;
+                //     if(re){
+                //         this.$router.push({path:'/edit'});
+                //         window.location.reload();
+                //     };
+                // });
+
+                //远程+本地存储（企业特殊定制）
+                deleteCustom(this.app.id, this.$DataDOption.businessChartModuleConfig.sgm.customDelete).then(response=>{
+                    if(response.status==200){
+                        return this.app.id;
+                    }else{
+                        this.$Message.error('删除失败!!!');
+                        return "";
+                    }
+                }).then(pageId =>{
+                    deleteDdPage(pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
+                        let re = response.data;
+                        if(re){
+                            this.$router.push({path:'/edit'});
+                            window.location.reload();
+                        };
+                    });
                 });
             }else{
                 let untreatedChart = [];

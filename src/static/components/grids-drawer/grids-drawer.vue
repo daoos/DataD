@@ -73,17 +73,17 @@
     import VueGridLayout from 'vue-grid-layout';
     import { CreateGridsLayoutStyle } from '../';
     import {addDdGrid, deleteDdGrid, selectAllDdGrid} from "../../../service/serverApi"
-
     let templets = {};
-
     export default {
-        props:["isDrawerLeft","isDrawerRight"],
+        props:["isDrawerOpen"],
         components: {
             GridLayout: VueGridLayout.GridLayout,
             GridItem: VueGridLayout.GridItem
         },
         data() {
             return {
+                isDrawerLeft:false,
+                isDrawerRight:false,
                 styles: {
                     height: 'calc(100% - 90px)',
                     overflow: 'auto',
@@ -133,10 +133,14 @@
             }
         },
         watch: {
-            isDrawerLeft(newVal){
-                if(newVal) {
+            isDrawerOpen(bool){
+                this.isDrawerLeft = bool;
+                if(bool) {
                     this.createGridsLayoutStyle();
                 }
+            },
+            isDrawerLeft(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"gridsDrawer");
             },
             templets:{
                 handler() {

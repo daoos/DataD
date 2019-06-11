@@ -1,7 +1,7 @@
 <template>
     <div class="charts-linebar">
         <charts-common ref="commonConf" :chartName="chartName" :isDisabledUrl="isDisabledUrl"></charts-common>
-        <Row>
+        <Row v-show="!isDisabledRefurbishMode">
             <Col span="3" class="tab">刷新方式：</Col>
             <Col span="10">
                 <RadioGroup v-model="refurbishMode" size="large">
@@ -26,9 +26,9 @@
                 </Tooltip>
             </Col>
         </Row>
-        <Divider dashed/>
+        <Divider dashed v-show="!isDisabledRefurbishMode"/>
 
-        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();">
+        <Row>
             <Col span="3" class="tab">图例配置：</Col>
             <Col span="21" class="tab">
             <ButtonGroup size="small">
@@ -39,68 +39,16 @@
         </Row>
         <Row>
             <Col span="24">
-                <Table highlight-row border ref="dataTable" :columns="columns" :data="data" @on-current-change="currentChange">
-                    <template slot-scope="{ row, index }" slot="legendTitle">
-                        <template  v-if="legends && legends.length > 0">
-                            <Select v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填">
-                                <Option :value="elem" v-for="elem in legends">{{elem}}</Option>
-                            </Select>
-                            <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <Input v-model="editLegendTitle" v-if="editIndex === index" placeholder="必填"/>
-                            <span v-else>
-                                <span v-if="row.legendTitle">{{ row.legendTitle }}</span>
-                                <span v-else style="color:#ed4014">必填</span>
-                            </span>
-                        </template>
-                    </template>
-
-                    <template slot-scope="{ row, index }" slot="seriesType">
-                        <Select v-model="editSeriesType" v-if="editIndex === index">
-                            <template v-if="seriesTypes">
-                                <Option :value="key" v-for="key in Object.keys(seriesTypes)">{{ seriesTypes[key] }}</Option>
-                            </template>
-                            <template v-else>
-                                <OptionGroup label="线状图">
-                                    <Option :value="key" v-for="key in Object.keys(seriesTypes_Line)">{{ seriesTypes_Line[key] }}</Option>
-                                </OptionGroup>
-                                <OptionGroup label="柱状图">
-                                    <Option :value="key" v-for="key in Object.keys(seriesTypes_Bar)">{{ seriesTypes_Bar[key] }}</Option>
-                                </OptionGroup>
-                            </template>
-                        </Select>
-                        <span v-else>{{ (seriesTypes || Object.assign({},seriesTypes_Line,seriesTypes_Bar))[row.seriesType] || '无' }}</span>
-                    </template>
-
-                    <template slot-scope="{ row, index }" slot="unit">
-                        <Select v-model="editUnit" v-if="editIndex === index" >
-                            <Option :value="index" v-for="(item,index) in units">{{ item }}</Option>
-                        </Select>
-                        <span v-else ><Tooltip content="单位不能超过两类" placement="top">{{ units[row.unit] || units[0] }}</Tooltip></span>
-                    </template>
-
-                    <template slot-scope="{ row, index }" slot="color">
-                        <ColorPicker v-model="editColor" v-if="editIndex === index" recommend alpha/>
-                        <span v-else>
-                            <span v-if="row.color" :style="'padding:1.5px 9px;box-shadow: 0px 0px 2px rgba(0,0,0,.6) inset;background-color:'+row.color"></span>
-                            <span v-else>自动</span>
-                        </span>
-                    </template>
-                </Table>
+                <Table highlight-row border ref="dataTable" :columns="columns" :data="data"></Table>
             </Col>
         </Row>
-        <Row @click.native="handleSave(editIndex);editIndex = -1;handleClearCurrentRow();" style="height:200px;"></Row>
     </div>
 </template>
 
 <script>
     import common from './common.vue';
     export default {
-        props:["seriesTypes","chartType","legends","isDisabledUrl"],
+        props:["seriesTypes","chartType","legends","isDisabledUrl","isDisabledRefurbishMode","defaultRefurbishMode"],
         components: {
             'charts-common': common,
         },
@@ -117,31 +65,105 @@
                     },
                     {
                         title: '名称',
-                        slot: 'legendTitle'
+                        key: 'legendTitle',
+                        render: (h, params) => {
+                            let _legends = this.legends;
+                            if(_legends && _legends.length > 0){
+                                return h('Select',{
+                                    props: {
+                                        value: params.row[params.column.key],
+                                        placeholder:`必填`
+                                    },
+                                    on: {
+                                        'on-change':(val) => {
+                                            this.data[params.index][params.column.key] = val;
+                                        }
+                                    }
+                                },_legends.map(x=> h('Option',{props: {value: x}},x)));
+                            }else{
+                                return h('Input',{
+                                    props: {
+                                        value: params.row[params.column.key],
+                                        placeholder:`必填`,
+                                        clearable:true,
+                                    },
+                                    on: {
+                                        'on-blur':(val) => {
+                                            this.data[params.index][params.column.key] = val.target.value;
+                                        },
+                                        'on-clear':(val) => {
+                                            this.data[params.index][params.column.key] = "";
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     },
                     {
                         width: 150,
                         title: '分组（堆叠）',
-                        slot: 'seriesType'
+                        key: 'seriesType',
+                        render: (h, params) => {
+                            let options = [];
+                            if(this.seriesTypes){
+                                options = Object.keys(this.seriesTypes).map(x=> h('Option',{props: {value: x}},this.seriesTypes[x]));
+                            }else{
+                                options.push(h('OptionGroup',{props: {label: "线状图"}},Object.keys(this.seriesTypes_Line).map(x=> h('Option',{props: {value: x}},this.seriesTypes_Line[x]))));
+                                options.push(h('OptionGroup',{props: {label: "柱状图"}},Object.keys(this.seriesTypes_Bar).map(x=> h('Option',{props: {value: x}},this.seriesTypes_Bar[x]))));
+                            }
+                            return h('Select',{
+                                props: {
+                                    value: params.row[params.column.key],
+                                    placeholder:`必填`
+                                },
+                                on: {
+                                    'on-change':(val) => {
+                                        this.data[params.index][params.column.key] = val;
+                                    }
+                                }
+                            },options);
+                        }
                     },
                     {
                         title: '单位',
-                        slot: 'unit'
+                        key: 'unit',
+                        render: (h, params) => {
+                            return h('Select',{
+                                props: {
+                                    value: params.row[params.column.key],
+                                    placeholder:`必填`
+                                },
+                                on: {
+                                    'on-change':(val) => {
+                                        this.data[params.index][params.column.key] = val;
+                                    }
+                                }
+                            },this.units.map((x,index)=>h('Option',{props: {value: index}},x)));
+                        }
                     },
                     {
                         width: 95,
                         title: '颜色',
-                        slot: 'color',
+                        key: 'color',
+                        render: (h, params) => {
+                            return h('ColorPicker',{
+                                props: {
+                                    recommend:true,
+                                    alpha:true,
+                                    value: params.row[params.column.key],
+                                },
+                                on: {
+                                    'on-change':(val) => {
+                                        this.data[params.index][params.column.key] = val;
+                                    }
+                                }
+                            });
+                        }
                     }
                 ],
                 data: [],
-                editIndex: -1,
-                editLegendTitle: '',
-                editSeriesType: '',
-                editUnit: '',
-                editColor: '',
                 rowNumber:1,
-                refurbishMode:"add"
+                refurbishMode:this.defaultRefurbishMode||"add"
             }
         },
         computed: {
@@ -154,66 +176,52 @@
             }
         },
         methods: {
-            handleEdit (row, index) {
-                this.editLegendTitle = row.legendTitle;
-                this.editSeriesType = row.seriesType;
-                this.editUnit = row.unit;
-                this.editColor = row.color;
-                this.editIndex = index;
-            },
-            handleSave (index) {
-                if(index==-1) return;
-                this.data[index].legendTitle = this.editLegendTitle;
-                this.data[index].seriesType = this.editSeriesType;
-                this.data[index].unit = this.editUnit;
-                this.data[index].color = this.editColor;
-            },
-            currentChange(currentRow,oldCurrentRow){
-                try{
-                    if(oldCurrentRow) {
-                        this.handleSave(this.data.findIndex(x=>x.legendTitle==oldCurrentRow.legendTitle));
-                    }
-                    this.handleEdit(currentRow,this.data.findIndex(x=>x.legendTitle==currentRow.legendTitle));
-                }catch (e) {}
-            },
-            handleClearCurrentRow(){
-                this.$refs.dataTable.clearCurrentRow();
-            },
             addRow(){
                 let _this = this;
                 this.data.push({
-                    legendTitle: '图例'+(_this.rowNumber++),
+                    legendTitle: (this.legends && this.legends.length>0)?this.legends[0]:'图例'+(_this.rowNumber++),
                     seriesType: _this.chartType?_this.chartType+"_0":'line_0',
                     unit: 0,
                     color: ''
                 });
             },
             removeRow(){
-                this.$refs.dataTable.getSelection().forEach(el=>{
-                    this.data.splice(this.data.findIndex(x=>x.legendTitle==el.legendTitle),1);
+                let indexs = [];
+                [... this.$refs.dataTable.$el.querySelectorAll("td .ivu-checkbox-input")].forEach((x,index)=>{
+                    if(x.checked) indexs.push(index);
                 });
+                let newIndexs = indexs.map((val, idx)=>{return val - idx;});
+                newIndexs.forEach((index)=>{
+                    this.data.splice(index, 1);
+                })
             },
             initConfig(config){
-                this.data = config["api"] || [];
+                let _api = config["api"] || [];
+                this.data = Array.isArray(_api)?_api:JSON.parse(_api);
                 this.refurbishMode = config["refurbishMode"] || "add";
                 this.$refs.commonConf.initConfig(config);
             },
             submitConf(){
-                this.handleSave(this.editIndex);
-                this.editIndex = -1;
-
                 let commonConf = this.$refs.commonConf.submitConf();
                 if(commonConf){
                     commonConf.refurbishMode = this.refurbishMode;
                     if(this.data.length > 0){
+                        let isEmptyValidate = false;
                         let legendTitleLength = new Set([... this.data.map(x=>{
+                            if(x.legendTitle.trim()==""){
+                                isEmptyValidate = true;
+                            }
                             return x.legendTitle;
                         })]);
+                        if(isEmptyValidate){
+                            this.$Notice.error({title: '图例名称不能为空!!!'});
+                            return;
+                        }
                         if(this.data.length != legendTitleLength.size){
                             this.$Notice.error({title: '图例名称不能重复!!!'});
                             return;
                         }
-                        commonConf.api = this.data;
+                        commonConf.api = JSON.stringify(this.data); //防止引用传递，实现深度克隆数组
                         return commonConf;
                     }else{
                         this.$Notice.error({title: '请配置图例列表!!!'});

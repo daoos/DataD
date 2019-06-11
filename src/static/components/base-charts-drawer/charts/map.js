@@ -240,6 +240,7 @@ export default{
             visualMap: { //图例值控制
                 min: 0,
                 max: 100,
+                range:[0,100],
                 calculable: true,
                 show: false,
                 color: ['#f44336', '#fc9700', '#ffde00', '#ffde00', '#00eaff'],
@@ -360,6 +361,8 @@ export default{
         option.geo[0].map = _map;
         option.visualMap[0].max = _max;
         option.visualMap[0].min = _min;
+        option.visualMap[0].range = null;
+
         option.series[1].symbolSize = function (val) {
             return val[2] / (_max/10);
         };//top5

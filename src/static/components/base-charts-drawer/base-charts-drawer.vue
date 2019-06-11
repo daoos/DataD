@@ -18,7 +18,7 @@
             </div>
             <div class="drawer-footer"></div>
         </Drawer>
-        <Drawer title="图表配置" :transfer="false" :inner="true" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
+        <Drawer title="图表配置" :transfer="false" :inner="true" :mask-closable="false" :width="590" :styles="Object.assign({},styles,{height: 'calc(100% - 100px)'})" v-model="isDrawerRight">
             <component class="chartConfig" ref="chartConfComponent" :is="childComponentChart"></component>
             <div class="drawer-footer">
                 <ButtonGroup>
@@ -37,9 +37,11 @@
     import * as chartsConf from './charts/conf'
 
     export default {
-        props:["isDrawerLeft","isDrawerRight","app"],
+        props:["isDrawerOpen","app"],
         data() {
             return {
+                isDrawerLeft:false,
+                isDrawerRight:false,
                 styles: {
                     height: 'calc(100% - 75px)',
                     overflow: 'auto',
@@ -51,6 +53,14 @@
                 chartType:""
             }
         },
+        watch: {
+            isDrawerOpen(bool){
+                this.isDrawerLeft = bool;
+            },
+            isDrawerLeft(bool){
+                this.$emit("isDrawerOpen$Parent",bool,"baseChartsDrawer");
+            }
+        },
         methods: {
             settingsCharts(element){
                 let _chartType = element.getAttribute('chart-type');
@@ -60,7 +70,8 @@
                 this.chartType = _chartType;
                 this.childComponentChart = chartsConf[_chartType];
                 this.$nextTick(function(){
-                    this.$refs.chartConfComponent.initConfig(ChartsFactory.call({"chartElement":_chartElement}).configs());
+                    let config = ChartsFactory.call({"chartElement":_chartElement}).configs();
+                    this.$refs.chartConfComponent.initConfig(config);
                 });
             },
             trashCharts(element){
@@ -69,6 +80,7 @@
             submitConf(){
                 let config = this.$refs.chartConfComponent.submitConf();
                 if(config){
+                    this.isDrawerRight = false;
                     config.chartType = this.chartType;
                     ChartsFactory.call({"chartElement":this.chartElement, "gswElementLayout":config.layout}).configs(config).resize();
                 }

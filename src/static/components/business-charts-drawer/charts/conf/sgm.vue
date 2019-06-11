@@ -40,7 +40,7 @@
         </Row>
         <Divider dashed/>
 
-        <component class="charts-sgm-component" ref="baseChildComponentDrawer" :is="baseChildComponentDrawer" :legends="legends" :quotasRadar="quotasRadar" :isDisabledUrl=true></component>
+        <component class="charts-sgm-component" ref="baseChildComponentDrawer" :is="baseChildComponentDrawer" :legends="legends" :quotasRadar="quotasRadar" :isDisabledUrl=true :isDisabledRefurbishMode=true :defaultRefurbishMode="'cover'"></component>
     </div>
 </template>
 
