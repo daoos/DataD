@@ -218,31 +218,31 @@ export default {
         //序列化
         saveTotalConfig(submitType){
             if(!submitType){
-                // deleteDdPage(this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
-                //     let re = response.data;
-                //     if(re){
-                //         this.$router.push({path:'/edit'});
-                //         window.location.reload();
-                //     };
-                // });
-
-                //远程+本地存储（企业特殊定制）
-                deleteCustom(this.app.id, this.$DataDOption.businessChartModuleConfig.sgm.customDelete).then(response=>{
-                    if(response.status==200){
-                        return this.app.id;
-                    }else{
-                        this.$Message.error('删除失败!!!');
-                        return "";
-                    }
-                }).then(pageId =>{
-                    deleteDdPage(pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
-                        let re = response.data;
-                        if(re){
-                            this.$router.push({path:'/edit'});
-                            window.location.reload();
-                        };
-                    });
+                deleteDdPage(this.app.id, this.$DataDOption.isUseIndexedDB).then(response=>{
+                    let re = response.data;
+                    if(re){
+                        this.$router.push({path:'/edit'});
+                        window.location.reload();
+                    };
                 });
+
+                // //远程+本地存储（企业特殊定制）
+                // deleteCustom(this.app.id, this.$DataDOption.businessChartModuleConfig.sgm.customDelete).then(response=>{
+                //     if(response.status==200){
+                //         return this.app.id;
+                //     }else{
+                //         this.$Message.error('删除失败!!!');
+                //         return "";
+                //     }
+                // }).then(pageId =>{
+                //     deleteDdPage(pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
+                //         let re = response.data;
+                //         if(re){
+                //             this.$router.push({path:'/edit'});
+                //             window.location.reload();
+                //         };
+                //     });
+                // });
             }else{
                 let untreatedChart = [];
                 let gridMainEl  = this.$refs.gridMain;
