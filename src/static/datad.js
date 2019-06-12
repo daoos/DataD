@@ -431,19 +431,21 @@ export default {
                 // });
 
                 //获取配置（企业特殊定制:前端缓存有取前端配置，反之取后端配置）
-                selectDdPage(+pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
-                    return response.data;
-                }).then(config=>{
-                    if(config){
-                        return config;
-                    }else{
-                        return new Promise(resolve=>{
-                            getCustom(pageId, this.$DataDOption.businessChartModuleConfig.sgm.getCustom).then(response=>{
-                                resolve(response.data);
-                            });
-                        });
-                    }
-                }).then(totalConfig=>{
+                // selectDdPage(+pageId, this.$DataDOption.isUseIndexedDB).then(response=>{
+                //     return response.data;
+                // }).then(config=>{
+                //     if(config){
+                //         return config;
+                //     }else{
+                //         return new Promise(resolve=>{
+                //             getCustom(pageId, this.$DataDOption.businessChartModuleConfig.sgm.getCustom).then(response=>{
+                //                 resolve(response.data);
+                //             });
+                //         });
+                //     }
+                // }).then(totalConfig=>{
+                getCustom(pageId, this.$DataDOption.businessChartModuleConfig.sgm.getCustom).then(response=>{
+                    let totalConfig = response.data;
                     if(totalConfig){
                         if(!curTheme){
                             Object.assign(_this.app,{theme:totalConfig.theme,background:totalConfig.background})
