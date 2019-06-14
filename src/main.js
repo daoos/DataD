@@ -27,15 +27,15 @@ const defaultOption = {
     isUseBusinessChartModule:true, //是否使用企业定制开发的内置图表（为true时用户需自行开发相应图表）
     businessChartModuleConfig:{
         sgm:{
-            dataUrl:"/dashboard/data",
-            getAppsUrl:"/apps?type=alias",
-            getServicesUrl:"/service/get_list",
-            getMethodsUrl:"/method/get_list",
-            getLegendsUrl:"/dashboard/legends",
-            customAdd:"/custom/add",
-            customUpdate:"/custom/update",
-            getCustom:"/dashboard",
-            customDelete:"/custom/delete"
+            // dataUrl:"/dashboard/data",
+            // getAppsUrl:"/apps?type=alias",
+            // getServicesUrl:"/service/get_list",
+            // getMethodsUrl:"/method/get_list",
+            // getLegendsUrl:"/dashboard/legends",
+            // customAdd:"/custom/add",
+            // customUpdate:"/custom/update",
+            // getCustom:"/dashboard",
+            // customDelete:"/custom/delete"
         }
     } //定制开发的图表对外提供的参数配置（sgm为某一个内置图表，可自行扩展；isUseBusinessChartModule为false时，该参数可省略）
 };
