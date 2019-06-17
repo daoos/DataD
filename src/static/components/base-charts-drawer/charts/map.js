@@ -204,19 +204,19 @@ export default{
         '大庆':[125.03,46.58]
     },
     init(eCharts){
-        let themeName = eCharts["themeName"]||"dark", themeColor = eCharts._theme && eCharts._theme["color"];
+        console.log("------eCharts----",eCharts);
+        let themeName = eCharts["themeName"], themeColor = eCharts._theme && eCharts._theme["color"];
         if(themeColor && Array.isArray(themeColor)) themeColor = themeColor[0];
         let _itemStyleNormal = {
-            areaColor: '#031525',
-            borderColor: '#3B5077',
+            areaColor: '#F9F9F9',
+            borderColor:'#A6B1C4',
             borderWidth: 1
         };
-        if(themeName!="dark"){
+        if(themeName=="dark"){
             _itemStyleNormal = {
-                areaColor: '#F9F9F9',
-                borderColor:'#A6B1C4',
+                areaColor: '#031525',
+                borderColor: '#3B5077',
                 borderWidth: 1
-
             }
         }
         let demoData = [
