@@ -7,7 +7,7 @@
     "prod": "cross-env NODE_ENV=production webpack --config webpack.prod.config.js --watch --progress --display-reason",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js --open --hot --inline --progress  "
   },
-  "author": "",
+  "author": "yangjijiang",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.1.5",
