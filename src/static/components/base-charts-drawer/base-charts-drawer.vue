@@ -99,7 +99,8 @@
                 animation: 150,
                 forceFallback:true,
                 chosenClass: "sortable-chosen",
-                handle:".move_handle",
+                //handle:".move_handle",
+                handle:".chartTemplet",
                 onEnd:function(evt){
                     //console.log(evt.from,"===",evt.to,"====",evt.item);
                     if(evt.to != evt.from){
