@@ -204,6 +204,21 @@ export default{
         '大庆':[125.03,46.58]
     },
     init(eCharts){
+        let themeName = eCharts["themeName"]||"dark", themeColor = eCharts._theme && eCharts._theme["color"];
+        if(themeColor && Array.isArray(themeColor)) themeColor = themeColor[0];
+        let _itemStyleNormal = {
+            areaColor: '#031525',
+            borderColor: '#3B5077',
+            borderWidth: 1
+        };
+        if(themeName!="dark"){
+            _itemStyleNormal = {
+                areaColor: '#F9F9F9',
+                borderColor:'#A6B1C4',
+                borderWidth: 1
+
+            }
+        }
         let demoData = [
             {name:"New York", value:100},
             {name:"Sydney", value:10, from:"北京"},
@@ -258,7 +273,7 @@ export default{
                 roam: false,
                 itemStyle: {
                     normal: {
-                        shadowColor: '#1773c3',
+                        shadowColor: themeName=="dark"?'#1773c3':'#A9B3C6',
                         shadowBlur: 15
                     }
                 }
@@ -342,10 +357,9 @@ export default{
                     type: 'map',
                     map: 'world',
                     itemStyle: {
-                        normal: {
-                            areaColor: '#031525',
-                            borderColor: '#3B5077',
-                            borderWidth: 1
+                        normal: _itemStyleNormal,
+                        emphasis: {
+                            areaColor: themeColor || "rgb(194,53,49)"
                         }
                     }
                 },
